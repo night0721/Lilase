@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "package": "me.night0721.lilase.mixins",
+  "refmap": "mixins.night0721.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinNetworkManager"
+  ]
+}

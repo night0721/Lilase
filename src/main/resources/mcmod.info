@@ -1,0 +1,11 @@
+[
+  {
+    "modid": "Lilase",
+    "name": "Lilase",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "authorList": ["night0721"],
+    "description": "Lilac",
+    "url": "https://github.com/night0721"
+  }
+]
