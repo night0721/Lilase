@@ -3,6 +3,7 @@ package me.night0721.lilase.utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.S45PacketTitle;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.List;
 
@@ -38,7 +39,9 @@ public class Utils {
                 return;
             }
         }
-
         inDungeon = false;
+    }
+    public static void sendMessage(String message) {
+        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + EnumChatFormatting.BOLD + "Liliase" + EnumChatFormatting.RESET + EnumChatFormatting.DARK_GRAY + " » " + EnumChatFormatting.RESET + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + message));
     }
 }

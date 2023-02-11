@@ -3,6 +3,7 @@ package me.night0721.lilase;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.night0721.lilase.events.PacketReceivedEvent;
 import me.night0721.lilase.utils.Utils;
+import me.night0721.lilase.utils.ah.AuctionHouse;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -31,7 +32,7 @@ public class Main {
 
     static int tickAmount;
     static Minecraft mc = Minecraft.getMinecraft();
-    static KeyBinding[] keyBindings = new KeyBinding[2];
+    static KeyBinding[] keyBindings = new KeyBinding[3];
     static ArrayList<Block> interactables = new ArrayList<>(Arrays.asList(Blocks.acacia_door, Blocks.anvil, Blocks.beacon, Blocks.bed, Blocks.birch_door, Blocks.brewing_stand, Blocks.command_block, Blocks.crafting_table, Blocks.chest, Blocks.dark_oak_door,
             Blocks.daylight_detector, Blocks.daylight_detector_inverted, Blocks.dispenser, Blocks.dropper, Blocks.enchanting_table, Blocks.ender_chest, Blocks.furnace, Blocks.hopper, Blocks.jungle_door, Blocks.lever,
             Blocks.noteblock, Blocks.powered_comparator, Blocks.unpowered_comparator, Blocks.powered_repeater, Blocks.unpowered_repeater, Blocks.standing_sign, Blocks.wall_sign, Blocks.trapdoor, Blocks.trapped_chest, Blocks.wooden_button,
@@ -43,7 +44,7 @@ public class Main {
 
         keyBindings[0] = new KeyBinding("Ghost Block Bind", Keyboard.KEY_G, "Lilase");
         keyBindings[1] = new KeyBinding("Hub", Keyboard.KEY_DIVIDE, "Lilase");
-
+        keyBindings[2] = new KeyBinding("Auction House", Keyboard.KEY_END, "Lilase");
         for (KeyBinding keyBinding : keyBindings) {
             ClientRegistry.registerKeyBinding(keyBinding);
         }
@@ -63,6 +64,9 @@ public class Main {
         }
         if (keyBindings[1].isKeyDown()) {
             mc.thePlayer.sendChatMessage("/hub");
+        }
+        if (keyBindings[2].isPressed()) {
+            new AuctionHouse();
         }
         if (tickAmount % 20 == 0) {
             Utils.checkForDungeon();
