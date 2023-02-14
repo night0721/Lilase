@@ -44,4 +44,7 @@ public class Utils {
     public static void sendMessage(String message) {
         Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + EnumChatFormatting.BOLD + "Liliase" + EnumChatFormatting.RESET + EnumChatFormatting.DARK_GRAY + " » " + EnumChatFormatting.RESET + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + message));
     }
+    public static void sendServerMessage(String message) {
+        Minecraft.getMinecraft().thePlayer.sendChatMessage(message);
+    }
 }

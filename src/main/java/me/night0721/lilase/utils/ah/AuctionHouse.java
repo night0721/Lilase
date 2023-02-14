@@ -1,12 +1,17 @@
 package me.night0721.lilase.utils.ah;
 
 import me.night0721.lilase.utils.Utils;
+import net.minecraft.client.Minecraft;
 import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,19 +21,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static me.night0721.lilase.Main.clickState;
 
 public class AuctionHouse {
     private final OkHttpClient client;
+    private static String uuid;
+    private static String message_toSend;
     private final List<Item> items = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
 
     public AuctionHouse() {
         client = new OkHttpClient();
-        items.add(new Item("Livid Dagger", ItemType.WEAPON, 8000000, ItemTier.LEGENDARY));
-        items.add(new Item("Aspect of the Void", ItemType.WEAPON, 8000000, ItemTier.EPIC));
-        items.add(new Item("Bal", ItemType.MISC, 10000000, ItemTier.EPIC));
+        // items.add(new Item("Livid Dagger", ItemType.WEAPON, 8000000, ItemTier.LEGENDARY));
+        // items.add(new Item("Aspect of the Void", ItemType.WEAPON, 8000000, ItemTier.EPIC));
+        // items.add(new Item("Bal", ItemType.MISC, 10000000, ItemTier.EPIC));
+        items.add(new Item(" ", ItemType.MISC, 1000, ItemTier.UNCOMMON));
         Utils.sendMessage("AuctionHouse is now running");
-        // run getItem every 8 seconds=
         new Thread(() -> {
             while (true) {
                 try {
@@ -151,10 +159,20 @@ public class AuctionHouse {
                     message.put("embeds", new JSONArray().put(embed));
                     message.put("content", auction.getString("item_name") + " is sale at " + format.format(auction.getInt("starting_bid")) + "!\n" + "/viewauction " + auction.getString("uuid"));
                     sendMessage(message);
-                    Utils.sendMessage("Auction House:" + auction.getString("item_name") + " is sale for " + format.format(auction.getInt("starting_bid")) + "!");
+                    uuid = auction.getString("uuid");
+                    message_toSend = "Auction House: " + auction.getString("item_name") + " is sale for " + format.format(auction.getInt("starting_bid")) + "!";
+                    clickState = States.OPEN;
+                    Minecraft.getMinecraft().playerController.windowClick(Minecraft.getMinecraft().thePlayer.openContainer.windowId, 31, 0, 0, Minecraft.getMinecraft().thePlayer);
+
+                    return;
                 }
             }
         }
+    }
+
+    public static void sendAuction() {
+        Utils.sendServerMessage("/viewauction " + uuid);
+        Utils.sendMessage(message_toSend);
     }
 
     public final List<Long> times = Arrays.asList(
@@ -202,11 +220,28 @@ public class AuctionHouse {
 
     private void sendMessage(JSONObject data) throws IOException, JSONException {
         String DISCORD_WEBHOOK = "https://discord.com/api/webhooks/979502673093079071/p539WaqjEwiUWqCXLSBAcfDY-EhmF2RU9ZzjCKW_8jtFMuldJQwCdOFMPsT0U3VhfdBH";
-        Request request = new Request.Builder()
-                .url(DISCORD_WEBHOOK)
-                .post(RequestBody.create(data.toString(), MediaType.get("application/json")))
-                .addHeader("Content-Type", "application/json")
-                .build();
-        client.newCall(request).execute();
+
+        URL url = new URL(DISCORD_WEBHOOK);
+        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+        connection.addRequestProperty("Content-Type", "application/json");
+        connection.addRequestProperty("User-Agent", "Java-DiscordWebhook-BY-Gelox_");
+        connection.setDoOutput(true);
+        connection.setRequestMethod("POST");
+
+        OutputStream stream = connection.getOutputStream();
+        stream.write(data.toString().getBytes(StandardCharsets.UTF_8));
+        stream.flush();
+        stream.close();
+
+        connection.getInputStream().close(); //I'm not sure why but it doesn't work without getting the InputStream
+        connection.disconnect();
+
+
+        // Request request = new Request.Builder()
+           //     .url(DISCORD_WEBHOOK)
+             //   .post(RequestBody.create(data.toString(), MediaType.get("application/json")))
+               // .addHeader("Content-Type", "application/json")
+                //.build();
+        //client.newCall(request).execute();
     }
 }
