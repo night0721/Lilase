@@ -1,8 +1,9 @@
 package me.night0721.lilase.utils.ah;
 
 import me.night0721.lilase.utils.Utils;
-import net.minecraft.client.Minecraft;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +12,6 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +27,8 @@ public class AuctionHouse {
     private final OkHttpClient client;
     private static String uuid;
     private static String message_toSend;
+    private Thread thread;
+    private Boolean open = false;
     private final List<Item> items = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
 
@@ -35,9 +37,8 @@ public class AuctionHouse {
         // items.add(new Item("Livid Dagger", ItemType.WEAPON, 8000000, ItemTier.LEGENDARY));
         // items.add(new Item("Aspect of the Void", ItemType.WEAPON, 8000000, ItemTier.EPIC));
         // items.add(new Item("Bal", ItemType.MISC, 10000000, ItemTier.EPIC));
-        items.add(new Item(" ", ItemType.MISC, 1000, ItemTier.UNCOMMON));
-        Utils.sendMessage("AuctionHouse is now running");
-        new Thread(() -> {
+        items.add(new Item(" ", ItemType.ANY, 1000, ItemTier.ANY));
+        thread = new Thread(() -> {
             while (true) {
                 try {
                     getItem();
@@ -46,7 +47,7 @@ public class AuctionHouse {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     private JSONObject getHypixelData(String player) throws IOException, JSONException {
@@ -99,12 +100,16 @@ public class AuctionHouse {
 
                 if (!auction.getString("item_name").toLowerCase().contains(item.query.toLowerCase())) break;
                 if (!auction.getString("item_lore").contains(lore)) break;
-                if (!auction.getString("tier").equals(item.tier.name())) break;
+                if (item.tier != ItemTier.ANY) {
+                    if (!auction.getString("tier").equals(item.tier.name())) break;
+                }
                 if (auction.getInt("starting_bid") > item.price) break;
-                if (!auction.getString("category").equals(type.lowercase)) break;
+                if (type != ItemType.ANY) {
+                    if (!auction.getString("category").equals(type.lowercase)) break;
+                }
                 if (!auction.getBoolean("bin")) break;
-                if (!posted.contains(auction.getString("item_uuid"))) {
-                    posted.add(auction.getString("item_uuid"));
+                if (!posted.contains(auction.getString("uuid"))) {
+                    posted.add(auction.getString("uuid"));
                     NumberFormat format = NumberFormat.getInstance(Locale.US);
                     JSONObject profile = getHypixelData(auction.getString("auctioneer"));
                     Pattern pattern = Pattern.compile("§[0-9a-z]", Pattern.MULTILINE);
@@ -150,7 +155,6 @@ public class AuctionHouse {
                     embed.put("color", 0x003153);
                     embed.put("title", "Item Is On Low Price");
                     embed.put("url", "https://www.brandonfowler.me/skyblockah/?uuid=" + auction.getString("uuid"));
-                    embed.put("timestamp", System.currentTimeMillis() / 1000);
                     embed.put("description", updated);
                     embed.put("author", author);
                     embed.put("footer", footer);
@@ -162,8 +166,6 @@ public class AuctionHouse {
                     uuid = auction.getString("uuid");
                     message_toSend = "Auction House: " + auction.getString("item_name") + " is sale for " + format.format(auction.getInt("starting_bid")) + "!";
                     clickState = States.OPEN;
-                    Minecraft.getMinecraft().playerController.windowClick(Minecraft.getMinecraft().thePlayer.openContainer.windowId, 31, 0, 0, Minecraft.getMinecraft().thePlayer);
-
                     return;
                 }
             }
@@ -229,19 +231,54 @@ public class AuctionHouse {
         connection.setRequestMethod("POST");
 
         OutputStream stream = connection.getOutputStream();
-        stream.write(data.toString().getBytes(StandardCharsets.UTF_8));
+        stream.write(data.toString().getBytes());
         stream.flush();
         stream.close();
-
-        connection.getInputStream().close(); //I'm not sure why but it doesn't work without getting the InputStream
+        connection.getInputStream().close();
         connection.disconnect();
+    }
 
+    public void toggleAuction() {
+        if (open) {
+            Utils.sendMessage("Stopped Auction House");
+            thread.stop();
+            open = false;
+        } else {
+            Utils.sendMessage("Started Auction House");
+            thread.run();
+            open = true;
+        }
+    }
+}
+enum ItemTier {
+    ANY,
+    COMMON,
+    UNCOMMON,
+    RARE,
+    EPIC,
+    LEGENDARY,
+    MYTHIC,
+    DIVINE,
+    SPECIAL,
+    VERY_SPECIAL,
+}
 
-        // Request request = new Request.Builder()
-           //     .url(DISCORD_WEBHOOK)
-             //   .post(RequestBody.create(data.toString(), MediaType.get("application/json")))
-               // .addHeader("Content-Type", "application/json")
-                //.build();
-        //client.newCall(request).execute();
+enum ItemType {
+    ANY("any"),
+    WEAPON("weapon"),
+    ARMOR("armor"),
+    ACCESSORIES("accessories"),
+    CONSUMABLES("consumables"),
+    BLOCKS("blocks"),
+    MISC("misc"),;
+
+    public final String lowercase;
+
+    public String getLowercase() {
+        return lowercase;
+    }
+
+    ItemType(String lowercase) {
+        this.lowercase = lowercase;
     }
 }

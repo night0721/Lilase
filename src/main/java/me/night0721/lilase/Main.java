@@ -33,7 +33,8 @@ public class Main {
 
     static int tickAmount;
     static long lastAction;
-    public static States clickState;
+    public static States clickState = States.NONE;
+    private AuctionHouse auctionHouse;
     static Minecraft mc = Minecraft.getMinecraft();
     static KeyBinding[] keyBindings = new KeyBinding[3];
     static ArrayList<Block> interactables = new ArrayList<>(Arrays.asList(Blocks.acacia_door, Blocks.anvil, Blocks.beacon, Blocks.bed, Blocks.birch_door, Blocks.brewing_stand, Blocks.command_block, Blocks.crafting_table, Blocks.chest, Blocks.dark_oak_door, Blocks.daylight_detector, Blocks.daylight_detector_inverted, Blocks.dispenser, Blocks.dropper, Blocks.enchanting_table, Blocks.ender_chest, Blocks.furnace, Blocks.hopper, Blocks.jungle_door, Blocks.lever, Blocks.noteblock, Blocks.powered_comparator, Blocks.unpowered_comparator, Blocks.powered_repeater, Blocks.unpowered_repeater, Blocks.standing_sign, Blocks.wall_sign, Blocks.trapdoor, Blocks.trapped_chest, Blocks.wooden_button, Blocks.stone_button, Blocks.oak_door, Blocks.skull));
@@ -41,7 +42,7 @@ public class Main {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
-
+        auctionHouse = new AuctionHouse();
         keyBindings[0] = new KeyBinding("Ghost Block Bind", Keyboard.KEY_G, "Lilase");
         keyBindings[1] = new KeyBinding("Hub", Keyboard.KEY_DIVIDE, "Lilase");
         keyBindings[2] = new KeyBinding("Auction House", Keyboard.KEY_END, "Lilase");
@@ -66,7 +67,7 @@ public class Main {
             mc.thePlayer.sendChatMessage("/hub");
         }
         if (keyBindings[2].isPressed()) {
-            new AuctionHouse();
+            auctionHouse.toggleAuction();
         }
         if (tickAmount % 20 == 0) {
             Utils.checkForDungeon();
@@ -76,12 +77,20 @@ public class Main {
             case CLICK:
                 if (System.currentTimeMillis() - lastAction < 500) return;
                 Minecraft.getMinecraft().playerController.windowClick(Minecraft.getMinecraft().thePlayer.openContainer.windowId, 31, 0, 0, Minecraft.getMinecraft().thePlayer);
-                break;
-
-            case OPEN:
                 lastAction = System.currentTimeMillis();
+                clickState = States.CONFIRM;
+                break;
+            case CONFIRM:
+                if (System.currentTimeMillis() - lastAction < 500) return;
+                Minecraft.getMinecraft().playerController.windowClick(Minecraft.getMinecraft().thePlayer.openContainer.windowId, 11, 0, 0, Minecraft.getMinecraft().thePlayer);
+                clickState = States.NONE;
+                break;
+            case OPEN:
                 AuctionHouse.sendAuction();
+                lastAction = System.currentTimeMillis();
                 clickState = States.CLICK;
+            case NONE:
+                break;
         }
 
     }
