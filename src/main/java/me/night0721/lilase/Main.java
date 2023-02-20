@@ -30,9 +30,9 @@ public class Main {
     public static final String VERSION = "1.0.0";
     static int tickAmount;
     private AuctionHouse auctionHouse;
-    static Minecraft mc = Minecraft.getMinecraft();
-    static KeyBinding[] keyBindings = new KeyBinding[3];
-    static ArrayList<Block> interactables = new ArrayList<>(Arrays.asList(Blocks.acacia_door, Blocks.anvil, Blocks.beacon, Blocks.bed, Blocks.birch_door, Blocks.brewing_stand, Blocks.command_block, Blocks.crafting_table, Blocks.chest, Blocks.dark_oak_door, Blocks.daylight_detector, Blocks.daylight_detector_inverted, Blocks.dispenser, Blocks.dropper, Blocks.enchanting_table, Blocks.ender_chest, Blocks.furnace, Blocks.hopper, Blocks.jungle_door, Blocks.lever, Blocks.noteblock, Blocks.powered_comparator, Blocks.unpowered_comparator, Blocks.powered_repeater, Blocks.unpowered_repeater, Blocks.standing_sign, Blocks.wall_sign, Blocks.trapdoor, Blocks.trapped_chest, Blocks.wooden_button, Blocks.stone_button, Blocks.oak_door, Blocks.skull));
+    static final Minecraft mc = Minecraft.getMinecraft();
+    static final KeyBinding[] keyBindings = new KeyBinding[3];
+    static final ArrayList<Block> interactables = new ArrayList<>(Arrays.asList(Blocks.acacia_door, Blocks.anvil, Blocks.beacon, Blocks.bed, Blocks.birch_door, Blocks.brewing_stand, Blocks.command_block, Blocks.crafting_table, Blocks.chest, Blocks.dark_oak_door, Blocks.daylight_detector, Blocks.daylight_detector_inverted, Blocks.dispenser, Blocks.dropper, Blocks.enchanting_table, Blocks.ender_chest, Blocks.furnace, Blocks.hopper, Blocks.jungle_door, Blocks.lever, Blocks.noteblock, Blocks.powered_comparator, Blocks.unpowered_comparator, Blocks.powered_repeater, Blocks.unpowered_repeater, Blocks.standing_sign, Blocks.wall_sign, Blocks.trapdoor, Blocks.trapped_chest, Blocks.wooden_button, Blocks.stone_button, Blocks.oak_door, Blocks.skull));
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
@@ -75,8 +75,9 @@ public class Main {
     public void onChat(ClientChatReceivedEvent event) {
         String message = event.message.getUnformattedText();
         if (!message.contains(":")) {
-            if (message.equals("Claiming BIN auction...")) {
-                Utils.addTitle("&aBought BIN Auction");
+            if (message.equals("You didn't participate in this auction!")) {
+                System.out.println("Failed to buy item, closing the menu");
+                mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, 49, 0, 0, mc.thePlayer); // Close the window as could not buy
             }
         }
     }

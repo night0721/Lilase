@@ -26,7 +26,7 @@ public class AuctionHouse {
     private static long lastAction;
     private Thread thread;
     private Boolean open = false;
-    private DiscordWebhook webhook;
+    private final DiscordWebhook webhook;
     private final List<Item> items = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
     public static States clickState = States.NONE;
@@ -50,7 +50,7 @@ public class AuctionHouse {
         connection.setReadTimeout(5000);
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
@@ -69,7 +69,7 @@ public class AuctionHouse {
         int status = connection.getResponseCode();
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
@@ -117,6 +117,7 @@ public class AuctionHouse {
                     Pattern pattern = Pattern.compile("§[0-9a-z]", Pattern.MULTILINE);
                     Matcher matcher = pattern.matcher(auction.getString("item_lore"));
                     String updated = matcher.replaceAll("");
+                    System.out.println(updated);
                     webhook.addEmbed(
                             new DiscordWebhook.EmbedObject()
                                     .setTitle("Item Is On Low Price")
@@ -186,7 +187,7 @@ public class AuctionHouse {
     public void toggleAuction() {
         if (open) {
             Utils.sendMessage("Stopped Auction House");
-            thread.stop();
+            thread.interrupt();
             open = false;
         } else {
             Utils.sendMessage("Started Auction House");
@@ -199,7 +200,7 @@ public class AuctionHouse {
                     }
                 }
             });
-            thread.run(); //You didn't participate in this auction!
+            thread.start();
             open = true;
         }
     }
@@ -250,10 +251,10 @@ enum ItemType {
 }
 
 class Item {
-    public String query;
-    public ItemType type;
-    public Integer price;
-    public ItemTier tier;
+    public final String query;
+    public final ItemType type;
+    public final Integer price;
+    public final ItemTier tier;
 
     public Item(String query, ItemType type, Integer price, ItemTier tier) {
         this.query = query;

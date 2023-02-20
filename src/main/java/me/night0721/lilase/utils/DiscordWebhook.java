@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
 
@@ -139,12 +140,12 @@ public class DiscordWebhook {
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty("Content-Type", "application/json");
-        connection.addRequestProperty("User-Agent", "Java-DiscordWebhook-BY-Gelox_");
+        connection.addRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11");
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
-
+        System.out.println(json);
         OutputStream stream = connection.getOutputStream();
-        stream.write(json.toString().getBytes());
+        stream.write(json.toString().getBytes(StandardCharsets.UTF_8));
         stream.flush();
         stream.close();
 

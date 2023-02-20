@@ -10,6 +10,7 @@ import java.util.List;
 public class Utils {
 
     public static boolean inDungeon;
+    public static boolean inHub;
 
     public static String translateAlternateColorCodes(String text) {
         char[] b = text.toCharArray();
@@ -46,16 +47,18 @@ public class Utils {
         List<String> scoreboard = ScoreboardUtils.getSidebarLines();
         for (String s : scoreboard) {
             String sCleaned = ScoreboardUtils.cleanSB(s);
-            if (sCleaned.contains("Hub")) {
-                inDungeon = false;
+            if (sCleaned.contains("Forest") || sCleaned.contains("Village") || sCleaned.contains("Farm") || sCleaned.contains("Mountain") || sCleaned.contains("Wilderness") || sCleaned.contains("Community Center") || sCleaned.contains("Graveyard")) {
+                inHub = true;
                 return;
             }
         }
         inDungeon = true;
     }
+
     public static void sendMessage(String message) {
         Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + EnumChatFormatting.BOLD + "Liliase" + EnumChatFormatting.RESET + EnumChatFormatting.DARK_GRAY + " » " + EnumChatFormatting.RESET + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + message));
     }
+
     public static void sendServerMessage(String message) {
         Minecraft.getMinecraft().thePlayer.sendChatMessage(message);
     }
