@@ -118,11 +118,12 @@ public class AuctionHouse {
                     Matcher matcher = pattern.matcher(auction.getString("item_lore"));
                     String updated = matcher.replaceAll("");
                     System.out.println(updated);
+
                     webhook.addEmbed(
                             new DiscordWebhook.EmbedObject()
                                     .setTitle("Item Is On Low Price")
                                     .setAuthor("night0721", "https://github.com/night0721", "https://avatars.githubusercontent.com/u/77528305?v=4")
-                                    .setDescription(updated)
+                                    .setDescription(updated.replace("\n", "\\n"))
                                     .addField("Item", auction.getString("item_name"), true)
                                     .addField("Price", format.format(auction.getInt("starting_bid")) + " coins", true)
                                     .addField("Seller", profile.getJSONObject("player").getString("displayname"), true)
@@ -131,7 +132,7 @@ public class AuctionHouse {
                                     .setUrl("https://www.brandonfowler.me/skyblockah/?uuid=" + auction.getString("uuid"))
                                     .setColor(Color.decode("#003153"))
                     );
-                    webhook.setContent(auction.getString("item_name") + " is sale at " + format.format(auction.getInt("starting_bid")) + "!\n`" + "/viewauction " + auction.getString("uuid") + "`");
+                    webhook.setContent(auction.getString("item_name") + " is sale at " + format.format(auction.getInt("starting_bid")) + "!   `" + "/viewauction " + auction.getString("uuid") + "`");
                     new Thread(() -> {
                         try {
                             webhook.execute();
@@ -187,7 +188,7 @@ public class AuctionHouse {
     public void toggleAuction() {
         if (open) {
             Utils.sendMessage("Stopped Auction House");
-            thread.interrupt();
+            thread = null;
             open = false;
         } else {
             Utils.sendMessage("Started Auction House");
