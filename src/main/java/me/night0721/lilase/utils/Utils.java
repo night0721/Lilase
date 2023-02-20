@@ -41,6 +41,18 @@ public class Utils {
         }
         inDungeon = false;
     }
+
+    public static void checkInHub() {
+        List<String> scoreboard = ScoreboardUtils.getSidebarLines();
+        for (String s : scoreboard) {
+            String sCleaned = ScoreboardUtils.cleanSB(s);
+            if (sCleaned.contains("Hub")) {
+                inDungeon = false;
+                return;
+            }
+        }
+        inDungeon = true;
+    }
     public static void sendMessage(String message) {
         Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + EnumChatFormatting.BOLD + "Liliase" + EnumChatFormatting.RESET + EnumChatFormatting.DARK_GRAY + " » " + EnumChatFormatting.RESET + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + message));
     }

@@ -2,16 +2,15 @@ package me.night0721.lilase;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.night0721.lilase.events.PacketReceivedEvent;
+import me.night0721.lilase.utils.AuctionHouse;
+import me.night0721.lilase.utils.ConfigUtils;
 import me.night0721.lilase.utils.Utils;
-import me.night0721.lilase.utils.ah.AuctionHouse;
-import me.night0721.lilase.utils.ah.States;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -26,14 +25,10 @@ import java.util.Arrays;
 
 @Mod(modid = Main.MODID, name = Main.MOD_NAME, version = Main.VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Main {
-
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
     public static final String VERSION = "1.0.0";
-
     static int tickAmount;
-    static long lastAction;
-    public static States clickState = States.NONE;
     private AuctionHouse auctionHouse;
     static Minecraft mc = Minecraft.getMinecraft();
     static KeyBinding[] keyBindings = new KeyBinding[3];
@@ -55,7 +50,8 @@ public class Main {
     public void onTick(TickEvent.ClientTickEvent event) {
         if (mc.thePlayer == null || event.phase != TickEvent.Phase.START) return;
         tickAmount++;
-
+        ConfigUtils.init();
+        ConfigUtils.reloadConfig();
         if (keyBindings[0].isKeyDown()) {
             if (mc.objectMouseOver.getBlockPos() == null) return;
             Block block = mc.theWorld.getBlockState(mc.objectMouseOver.getBlockPos()).getBlock();
@@ -72,38 +68,17 @@ public class Main {
         if (tickAmount % 20 == 0) {
             Utils.checkForDungeon();
         }
-
-        switch (clickState) {
-            case CLICK:
-                if (System.currentTimeMillis() - lastAction < 500) return;
-                Minecraft.getMinecraft().playerController.windowClick(Minecraft.getMinecraft().thePlayer.openContainer.windowId, 31, 0, 0, Minecraft.getMinecraft().thePlayer);
-                lastAction = System.currentTimeMillis();
-                clickState = States.CONFIRM;
-                break;
-            case CONFIRM:
-                if (System.currentTimeMillis() - lastAction < 500) return;
-                Minecraft.getMinecraft().playerController.windowClick(Minecraft.getMinecraft().thePlayer.openContainer.windowId, 11, 0, 0, Minecraft.getMinecraft().thePlayer);
-                clickState = States.NONE;
-                break;
-            case OPEN:
-                AuctionHouse.sendAuction();
-                lastAction = System.currentTimeMillis();
-                clickState = States.CLICK;
-            case NONE:
-                break;
-        }
-
+        AuctionHouse.switchStates();
     }
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) {
         String message = event.message.getUnformattedText();
         if (!message.contains(":")) {
-            if (message.equals("Myrap opened a WITHER door!")) {
-                Utils.addTitle("&aMyr opened a door");
+            if (message.equals("Claiming BIN auction...")) {
+                Utils.addTitle("&aBought BIN Auction");
             }
         }
-        event.message = new ChatComponentText(event.message.getFormattedText().replace("§bCo-op > ", "§zCo-op > "));
     }
 
     @SubscribeEvent
