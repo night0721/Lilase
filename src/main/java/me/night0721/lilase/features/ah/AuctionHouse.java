@@ -1,6 +1,9 @@
-package me.night0721.lilase.utils;
+package me.night0721.lilase.features.ah;
 
-import me.night0721.lilase.features.ah.States;
+import me.night0721.lilase.config.AHConfig;
+import me.night0721.lilase.utils.ConfigUtils;
+import me.night0721.lilase.utils.DiscordWebhook;
+import me.night0721.lilase.utils.Utils;
 import net.minecraft.client.Minecraft;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +32,7 @@ public class AuctionHouse {
     private Boolean open = false;
     private final DiscordWebhook webhook;
     private final List<Item> items = new ArrayList<>();
+    private final List<Item> temp_items = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
     public static States clickState = States.NONE;
 
@@ -61,6 +65,7 @@ public class AuctionHouse {
     }
 
     private void getItem() throws IOException, JSONException {
+        if (items.size() == 0) return;
         URL url = new URL("https://api.hypixel.net/skyblock/auctions");
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
@@ -187,7 +192,8 @@ public class AuctionHouse {
     public void toggleAuction() {
         if (open) {
             Utils.sendMessage("Stopped Auction House");
-            thread = null;
+            items.forEach(item -> temp_items.add(item));
+            items.clear();
             open = false;
         } else {
             Utils.sendMessage("Started Auction House");

@@ -1,9 +1,13 @@
 package me.night0721.lilase;
 
+import cc.polyfrost.oneconfig.events.EventManager;
+import cc.polyfrost.oneconfig.events.event.InitializationEvent;
+import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.events.PacketReceivedEvent;
 import me.night0721.lilase.features.ah.States;
-import me.night0721.lilase.utils.AuctionHouse;
+import me.night0721.lilase.features.ah.AuctionHouse;
 import me.night0721.lilase.utils.ConfigUtils;
 import me.night0721.lilase.utils.Utils;
 import net.minecraft.block.Block;
@@ -23,6 +27,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Mod(modid = Main.MODID, name = Main.MOD_NAME, version = Main.VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Main {
@@ -31,22 +36,28 @@ public class Main {
     public static final String VERSION = "1.0.0";
     static int tickAmount;
     private AuctionHouse auctionHouse;
+    public static AHConfig config;
     static final Minecraft mc = Minecraft.getMinecraft();
-    static final KeyBinding[] keyBindings = new KeyBinding[3];
+    static final KeyBinding[] keyBindings = new KeyBinding[4];
     static final ArrayList<Block> interactables = new ArrayList<>(Arrays.asList(Blocks.acacia_door, Blocks.anvil, Blocks.beacon, Blocks.bed, Blocks.birch_door, Blocks.brewing_stand, Blocks.command_block, Blocks.crafting_table, Blocks.chest, Blocks.dark_oak_door, Blocks.daylight_detector, Blocks.daylight_detector_inverted, Blocks.dispenser, Blocks.dropper, Blocks.enchanting_table, Blocks.ender_chest, Blocks.furnace, Blocks.hopper, Blocks.jungle_door, Blocks.lever, Blocks.noteblock, Blocks.powered_comparator, Blocks.unpowered_comparator, Blocks.powered_repeater, Blocks.unpowered_repeater, Blocks.standing_sign, Blocks.wall_sign, Blocks.trapdoor, Blocks.trapped_chest, Blocks.wooden_button, Blocks.stone_button, Blocks.oak_door, Blocks.skull));
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
+        EventManager.INSTANCE.register(this);
         auctionHouse = new AuctionHouse();
         keyBindings[0] = new KeyBinding("Ghost Block Bind", Keyboard.KEY_G, "Lilase");
         keyBindings[1] = new KeyBinding("Hub", Keyboard.KEY_DIVIDE, "Lilase");
         keyBindings[2] = new KeyBinding("Auction House", Keyboard.KEY_END, "Lilase");
+        keyBindings[3] = new KeyBinding("Config", Keyboard.KEY_MULTIPLY, "Lilase");
         for (KeyBinding keyBinding : keyBindings) {
             ClientRegistry.registerKeyBinding(keyBinding);
         }
     }
-
+    @Subscribe
+    public void onConfigInit(InitializationEvent event) {
+        config = new AHConfig();
+    }
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (mc.thePlayer == null || event.phase != TickEvent.Phase.START) return;
@@ -66,8 +77,17 @@ public class Main {
         if (keyBindings[2].isPressed()) {
             auctionHouse.toggleAuction();
         }
+        if (keyBindings[3].isPressed()) {
+            config.openGui();
+        }
+
         if (tickAmount % 20 == 0) {
             Utils.checkForDungeon();
+            if (!Objects.equals(AHConfig.WEBHOOK, ConfigUtils.getString("main", "Webhook"))) {
+                ConfigUtils.writeStringConfig("main", "Webhook", AHConfig.WEBHOOK);
+            } else if (!Objects.equals(AHConfig.AUCTION_HOUSE_DELAY, ConfigUtils.getInt("main", "AuctionHouseDelay"))) {
+                ConfigUtils.writeIntConfig("main", "AuctionHouseDelay", Math.round(AHConfig.AUCTION_HOUSE_DELAY));
+            }
         }
         AuctionHouse.switchStates();
     }
@@ -83,6 +103,11 @@ public class Main {
                 System.out.println("Failed to buy item, not enough money. Closing the menu");
                 AuctionHouse.clickState = States.STOP;
                 mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, 49, 0, 0, mc.thePlayer); // Close the window as could not buy
+            } else if (message.contains("Your new API key is")) {
+                System.out.println("Detected new API key, saving it to config");
+                Utils.sendMessage("Saved new API key to config");
+                String apiKey = message.replace("Your new API key is ", "");
+                ConfigUtils.writeStringConfig("main", "APIKey", apiKey);
             }
         }
     }
