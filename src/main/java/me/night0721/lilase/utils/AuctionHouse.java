@@ -1,5 +1,6 @@
 package me.night0721.lilase.utils;
 
+import me.night0721.lilase.features.ah.States;
 import net.minecraft.client.Minecraft;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,7 +25,7 @@ public class AuctionHouse {
     private static String uuid;
     private static String message_toSend;
     private static long lastAction;
-    private Thread thread;
+    private static Thread thread;
     private Boolean open = false;
     private final DiscordWebhook webhook;
     private final List<Item> items = new ArrayList<>();
@@ -117,8 +118,6 @@ public class AuctionHouse {
                     Pattern pattern = Pattern.compile("§[0-9a-z]", Pattern.MULTILINE);
                     Matcher matcher = pattern.matcher(auction.getString("item_lore"));
                     String updated = matcher.replaceAll("");
-                    System.out.println(updated);
-
                     webhook.addEmbed(
                             new DiscordWebhook.EmbedObject()
                                     .setTitle("Item Is On Low Price")
@@ -205,7 +204,6 @@ public class AuctionHouse {
             open = true;
         }
     }
-
     public static void switchStates() {
         switch (clickState) {
             case CLICK:
@@ -223,15 +221,14 @@ public class AuctionHouse {
                 AuctionHouse.sendAuction();
                 lastAction = System.currentTimeMillis();
                 clickState = States.CLICK;
+            case STOP:
+                thread = null;
             case NONE:
                 break;
         }
     }
 }
 
-enum States {
-    OPEN, NONE, CLICK, CONFIRM
-}
 
 enum ItemTier {
     ANY, COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, MYTHIC, DIVINE, SPECIAL, VERY_SPECIAL,

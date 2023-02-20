@@ -143,7 +143,6 @@ public class DiscordWebhook {
         connection.addRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11");
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
-        System.out.println(json);
         OutputStream stream = connection.getOutputStream();
         stream.write(json.toString().getBytes(StandardCharsets.UTF_8));
         stream.flush();

@@ -2,6 +2,7 @@ package me.night0721.lilase;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.night0721.lilase.events.PacketReceivedEvent;
+import me.night0721.lilase.features.ah.States;
 import me.night0721.lilase.utils.AuctionHouse;
 import me.night0721.lilase.utils.ConfigUtils;
 import me.night0721.lilase.utils.Utils;
@@ -76,7 +77,11 @@ public class Main {
         String message = event.message.getUnformattedText();
         if (!message.contains(":")) {
             if (message.equals("You didn't participate in this auction!")) {
-                System.out.println("Failed to buy item, closing the menu");
+                System.out.println("Failed to buy item, not fast enough. Closing the menu");
+                mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, 49, 0, 0, mc.thePlayer); // Close the window as could not buy
+            } else if (message.equals("You don't have enough coins to afford this bid!")) {
+                System.out.println("Failed to buy item, not enough money. Closing the menu");
+                AuctionHouse.clickState = States.STOP;
                 mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, 49, 0, 0, mc.thePlayer); // Close the window as could not buy
             }
         }
