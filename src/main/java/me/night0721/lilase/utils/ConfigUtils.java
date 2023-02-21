@@ -8,7 +8,10 @@ import java.io.File;
 public class ConfigUtils {
     public static Configuration config;
     public final static String file = "config/Lilase.cfg";
-
+    public static void register() {
+        init();
+        reloadConfig();
+    }
     public static void reloadConfig() {
         if (!hasKey("main", "APIKey")) writeStringConfig("main", "APIKey", "");
         if (!hasKey("main", "Webhook")) writeStringConfig("main", "Webhook", "");

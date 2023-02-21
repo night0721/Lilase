@@ -34,12 +34,11 @@ public class Lilase {
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new KeyBindingManager());
-        MinecraftForge.EVENT_BUS.register(new EventManager());
+        MinecraftForge.EVENT_BUS.register(new me.night0721.lilase.managers.EventManager());
         EventManager.INSTANCE.register(this);
+        ConfigUtils.register();
         auctionHouse = new AuctionHouse();
         KeyBindingManager.registerKeyBindings();
-        ConfigUtils.init();
-        ConfigUtils.reloadConfig();
     }
 
     @Subscribe
