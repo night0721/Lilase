@@ -10,7 +10,6 @@ import java.util.List;
 public class Utils {
 
     public static boolean inDungeon;
-    public static boolean inHub;
 
     public static String translateAlternateColorCodes(String text) {
         char[] b = text.toCharArray();
@@ -43,16 +42,21 @@ public class Utils {
         inDungeon = false;
     }
 
-    public static void checkInHub() {
+    public static boolean checkInHub() {
         List<String> scoreboard = ScoreboardUtils.getSidebarLines();
         for (String s : scoreboard) {
             String sCleaned = ScoreboardUtils.cleanSB(s);
-            if (sCleaned.contains("Forest") || sCleaned.contains("Village") || sCleaned.contains("Farm") || sCleaned.contains("Mountain") || sCleaned.contains("Wilderness") || sCleaned.contains("Community Center") || sCleaned.contains("Graveyard")) {
-                inHub = true;
-                return;
-            }
+            return sCleaned.contains("Forest") ||
+                    sCleaned.contains("Village") ||
+                    sCleaned.contains("Farm") ||
+                    sCleaned.contains("Mountain") ||
+                    sCleaned.contains("Wilderness") ||
+                    sCleaned.contains("Community") ||
+                    sCleaned.contains("Graveyard") ||
+                    sCleaned.contains("Bazaar") ||
+                    sCleaned.contains("Auction");
         }
-        inDungeon = true;
+        return false;
     }
 
     public static void sendMessage(String message) {

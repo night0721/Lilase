@@ -27,7 +27,6 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 
 @Mod(modid = Main.MODID, name = Main.MOD_NAME, version = Main.VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Main {
@@ -83,11 +82,6 @@ public class Main {
 
         if (tickAmount % 20 == 0) {
             Utils.checkForDungeon();
-            if (!Objects.equals(AHConfig.WEBHOOK, ConfigUtils.getString("main", "Webhook"))) {
-                ConfigUtils.writeStringConfig("main", "Webhook", AHConfig.WEBHOOK);
-            } else if (!Objects.equals(AHConfig.AUCTION_HOUSE_DELAY, ConfigUtils.getInt("main", "AuctionHouseDelay"))) {
-                ConfigUtils.writeIntConfig("main", "AuctionHouseDelay", Math.round(AHConfig.AUCTION_HOUSE_DELAY));
-            }
         }
         AuctionHouse.switchStates();
     }

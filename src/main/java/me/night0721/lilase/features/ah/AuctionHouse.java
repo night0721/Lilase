@@ -196,18 +196,22 @@ public class AuctionHouse {
             items.clear();
             open = false;
         } else {
-            Utils.sendMessage("Started Auction House");
-            thread = new Thread(() -> {
-                while (true) {
-                    try {
-                        getItem();
-                        thread.sleep(TimeUnit.SECONDS.toMillis(ConfigUtils.getInt("main", "AuctionHouseDelay")));
-                    } catch (IOException | JSONException | InterruptedException ignore) {
+            if (Utils.checkInHub()) {
+                Utils.sendMessage("Started Auction House");
+                thread = new Thread(() -> {
+                    while (true) {
+                        try {
+                            getItem();
+                            thread.sleep(TimeUnit.SECONDS.toMillis(ConfigUtils.getInt("main", "AuctionHouseDelay")));
+                        } catch (IOException | JSONException | InterruptedException ignore) {
+                        }
                     }
-                }
-            });
-            thread.start();
-            open = true;
+                });
+                thread.start();
+                open = true;
+            } else {
+                Utils.sendMessage("Detected not in hub, please go to hub to start");
+            }
         }
     }
     public static void switchStates() {
