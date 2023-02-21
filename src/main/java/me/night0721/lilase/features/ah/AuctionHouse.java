@@ -72,6 +72,7 @@ public class AuctionHouse {
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
         int status = connection.getResponseCode();
+        if (status != 200) return;
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
         StringBuilder content = new StringBuilder();
@@ -80,7 +81,7 @@ public class AuctionHouse {
         }
         in.close();
         connection.disconnect();
-        if (status != 200) return;
+
         JSONObject data = new JSONObject(content.toString());
         JSONArray auctions = data.getJSONArray("auctions");
         for (int i = 0; i < auctions.length(); i++) {
