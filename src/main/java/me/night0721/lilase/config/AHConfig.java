@@ -6,7 +6,7 @@ import cc.polyfrost.oneconfig.config.annotations.Slider;
 import cc.polyfrost.oneconfig.config.annotations.Text;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
-import me.night0721.lilase.gui.ConfigGUI;
+import me.night0721.lilase.gui.CoordinateGUI;
 import me.night0721.lilase.utils.ConfigUtils;
 
 public class AHConfig extends Config {
@@ -18,7 +18,8 @@ public class AHConfig extends Config {
     }
 
     @HUD(name = "Lilase")
-    public ConfigGUI hud = new ConfigGUI();
+    public CoordinateGUI hud = new CoordinateGUI();
+
 
     @Slider(name = "Time per fetch (seconds)", min = 5, max = 15, step = 1)
     public static int AUCTION_HOUSE_DELAY = 5;

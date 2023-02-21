@@ -5,9 +5,9 @@ import me.night0721.lilase.utils.PlayerUtils;
 
 import java.util.List;
 
-public class ConfigGUI extends TextHud {
+public class CoordinateGUI extends TextHud {
 
-    public ConfigGUI() {
+    public CoordinateGUI() {
         super(true, 0, 0);
     }
     @Override
@@ -17,6 +17,5 @@ public class ConfigGUI extends TextHud {
         lines.add("Y: " + Math.round(PlayerUtils.mc.thePlayer.posY));
         lines.add("Z: " + Math.round(PlayerUtils.mc.thePlayer.posZ));
         // get the time in real life and format it to xx:xx, eg 23:54
-
     }
 }

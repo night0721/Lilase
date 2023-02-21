@@ -21,7 +21,7 @@ apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "org.spongepowered.mixin"
 
-version = "1.0.0"
+version = "1.0.1-beta"
 group = "me.night0721.lilase"
 archivesBaseName = "Lilase"
 sourceCompatibility = 1.8
@@ -36,7 +36,7 @@ minecraft {
 
     replace "@VERSION@": project.version
 
-    clientRunArgs += ["--tweakClass gg.essential.loader.stage0.EssentialSetupTweaker cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker", "--mixin mixins.night0721.json"]
+    clientRunArgs += ["--tweakClass cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker", "--mixin mixins.night0721.json"]
 }
 
 configurations {

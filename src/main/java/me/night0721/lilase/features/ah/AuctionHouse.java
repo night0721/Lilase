@@ -36,10 +36,17 @@ public class AuctionHouse {
     public static States clickState = States.NONE;
 
     public AuctionHouse() {
-        // items.add(new Item("Livid Dagger", ItemType.WEAPON, 8000000, ItemTier.LEGENDARY));
-        // items.add(new Item("Aspect of the Void", ItemType.WEAPON, 8000000, ItemTier.EPIC));
-        // items.add(new Item("Bal", ItemType.MISC, 10000000, ItemTier.EPIC));
-        items.add(new Item(" ", ItemType.ANY, 1000, ItemTier.ANY));
+//         items.add(new Item("Livid Dagger", ItemType.WEAPON, 8000000, ItemTier.LEGENDARY));
+//         items.add(new Item("Aspect of the Void", ItemType.WEAPON, 8000000, ItemTier.EPIC));
+//         items.add(new Item("Bal", ItemType.MISC, 10000000, ItemTier.EPIC));
+//        items.add(new Item(" ", ItemType.ANY, 1000, ItemTier.ANY));
+        if (ConfigUtils.getString("item1", "Name") != "")
+            items.add(new Item(ConfigUtils.getString("item1", "Name"), ItemType.valueOf(ConfigUtils.getString("item1", "Type")), ConfigUtils.getInt("item1", "Price"), ItemTier.valueOf(ConfigUtils.getString("item1", "Tier"))));
+        if (ConfigUtils.getString("item2", "Name") != "")
+            items.add(new Item(ConfigUtils.getString("item2", "Name"), ItemType.valueOf(ConfigUtils.getString("item2", "Type")), ConfigUtils.getInt("item2", "Price"), ItemTier.valueOf(ConfigUtils.getString("item2", "Tier"))));
+        if (ConfigUtils.getString("item3", "Name") != "")
+            items.add(new Item(ConfigUtils.getString("item3", "Name"), ItemType.valueOf(ConfigUtils.getString("item3", "Type")), ConfigUtils.getInt("item3", "Price"), ItemTier.valueOf(ConfigUtils.getString("item3", "Tier"))));
+
         webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
         webhook.setUsername("Lilase - Auction House");
         webhook.setAvatarUrl("https://wallpapercave.com/wp/wp2412537.jpg");
