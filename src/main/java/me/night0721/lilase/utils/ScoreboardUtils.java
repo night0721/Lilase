@@ -2,7 +2,6 @@ package me.night0721.lilase.utils;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import net.minecraft.client.Minecraft;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
@@ -38,18 +37,15 @@ public class ScoreboardUtils {
 
     public static List<String> getSidebarLines() {
         List<String> lines = new ArrayList<>();
-        if (Minecraft.getMinecraft().theWorld == null) return lines;
-        Scoreboard scoreboard = Minecraft.getMinecraft().theWorld.getScoreboard();
+        if (PlayerUtils.mc.theWorld == null) return lines;
+        Scoreboard scoreboard = PlayerUtils.mc.theWorld.getScoreboard();
         if (scoreboard == null) return lines;
 
         ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(1);
         if (objective == null) return lines;
 
         Collection<Score> scores = scoreboard.getSortedScores(objective);
-        List<Score> list = scores.stream()
-                .filter(input -> input != null && input.getPlayerName() != null && !input.getPlayerName()
-                        .startsWith("#"))
-                .collect(Collectors.toList());
+        List<Score> list = scores.stream().filter(input -> input != null && input.getPlayerName() != null && !input.getPlayerName().startsWith("#")).collect(Collectors.toList());
 
         if (list.size() > 15) {
             scores = Lists.newArrayList(Iterables.skip(list, scores.size() - 15));

@@ -1,6 +1,5 @@
 package me.night0721.lilase.utils;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.S45PacketTitle;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -25,9 +24,8 @@ public class Utils {
     public static void addTitle(String title) {
         S45PacketTitle p1 = new S45PacketTitle(0, 20, 0);
         S45PacketTitle p2 = new S45PacketTitle(S45PacketTitle.Type.TITLE, new ChatComponentText(Utils.translateAlternateColorCodes(title)));
-        Minecraft.getMinecraft().thePlayer.sendQueue.handleTitle(p1);
-        Minecraft.getMinecraft().thePlayer.sendQueue.handleTitle(p2);
-        Minecraft.getMinecraft().thePlayer.playSound("spidey:sbesound", 1, 1);
+        PlayerUtils.mc.thePlayer.sendQueue.handleTitle(p1);
+        PlayerUtils.mc.thePlayer.sendQueue.handleTitle(p2);
     }
 
     public static void checkForDungeon() {
@@ -46,24 +44,16 @@ public class Utils {
         List<String> scoreboard = ScoreboardUtils.getSidebarLines();
         for (String s : scoreboard) {
             String sCleaned = ScoreboardUtils.cleanSB(s);
-            return sCleaned.contains("Forest") ||
-                    sCleaned.contains("Village") ||
-                    sCleaned.contains("Farm") ||
-                    sCleaned.contains("Mountain") ||
-                    sCleaned.contains("Wilderness") ||
-                    sCleaned.contains("Community") ||
-                    sCleaned.contains("Graveyard") ||
-                    sCleaned.contains("Bazaar") ||
-                    sCleaned.contains("Auction");
+            return sCleaned.contains("Forest") || sCleaned.contains("Village") || sCleaned.contains("Farm") || sCleaned.contains("Mountain") || sCleaned.contains("Wilderness") || sCleaned.contains("Community") || sCleaned.contains("Graveyard") || sCleaned.contains("Bazaar") || sCleaned.contains("Auction");
         }
         return false;
     }
 
     public static void sendMessage(String message) {
-        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + EnumChatFormatting.BOLD + "Liliase" + EnumChatFormatting.RESET + EnumChatFormatting.DARK_GRAY + " » " + EnumChatFormatting.RESET + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + message));
+        PlayerUtils.mc.thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + EnumChatFormatting.BOLD + "Liliase" + EnumChatFormatting.RESET + EnumChatFormatting.DARK_GRAY + " » " + EnumChatFormatting.RESET + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + message));
     }
 
     public static void sendServerMessage(String message) {
-        Minecraft.getMinecraft().thePlayer.sendChatMessage(message);
+        PlayerUtils.mc.thePlayer.sendChatMessage(message);
     }
 }

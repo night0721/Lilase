@@ -1,10 +1,9 @@
 package me.night0721.lilase.features.ah;
 
-import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.utils.ConfigUtils;
 import me.night0721.lilase.utils.DiscordWebhook;
+import me.night0721.lilase.utils.PlayerUtils;
 import me.night0721.lilase.utils.Utils;
-import net.minecraft.client.Minecraft;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -123,19 +122,7 @@ public class AuctionHouse {
                     Pattern pattern = Pattern.compile("§[0-9a-z]", Pattern.MULTILINE);
                     Matcher matcher = pattern.matcher(auction.getString("item_lore"));
                     String updated = matcher.replaceAll("");
-                    webhook.addEmbed(
-                            new DiscordWebhook.EmbedObject()
-                                    .setTitle("Item Is On Low Price")
-                                    .setAuthor("night0721", "https://github.com/night0721", "https://avatars.githubusercontent.com/u/77528305?v=4")
-                                    .setDescription(updated.replace("\n", "\\n"))
-                                    .addField("Item", auction.getString("item_name"), true)
-                                    .addField("Price", format.format(auction.getInt("starting_bid")) + " coins", true)
-                                    .addField("Seller", profile.getJSONObject("player").getString("displayname"), true)
-                                    .addField("Started for", toDuration(System.currentTimeMillis() - auction.getLong("start")), true)
-                                    .addField("Ends in", getTimeSinceDate(auction.getLong("end") - System.currentTimeMillis()), true)
-                                    .setUrl("https://www.brandonfowler.me/skyblockah/?uuid=" + auction.getString("uuid"))
-                                    .setColor(Color.decode("#003153"))
-                    );
+                    webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Item Is On Low Price").setAuthor("night0721", "https://github.com/night0721", "https://avatars.githubusercontent.com/u/77528305?v=4").setDescription(updated.replace("\n", "\\n")).addField("Item", auction.getString("item_name"), true).addField("Price", format.format(auction.getInt("starting_bid")) + " coins", true).addField("Seller", profile.getJSONObject("player").getString("displayname"), true).addField("Started for", toDuration(System.currentTimeMillis() - auction.getLong("start")), true).addField("Ends in", getTimeSinceDate(auction.getLong("end") - System.currentTimeMillis()), true).setUrl("https://www.brandonfowler.me/skyblockah/?uuid=" + auction.getString("uuid")).setColor(Color.decode("#003153")));
                     webhook.setContent(auction.getString("item_name") + " is sale at " + format.format(auction.getInt("starting_bid")) + "!   `" + "/viewauction " + auction.getString("uuid") + "`");
                     new Thread(() -> {
                         try {
@@ -214,17 +201,18 @@ public class AuctionHouse {
             }
         }
     }
+
     public static void switchStates() {
         switch (clickState) {
             case CLICK:
                 if (System.currentTimeMillis() - lastAction < 500) return;
-                Minecraft.getMinecraft().playerController.windowClick(Minecraft.getMinecraft().thePlayer.openContainer.windowId, 31, 0, 0, Minecraft.getMinecraft().thePlayer);
+                PlayerUtils.mc.playerController.windowClick(PlayerUtils.mc.thePlayer.openContainer.windowId, 31, 0, 0, PlayerUtils.mc.thePlayer);
                 lastAction = System.currentTimeMillis();
                 clickState = States.CONFIRM;
                 break;
             case CONFIRM:
                 if (System.currentTimeMillis() - lastAction < 500) return;
-                Minecraft.getMinecraft().playerController.windowClick(Minecraft.getMinecraft().thePlayer.openContainer.windowId, 11, 0, 0, Minecraft.getMinecraft().thePlayer);
+                PlayerUtils.mc.playerController.windowClick(PlayerUtils.mc.thePlayer.openContainer.windowId, 11, 0, 0, PlayerUtils.mc.thePlayer);
                 clickState = States.NONE;
                 break;
             case OPEN:
