@@ -29,7 +29,7 @@ public class AuctionHouse {
     private static long lastAction;
     private static Thread thread;
     private Boolean open = false;
-    private final DiscordWebhook webhook;
+    private static final DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
     private final List<Item> items = new ArrayList<>();
     private final List<Item> temp_items = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
@@ -40,14 +40,14 @@ public class AuctionHouse {
 //         items.add(new Item("Aspect of the Void", ItemType.WEAPON, 8000000, ItemTier.EPIC));
 //         items.add(new Item("Bal", ItemType.MISC, 10000000, ItemTier.EPIC));
 //        items.add(new Item(" ", ItemType.ANY, 1000, ItemTier.ANY));
-        if (ConfigUtils.getString("item1", "Name") != "")
+
+        if (!ConfigUtils.getString("item1", "Name").equals("") && !ConfigUtils.getString("item1", "Type").equals("") && !ConfigUtils.getString("item1", "Tier").equals("") && ConfigUtils.getInt("item1", "Price") != 0)
             items.add(new Item(ConfigUtils.getString("item1", "Name"), ItemType.valueOf(ConfigUtils.getString("item1", "Type")), ConfigUtils.getInt("item1", "Price"), ItemTier.valueOf(ConfigUtils.getString("item1", "Tier"))));
-        if (ConfigUtils.getString("item2", "Name") != "")
+        if (!ConfigUtils.getString("item2", "Name").equals("") && !ConfigUtils.getString("item2", "Type").equals("") && !ConfigUtils.getString("item2", "Tier").equals("") && ConfigUtils.getInt("item2", "Price") != 0)
             items.add(new Item(ConfigUtils.getString("item2", "Name"), ItemType.valueOf(ConfigUtils.getString("item2", "Type")), ConfigUtils.getInt("item2", "Price"), ItemTier.valueOf(ConfigUtils.getString("item2", "Tier"))));
-        if (ConfigUtils.getString("item3", "Name") != "")
+        if (!ConfigUtils.getString("item3", "Name").equals("") && !ConfigUtils.getString("item3", "Type").equals("") && !ConfigUtils.getString("item3", "Tier").equals("") && ConfigUtils.getInt("item3", "Price") != 0)
             items.add(new Item(ConfigUtils.getString("item3", "Name"), ItemType.valueOf(ConfigUtils.getString("item3", "Type")), ConfigUtils.getInt("item3", "Price"), ItemTier.valueOf(ConfigUtils.getString("item3", "Tier"))));
 
-        webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
         webhook.setUsername("Lilase - Auction House");
         webhook.setAvatarUrl("https://wallpapercave.com/wp/wp2412537.jpg");
     }
@@ -71,7 +71,17 @@ public class AuctionHouse {
     }
 
     private void getItem() throws IOException, JSONException {
-        if (items.size() == 0) return;
+        if (ConfigUtils.getString("main", "APIKey").equals("") || ConfigUtils.getString("main", "Webhook").equals("")) {
+            Utils.sendMessage("Missing APIKey or Webhook, stopping");
+            toggleAuction();
+            return;
+        }
+        if (items.size() == 0 && open == false) return;
+        if (items.size() == 0) {
+            Utils.sendMessage("No Item queued, stopping");
+            toggleAuction();
+            return;
+        }
         URL url = new URL("https://api.hypixel.net/skyblock/auctions");
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
@@ -130,15 +140,9 @@ public class AuctionHouse {
                     Pattern pattern = Pattern.compile("§[0-9a-z]", Pattern.MULTILINE);
                     Matcher matcher = pattern.matcher(auction.getString("item_lore"));
                     String updated = matcher.replaceAll("");
-                    webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Item Is On Low Price").setAuthor("night0721", "https://github.com/night0721", "https://avatars.githubusercontent.com/u/77528305?v=4").setDescription(updated.replace("\n", "\\n")).addField("Item", auction.getString("item_name"), true).addField("Price", format.format(auction.getInt("starting_bid")) + " coins", true).addField("Seller", profile.getJSONObject("player").getString("displayname"), true).addField("Started for", toDuration(System.currentTimeMillis() - auction.getLong("start")), true).addField("Ends in", getTimeSinceDate(auction.getLong("end") - System.currentTimeMillis()), true).setUrl("https://www.brandonfowler.me/skyblockah/?uuid=" + auction.getString("uuid")).setColor(Color.decode("#003153")));
+                    webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Bought an item on low price").setUrl("https://sky.coflnet.com/auction/" + auction.getString("uuid")).setAuthor("night0721", "https://github.com/night0721", "https://avatars.githubusercontent.com/u/77528305?v=4").setDescription(updated.replace("\n", "\\n")).addField("Item", auction.getString("item_name"), true).addField("Price", format.format(auction.getInt("starting_bid")) + " coins", true).addField("Seller", profile.getJSONObject("player").getString("displayname"), true).addField("Started for", toDuration(System.currentTimeMillis() - auction.getLong("start")), true).addField("Ends in", getTimeSinceDate(auction.getLong("end") - System.currentTimeMillis()), true).setColor(Color.decode("#003153")));
                     webhook.setContent(auction.getString("item_name") + " is sale at " + format.format(auction.getInt("starting_bid")) + "!   `" + "/viewauction " + auction.getString("uuid") + "`");
-                    new Thread(() -> {
-                        try {
-                            webhook.execute();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }).start();
+
                     uuid = auction.getString("uuid");
                     message_toSend = "Auction House: " + auction.getString("item_name") + " is sale for " + format.format(auction.getInt("starting_bid")) + "!";
                     clickState = States.OPEN;
@@ -187,12 +191,13 @@ public class AuctionHouse {
     public void toggleAuction() {
         if (open) {
             Utils.sendMessage("Stopped Auction House");
-            items.forEach(item -> temp_items.add(item));
+            temp_items.addAll(items);
             items.clear();
             open = false;
         } else {
             if (Utils.checkInHub()) {
                 Utils.sendMessage("Started Auction House");
+                items.addAll(temp_items);
                 thread = new Thread(() -> {
                     while (true) {
                         try {
@@ -204,9 +209,7 @@ public class AuctionHouse {
                 });
                 thread.start();
                 open = true;
-            } else {
-                Utils.sendMessage("Detected not in hub, please go to hub to start");
-            }
+            } else Utils.sendMessage("Detected not in hub, please go to hub to start");
         }
     }
 
@@ -221,14 +224,24 @@ public class AuctionHouse {
             case CONFIRM:
                 if (System.currentTimeMillis() - lastAction < 500) return;
                 PlayerUtils.mc.playerController.windowClick(PlayerUtils.mc.thePlayer.openContainer.windowId, 11, 0, 0, PlayerUtils.mc.thePlayer);
+                lastAction = System.currentTimeMillis();
                 clickState = States.NONE;
                 break;
             case OPEN:
                 AuctionHouse.sendAuction();
                 lastAction = System.currentTimeMillis();
                 clickState = States.CLICK;
-            case STOP:
-                thread = null;
+                break;
+            case EXECUTE:
+                new Thread(() -> {
+                    try {
+                        webhook.execute();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+                clickState = States.NONE;
+                break;
             case NONE:
                 break;
         }
@@ -237,12 +250,12 @@ public class AuctionHouse {
 
 
 enum ItemTier {
-    ANY, COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, MYTHIC, DIVINE, SPECIAL, VERY_SPECIAL,
+    ANY, COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, MYTHIC, DIVINE, SPECIAL, VERY_SPECIAL
 }
 
 enum ItemType {
-    ANY("any"), WEAPON("weapon"), ARMOR("armor"), ACCESSORIES("accessories"), CONSUMABLES("consumables"), BLOCKS("blocks"), MISC("misc"),
-    ;
+    ANY("any"), WEAPON("weapon"), ARMOR("armor"), ACCESSORIES("accessories"), CONSUMABLES("consumables"), BLOCKS("blocks"), MISC("misc");
+
     public final String lowercase;
 
     public String getLowercase() {

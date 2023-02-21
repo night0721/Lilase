@@ -14,6 +14,21 @@ public class ConfigUtils {
         reloadConfig();
     }
 
+    public static void checkWebhookAndAPI() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(120000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (getString("main", "APIKey").equals("") || getString("main", "Webhook").equals("")) {
+                    Utils.sendMessage("API Key or Webhook is not set, please set it in the menu (Press *)");
+                }
+            }
+        }).start();
+    }
+
     public static void reloadConfig() {
         if (!hasKey("main", "APIKey")) writeStringConfig("main", "APIKey", "");
         if (!hasKey("main", "Webhook")) writeStringConfig("main", "Webhook", "");

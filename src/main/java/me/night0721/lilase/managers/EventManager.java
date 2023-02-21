@@ -18,13 +18,17 @@ public class EventManager {
                 PlayerUtils.mc.playerController.windowClick(PlayerUtils.mc.thePlayer.openContainer.windowId, 49, 0, 0, PlayerUtils.mc.thePlayer); // Close the window as could not buy
             } else if (message.equals("You don't have enough coins to afford this bid!")) {
                 System.out.println("Failed to buy item, not enough money. Closing the menu");
-                AuctionHouse.clickState = States.STOP;
+                AuctionHouse.clickState = States.NONE;
                 PlayerUtils.mc.playerController.windowClick(PlayerUtils.mc.thePlayer.openContainer.windowId, 49, 0, 0, PlayerUtils.mc.thePlayer); // Close the window as could not buy
             } else if (message.contains("Your new API key is")) {
                 System.out.println("Detected new API key, saving it to config");
                 Utils.sendMessage("Saved new API key to config");
                 String apiKey = message.replace("Your new API key is ", "");
                 ConfigUtils.writeStringConfig("main", "APIKey", apiKey);
+            } else if (message.equals("Claiming BIN auction...")) {
+                AuctionHouse.clickState = States.EXECUTE;
+            } else if (message.equals("This BIN sale is still in its grace period!")) {
+                AuctionHouse.clickState = States.CLICK;
             }
         }
     }
