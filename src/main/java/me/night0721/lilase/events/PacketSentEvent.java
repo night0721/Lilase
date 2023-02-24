@@ -1,7 +1,8 @@
 package me.night0721.lilase.events;
 
-import net.minecraftforge.fml.common.eventhandler.*;
-import net.minecraft.network.*;
+import net.minecraft.network.Packet;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 @Cancelable
 public class PacketSentEvent extends Event {
@@ -10,5 +11,4 @@ public class PacketSentEvent extends Event {
     public PacketSentEvent(Packet<?> packet) {
         this.packet = packet;
     }
-
 }

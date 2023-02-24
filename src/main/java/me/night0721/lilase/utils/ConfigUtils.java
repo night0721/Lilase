@@ -15,24 +15,17 @@ public class ConfigUtils {
     }
 
     public static void checkWebhookAndAPI() {
-        new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(120000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (getString("main", "APIKey").equals("") || getString("main", "Webhook").equals("")) {
-                    Utils.sendMessage("API Key or Webhook is not set, please set it in the menu (Press *)");
-                }
-            }
-        }).start();
+        if (getString("main", "APIKey").equals("") || getString("main", "Webhook").equals("")) {
+            Utils.sendMessage("API Key or Webhook is not set, please set it in the menu (Press *)");
+        }
     }
 
     public static void reloadConfig() {
         if (!hasKey("main", "APIKey")) writeStringConfig("main", "APIKey", "");
         if (!hasKey("main", "Webhook")) writeStringConfig("main", "Webhook", "");
         if (!hasKey("main", "AuctionHouseDelay")) writeIntConfig("main", "AuctionHouseDelay", 8);
+        if (!hasKey("main", "checkMultiplierBeforeBuy")) writeBooleanConfig("main", "checkMultiplierBeforeBuy", false);
+        if (!hasKey("main", "Multiplier")) writeIntConfig("main", "Multiplier", 400); //400%
         if (!hasKey("item1", "Name")) writeStringConfig("item1", "Name", "");
         if (!hasKey("item1", "Type")) writeStringConfig("item1", "Type", "");
         if (!hasKey("item1", "Price")) writeIntConfig("item1", "Price", 0);

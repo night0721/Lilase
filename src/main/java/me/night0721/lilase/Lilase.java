@@ -7,7 +7,9 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.events.PacketReceivedEvent;
 import me.night0721.lilase.features.ah.AuctionHouse;
+import me.night0721.lilase.features.flip.Flipper;
 import me.night0721.lilase.managers.KeyBindingManager;
+import me.night0721.lilase.managers.SniperFlipperEvents;
 import me.night0721.lilase.utils.ConfigUtils;
 import me.night0721.lilase.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -18,12 +20,17 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.opengl.Display;
+
+import java.io.IOException;
+
+import static me.night0721.lilase.config.AHConfig.AUCTION_HOUSE_DELAY;
 
 @Mod(modid = Lilase.MODID, name = Lilase.MOD_NAME, version = Lilase.VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "1.0.1-beta";
+    public static final String VERSION = "1.0.2";
     static int tickAmount;
     public static AuctionHouse auctionHouse;
     public static AHConfig config;
@@ -34,12 +41,12 @@ public class Lilase {
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new KeyBindingManager());
-        MinecraftForge.EVENT_BUS.register(new me.night0721.lilase.managers.EventManager());
+        MinecraftForge.EVENT_BUS.register(new SniperFlipperEvents());
         EventManager.INSTANCE.register(this);
         ConfigUtils.register();
         auctionHouse = new AuctionHouse();
         KeyBindingManager.registerKeyBindings();
-        ConfigUtils.checkWebhookAndAPI();
+        Display.setTitle("Lilase v" + VERSION);
     }
 
     @Subscribe
@@ -48,13 +55,20 @@ public class Lilase {
     }
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
+    public void onTick(TickEvent.ClientTickEvent event) throws IOException {
         if (mc.thePlayer == null || event.phase != TickEvent.Phase.START) return;
         tickAmount++;
         if (tickAmount % 20 == 0) {
             Utils.checkForDungeon();
         }
+        if (tickAmount % (20 * AUCTION_HOUSE_DELAY) == 0) {
+            auctionHouse.getItem();
+        }
+        if (tickAmount % 2400 == 0) {
+            ConfigUtils.checkWebhookAndAPI();
+        }
         AuctionHouse.switchStates();
+        Flipper.switchStates();
     }
 
     @SubscribeEvent

@@ -9,7 +9,7 @@ import java.util.List;
 public class Utils {
 
     public static boolean inDungeon;
-    public static boolean inHub;
+    public static boolean inHub = false;
 
     public static String translateAlternateColorCodes(String text) {
         char[] b = text.toCharArray();
@@ -53,6 +53,10 @@ public class Utils {
 
     public static void sendMessage(String message) {
         PlayerUtils.mc.thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + EnumChatFormatting.BOLD + "Liliase" + EnumChatFormatting.RESET + EnumChatFormatting.DARK_GRAY + " » " + EnumChatFormatting.RESET + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + message));
+    }
+
+    public static void debugLog(String message) {
+        PlayerUtils.mc.thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + "Liliase" + EnumChatFormatting.RESET + EnumChatFormatting.DARK_GRAY + " » " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + message));
     }
 
     public static void sendServerMessage(String message) {

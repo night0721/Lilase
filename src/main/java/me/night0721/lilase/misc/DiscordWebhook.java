@@ -1,4 +1,4 @@
-package me.night0721.lilase.utils;
+package me.night0721.lilase.misc;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.*;
