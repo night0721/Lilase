@@ -78,4 +78,14 @@ public class Lilase {
             mc.getNetHandler().getNetworkManager().sendPacket(new C0DPacketCloseWindow(((S2DPacketOpenWindow) event.packet).getWindowId()));
         }
     }
+    /*
+    TODO: Priority on buying
+    TODO: Console client??
+    TODO: Page flipper
+    TODO: Percentage calculator
+    TODO: Blacklist
+    TODO: Wither Impact in lore check
+    TODO: Blue omelette in lore check
+    TODO: Discord Embed improve, tell profit and profit percentage
+     */
 }
