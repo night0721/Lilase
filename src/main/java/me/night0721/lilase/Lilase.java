@@ -4,13 +4,12 @@ import cc.polyfrost.oneconfig.events.EventManager;
 import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
 import com.mojang.realmsclient.gui.ChatFormatting;
-import me.night0721.lilase.features.ah.AHConfig;
 import me.night0721.lilase.events.PacketReceivedEvent;
-import me.night0721.lilase.features.ah.AuctionHouse;
-import me.night0721.lilase.features.flip.Flipper;
-import me.night0721.lilase.utils.KeyBindingManager;
 import me.night0721.lilase.events.SniperFlipperEvents;
+import me.night0721.lilase.features.ah.AHConfig;
+import me.night0721.lilase.features.ah.AuctionHouse;
 import me.night0721.lilase.utils.ConfigUtils;
+import me.night0721.lilase.utils.KeyBindingManager;
 import me.night0721.lilase.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
@@ -25,7 +24,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.opengl.Display;
 
 import java.io.IOException;
 
@@ -45,14 +43,14 @@ public class Lilase {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        KeyBindingManager keyBindingManager = new KeyBindingManager();
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new KeyBindingManager());
+        MinecraftForge.EVENT_BUS.register(keyBindingManager);
         MinecraftForge.EVENT_BUS.register(new SniperFlipperEvents());
         EventManager.INSTANCE.register(this);
         ConfigUtils.register();
         auctionHouse = new AuctionHouse();
-        KeyBindingManager.registerKeyBindings();
-        Display.setTitle("Lilase v" + VERSION + " | night0721");
+        keyBindingManager.registerKeyBindings();
     }
 
     @Subscribe

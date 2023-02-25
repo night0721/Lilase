@@ -193,7 +193,7 @@ public class SniperFlipperEvents {
     }
 
     @SubscribeEvent
-    public void onWindowClick(PacketReceivedEvent event) {
+    public void onPacketReceive(PacketReceivedEvent event) {
         if (event.packet instanceof S33PacketUpdateSign && Utils.checkInHub() && Flipper.state.equals(START)) {
             new Thread(() -> {
                 try {

@@ -202,12 +202,12 @@ public class AuctionHouse {
 
     public void toggleAuction() {
         if (open) {
-            Utils.sendMessage("Stopped Auction House");
+            Utils.sendMessage("Stopped AH Sniper");
             open = false;
             UngrabUtils.regrabMouse();
         } else {
             if (Utils.checkInHub()) {
-                Utils.sendMessage("Started Auction House");
+                Utils.sendMessage("Started AH Sniper");
                 open = true;
                 UngrabUtils.ungrabMouse();
             } else Utils.sendMessage("Detected not in hub, please go to hub to start");

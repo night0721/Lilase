@@ -8,10 +8,10 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 public class KeyBindingManager {
-    private static final KeyBinding[] keyBindings = new KeyBinding[4];
+    private final KeyBinding[] keyBindings = new KeyBinding[2];
 
-    public static void registerKeyBindings() {
-        keyBindings[0] = new KeyBinding("Auction House Toggle", Keyboard.KEY_END, Lilase.MOD_NAME);
+    public void registerKeyBindings() {
+        keyBindings[0] = new KeyBinding("Sniper Toggle", Keyboard.KEY_END, Lilase.MOD_NAME);
         keyBindings[1] = new KeyBinding("Config", Keyboard.KEY_MULTIPLY, Lilase.MOD_NAME);
         for (KeyBinding keyBinding : keyBindings) {
             ClientRegistry.registerKeyBinding(keyBinding);
