@@ -81,7 +81,6 @@ jar {
             "ForceLoadAsMod": true,
             "MixinConfigs": "mixins.night0721.json",
             "ModSide": "CLIENT",
-//            "TweakClass": "gg.essential.loader.stage0.EssentialSetupTweaker",
             "TweakClass": "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker",
             "TweakOrder": "0")
     enabled = false

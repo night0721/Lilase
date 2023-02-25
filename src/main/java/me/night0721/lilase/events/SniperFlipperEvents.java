@@ -1,7 +1,7 @@
 package me.night0721.lilase.events;
 
 import me.night0721.lilase.Lilase;
-import me.night0721.lilase.config.AHConfig;
+import me.night0721.lilase.features.ah.AHConfig;
 import me.night0721.lilase.features.flip.Flipper;
 import me.night0721.lilase.features.flip.FlipperState;
 import me.night0721.lilase.gui.TextRenderer;
@@ -27,17 +27,15 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import static me.night0721.lilase.config.AHConfig.GUI_COLOR;
+import static me.night0721.lilase.features.ah.AHConfig.GUI_COLOR;
 import static me.night0721.lilase.features.ah.AuctionHouse.flipper;
-import static me.night0721.lilase.features.ah.AuctionHouse.webhook;
 import static me.night0721.lilase.features.flip.Flipper.rotation;
 import static me.night0721.lilase.features.flip.FlipperState.START;
 import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 
 public class SniperFlipperEvents {
-    Thread bzchillingthread;
-    private static int windowId = 1;
-    private static boolean buying = false;
+    private int windowId = 1;
+    private boolean buying = false;
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) throws InterruptedException, IOException {
@@ -56,7 +54,7 @@ public class SniperFlipperEvents {
                 ConfigUtils.writeStringConfig("main", "APIKey", apiKey);
             } else if (message.equals("Claiming BIN auction...") && buying) {
                 Utils.debugLog("[Sniper] Bought an item, starting to sell");
-                webhook.execute();
+                Lilase.auctionHouse.webhook.execute();
                 flipper.sellItem();
             } else if (message.equals("Your starting bid must be at least 10 coins!")) {
                 InventoryUtils.clickOpenContainerSlot(13);
@@ -72,10 +70,10 @@ public class SniperFlipperEvents {
             } else if (message.contains("You were spawned in Limbo")) {
                 Utils.sendMessage("Detected in Limbo, stopping everything for 5 minutes");
                 Flipper.state = FlipperState.NONE;
-                if (Lilase.auctionHouse.open) Lilase.auctionHouse.toggleAuction();
+                if (Lilase.auctionHouse.getOpen()) Lilase.auctionHouse.toggleAuction();
                 Thread.sleep(5000);
                 Utils.sendServerMessage("/hub");
-                bzchillingthread = new Thread(bazaarChilling);
+                Thread bzchillingthread = new Thread(bazaarChilling);
                 bzchillingthread.start();
             }
         }
@@ -161,7 +159,12 @@ public class SniperFlipperEvents {
                 int hour = cal.get(Calendar.HOUR_OF_DAY);
                 int minute = cal.get(Calendar.MINUTE);
                 String time = String.format("%02d:%02d", hour, minute);
-                String lines = "X: " + Math.round(PlayerUtils.mc.thePlayer.posX) + "\n" + "Y: " + Math.round(PlayerUtils.mc.thePlayer.posY) + "\n" + "Z: " + Math.round(PlayerUtils.mc.thePlayer.posZ) + "\n" + time + "\n" + "FPS: " + Minecraft.getDebugFPS();
+                String lines = "X: " + Math.round(PlayerUtils.mc.thePlayer.posX) + "\n" +
+                        "Y: " + Math.round(PlayerUtils.mc.thePlayer.posY) + "\n" +
+                        "Z: " + Math.round(PlayerUtils.mc.thePlayer.posZ) + "\n" +
+                        time + "\n" +
+                        "FPS: " + Minecraft.getDebugFPS() + "\n" +
+                        "Auctions Sniped" + Lilase.auctionHouse.getAuctionsSniped();
                 TextRenderer.drawString(lines, 0, 0, 1.5, GUI_COLOR.getRGB());
             }
         }

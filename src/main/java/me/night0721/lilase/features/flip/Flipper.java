@@ -22,7 +22,7 @@ public class Flipper {
     private final int itemprice;
     public static FlipperState state = FlipperState.NONE;
     public static final Rotation rotation = new Rotation();
-    private static final Clock buyWait = new Clock();
+    private final Clock buyWait = new Clock();
 
     public Flipper(String name, String data, int price) {
         itemname = name;
@@ -42,13 +42,13 @@ public class Flipper {
 
     public void sellItem() {
         Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
-        if (Lilase.auctionHouse.open) Lilase.auctionHouse.toggleAuction();
+        if (Lilase.auctionHouse.getOpen()) Lilase.auctionHouse.toggleAuction();
         UngrabUtils.ungrabMouse();
         Utils.sendServerMessage("/hub");
         state = FlipperState.WALKING_TO_FIRST_POINT;
     }
 
-    public static void switchStates() {
+    public void switchStates() {
         switch (state) {
             case WALKING_TO_FIRST_POINT:
                 if (PlayerUtils.mc.currentScreen != null) {
@@ -99,7 +99,7 @@ public class Flipper {
                         if (InventoryUtils.getSlotForItem(itemname) == -1) {
                             Utils.sendMessage("Cannot find item in inventory, stopping flipper");
                             state = FlipperState.NONE;
-                            Lilase.auctionHouse.open = true;
+                            Lilase.auctionHouse.setOpen(true);
                             return;
                         }
                         InventoryUtils.clickOpenContainerSlot(InventoryUtils.getSlotForItem(itemname));
@@ -125,7 +125,10 @@ public class Flipper {
                     buyWait.schedule(1000);
                 } else if (InventoryUtils.inventoryNameContains("BIN Auction View") && buyWait.passed()) {
                     InventoryUtils.clickOpenContainerSlot(49);
+                    Lilase.auctionHouse.incrementAuctionsSniped();
+                    buyWait.schedule(500);
                     PlayerUtils.mc.thePlayer.closeScreen();
+                    buyWait.schedule(500);
                     Utils.sendMessage("Posted item on Auction House, continue sniping now");
                     state = FlipperState.NONE;
                     Lilase.auctionHouse.toggleAuction();
@@ -158,15 +161,15 @@ public class Flipper {
         return new JSONObject(content.toString());
     }
 
-    private static float distanceToFirstPoint() {
+    private float distanceToFirstPoint() {
         return (float) Math.sqrt(Math.pow(PlayerUtils.mc.thePlayer.posX - (-2.5), 2) + Math.pow(PlayerUtils.mc.thePlayer.posZ - (-91.5), 2));
     }
 
-    private static float distanceToAuctionMaster() {
+    private float distanceToAuctionMaster() {
         return (float) Math.sqrt(Math.pow(PlayerUtils.mc.thePlayer.posX - (-45), 2) + Math.pow(PlayerUtils.mc.thePlayer.posZ - (-90), 2));
     }
 
-    private static Entity getAuctionMaster() {
+    private Entity getAuctionMaster() {
         for (final Entity e : PlayerUtils.mc.theWorld.loadedEntityList) {
             if (e instanceof EntityArmorStand) {
                 final String name = StringUtils.stripControlCodes(e.getDisplayName().getUnformattedText());

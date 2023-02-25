@@ -4,7 +4,7 @@ import cc.polyfrost.oneconfig.events.EventManager;
 import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
 import com.mojang.realmsclient.gui.ChatFormatting;
-import me.night0721.lilase.config.AHConfig;
+import me.night0721.lilase.features.ah.AHConfig;
 import me.night0721.lilase.events.PacketReceivedEvent;
 import me.night0721.lilase.features.ah.AuctionHouse;
 import me.night0721.lilase.features.flip.Flipper;
@@ -29,8 +29,8 @@ import org.lwjgl.opengl.Display;
 
 import java.io.IOException;
 
-import static me.night0721.lilase.config.AHConfig.AUCTION_HOUSE_DELAY;
-import static me.night0721.lilase.config.AHConfig.RECONNECT_DELAY;
+import static me.night0721.lilase.features.ah.AHConfig.AUCTION_HOUSE_DELAY;
+import static me.night0721.lilase.features.ah.AHConfig.RECONNECT_DELAY;
 
 @Mod(modid = Lilase.MODID, name = Lilase.MOD_NAME, version = Lilase.VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Lilase {
@@ -73,7 +73,7 @@ public class Lilase {
         if (tickAmount % 2400 == 0) {
             ConfigUtils.checkWebhookAndAPI();
         }
-        Flipper.switchStates();
+        AuctionHouse.flipper.switchStates();
         if ((mc.currentScreen instanceof GuiDisconnected)) {
             if (waitTime >= (RECONNECT_DELAY * 20)) {
                 waitTime = 0;
