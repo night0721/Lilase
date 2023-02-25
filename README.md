@@ -12,6 +12,7 @@ Forge mod will automatiaclly buy item according to your configuration, and send 
 - Auto skip confirmation screen
 - GUI showing coordinates, fps and clock and more error
 - Auto ungrab mouse when sniping/flipping
+- Auto movement during sniping so hypixel won't send to afk
 
 # Changelog:
 - v1.0.1-beta - Initial Release, with auto buy
@@ -21,7 +22,7 @@ Forge mod will automatiaclly buy item according to your configuration, and send 
      ungrab mouse when sniping/flipping
      auto skip confirmation screen, with GUI showing coord fps and time and more error catching
      however config still broken, keep using Lilase.cfg first. Will fix config and discord in next update
-    
+     some movement during sniping so hypixel won't send to afk
 
 # Example Config:
 ```cfg
