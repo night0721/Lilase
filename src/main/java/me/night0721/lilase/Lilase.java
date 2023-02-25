@@ -65,7 +65,7 @@ public class Lilase {
         if (tickAmount % 20 == 0) Utils.checkForDungeon();
         if (tickAmount % (20 * AUCTION_HOUSE_DELAY) == 0) auctionHouse.getItem();
         if (tickAmount % 2400 == 0) ConfigUtils.checkWebhookAndAPI();
-        AuctionHouse.flipper.switchStates();
+        if (AuctionHouse.flipper != null) AuctionHouse.flipper.switchStates();
         if (mc.currentScreen instanceof GuiDisconnected) {
             if (waitTime >= (RECONNECT_DELAY * 20)) {
                 waitTime = 0;

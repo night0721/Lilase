@@ -164,7 +164,7 @@ public class SniperFlipperEvents {
                         "Z: " + Math.round(PlayerUtils.mc.thePlayer.posZ) + "\n" +
                         time + "\n" +
                         "FPS: " + Minecraft.getDebugFPS() + "\n" +
-                        "Auctions Sniped" + Lilase.auctionHouse.getAuctionsSniped();
+                        "Auctions Sniped: " + Lilase.auctionHouse.getAuctionsSniped();
                 TextRenderer.drawString(lines, 0, 0, 1.5, GUI_COLOR.getRGB());
             }
         }
