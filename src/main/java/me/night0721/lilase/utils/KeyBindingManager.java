@@ -40,11 +40,6 @@ public class KeyBindingManager {
         }
     }
 
-    public static void middleClick() {
-        if (!ReflectionUtils.invoke(PlayerUtils.mc, "func_147112_ai")) {
-            ReflectionUtils.invoke(PlayerUtils.mc, "middleClickMouse");
-        }
-    }
 
     public static void updateKeys(boolean forward, boolean back, boolean right, boolean left, boolean attack) {
         updateKeys(forward, back, right, left, attack, false, false);
