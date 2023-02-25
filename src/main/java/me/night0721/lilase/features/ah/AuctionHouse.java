@@ -1,12 +1,7 @@
 package me.night0721.lilase.features.ah;
 
 import me.night0721.lilase.features.flip.Flipper;
-import me.night0721.lilase.features.flip.FlipperState;
-import me.night0721.lilase.misc.DiscordWebhook;
-import me.night0721.lilase.utils.ConfigUtils;
-import me.night0721.lilase.utils.InventoryUtils;
-import me.night0721.lilase.utils.PlayerUtils;
-import me.night0721.lilase.utils.Utils;
+import me.night0721.lilase.utils.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,12 +25,8 @@ import java.util.regex.Pattern;
 public class AuctionHouse {
     private static String uuid;
     private static String message_toSend;
-    private static long lastAction;
-    private static String name;
-    private static String bytedata;
-    public static States clickState = States.NONE;
     public static Flipper flipper;
-    private static final DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
+    public static final DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
 
     public Boolean open = false;
     private final List<Item> items = new ArrayList<>();
@@ -69,6 +61,10 @@ public class AuctionHouse {
         return new JSONObject(content.toString());
     }
 
+    private float generateRandomFloat() {
+        return (float) (ThreadLocalRandom.current().nextFloat() * 180);
+    }
+
     public void getItem() throws IOException, JSONException {
         if (open == false) return;
         if (!Utils.checkInHub()) {
@@ -86,11 +82,8 @@ public class AuctionHouse {
             open = false;
             return;
         }
-        if (Flipper.state != FlipperState.NONE) {
-            Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
-            open = false;
-            return;
-        }
+        Utils.debugLog("[Sniper] Randomizing motion as we don't want to be AFK");
+        KeyBindingManager.leftClick();
         URL url = new URL("https://api.hypixel.net/skyblock/auctions");
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
@@ -135,7 +128,6 @@ public class AuctionHouse {
                         lore = "Water Bender";
                         break;
                 }
-
                 if (posted.contains(auction.getString("uuid"))) break;
                 if (!auction.getString("item_name").toLowerCase().contains(item.query.toLowerCase())) break;
                 if (!auction.getString("item_lore").contains(lore)) break;
@@ -148,7 +140,8 @@ public class AuctionHouse {
                     flipper = new Flipper(auction.getString("item_name"), auction.getString("item_bytes"), auction.getInt("starting_bid"));
                     NumberFormat format = NumberFormat.getInstance(Locale.US);
                     JSONObject profile = getHypixelData(auction.getString("auctioneer"));
-                    if (profile.getJSONObject("player").getString("displayname").toLowerCase() == PlayerUtils.mc.thePlayer.getName().toLowerCase()) break;
+                    if (profile.getJSONObject("player").getString("displayname").toLowerCase() == PlayerUtils.mc.thePlayer.getName().toLowerCase())
+                        break;
                     Pattern pattern = Pattern.compile("§[0-9a-z]", Pattern.MULTILINE);
                     Matcher matcher = pattern.matcher(auction.getString("item_lore"));
                     String updated = matcher.replaceAll("");
@@ -161,11 +154,11 @@ public class AuctionHouse {
                         Utils.debugLog("[Sniper] Found an item, checking profit multiplier");
                         if (multi > ConfigUtils.getInt("main", "Multiplier")) {
                             Utils.debugLog("[Sniper] Higher than required multiplier, buying now");
-                            clickState = States.OPEN;
+                            sendAuction();
                         }
                     } else {
                         Utils.debugLog("[Sniper] Found an item, trying to buy");
-                        clickState = States.OPEN;
+                        sendAuction();
                     }
                     return;
                 }
@@ -213,41 +206,13 @@ public class AuctionHouse {
         if (open) {
             Utils.sendMessage("Stopped Auction House");
             open = false;
+            UngrabUtils.regrabMouse();
         } else {
             if (Utils.checkInHub()) {
                 Utils.sendMessage("Started Auction House");
                 open = true;
+                UngrabUtils.ungrabMouse();
             } else Utils.sendMessage("Detected not in hub, please go to hub to start");
-        }
-    }
-
-    public static void switchStates() throws IOException {
-        switch (clickState) {
-            case CLICK:
-                if (System.currentTimeMillis() - lastAction < 500) return;
-                InventoryUtils.clickOpenContainerSlot(31);
-                lastAction = System.currentTimeMillis();
-                clickState = States.CONFIRM;
-                break;
-            case CONFIRM:
-                if (System.currentTimeMillis() - lastAction < 500) return;
-                InventoryUtils.clickOpenContainerSlot(11);
-                lastAction = System.currentTimeMillis();
-                clickState = States.NONE;
-                break;
-            case OPEN:
-                AuctionHouse.sendAuction();
-                lastAction = System.currentTimeMillis();
-                clickState = States.CLICK;
-                break;
-            case EXECUTE:
-                Utils.debugLog("[Sniper] Bought an item, starting to sell");
-                webhook.execute();
-                flipper.sellItem();
-                clickState = States.NONE;
-                break;
-            case NONE:
-                break;
         }
     }
 }

@@ -1,8 +1,6 @@
 package me.night0721.lilase.features.flip;
 
 import me.night0721.lilase.Lilase;
-import me.night0721.lilase.managers.KeyBindingManager;
-import me.night0721.lilase.player.Rotation;
 import me.night0721.lilase.utils.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -43,6 +41,9 @@ public class Flipper {
     }
 
     public void sellItem() {
+        Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
+        if (Lilase.auctionHouse.open) Lilase.auctionHouse.toggleAuction();
+        UngrabUtils.ungrabMouse();
         Utils.sendServerMessage("/hub");
         state = FlipperState.WALKING_TO_FIRST_POINT;
     }
@@ -95,6 +96,12 @@ public class Flipper {
                     buyWait.schedule(1500);
                 } else if (InventoryUtils.inventoryNameContains("Create BIN Auction")) {
                     if (InventoryUtils.isStoneButton() && buyWait.passed()) {
+                        if (InventoryUtils.getSlotForItem(itemname) == -1) {
+                            Utils.sendMessage("Cannot find item in inventory, stopping flipper");
+                            state = FlipperState.NONE;
+                            Lilase.auctionHouse.open = true;
+                            return;
+                        }
                         InventoryUtils.clickOpenContainerSlot(InventoryUtils.getSlotForItem(itemname));
                         buyWait.schedule(1000);
                     } else if (!InventoryUtils.isStoneButton() && InventoryUtils.isToAuctionItem(itemname) && buyWait.passed()) {

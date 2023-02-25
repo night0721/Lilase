@@ -8,14 +8,19 @@ import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.events.PacketReceivedEvent;
 import me.night0721.lilase.features.ah.AuctionHouse;
 import me.night0721.lilase.features.flip.Flipper;
-import me.night0721.lilase.managers.KeyBindingManager;
-import me.night0721.lilase.managers.SniperFlipperEvents;
+import me.night0721.lilase.utils.KeyBindingManager;
+import me.night0721.lilase.events.SniperFlipperEvents;
 import me.night0721.lilase.utils.ConfigUtils;
 import me.night0721.lilase.utils.Utils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiDisconnected;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -25,17 +30,18 @@ import org.lwjgl.opengl.Display;
 import java.io.IOException;
 
 import static me.night0721.lilase.config.AHConfig.AUCTION_HOUSE_DELAY;
+import static me.night0721.lilase.config.AHConfig.RECONNECT_DELAY;
 
 @Mod(modid = Lilase.MODID, name = Lilase.MOD_NAME, version = Lilase.VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "1.0.2";
+    public static final String VERSION = "1.0.21";
     static int tickAmount;
+    int waitTime;
     public static AuctionHouse auctionHouse;
     public static AHConfig config;
     static final Minecraft mc = Minecraft.getMinecraft();
-
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
@@ -46,11 +52,11 @@ public class Lilase {
         ConfigUtils.register();
         auctionHouse = new AuctionHouse();
         KeyBindingManager.registerKeyBindings();
-        Display.setTitle("Lilase v" + VERSION);
+        Display.setTitle("Lilase v" + VERSION + " | night0721");
     }
 
     @Subscribe
-    public void onConfigInit(InitializationEvent event) {
+    public void initConfig(InitializationEvent ignore) {
         config = new AHConfig();
     }
 
@@ -67,8 +73,15 @@ public class Lilase {
         if (tickAmount % 2400 == 0) {
             ConfigUtils.checkWebhookAndAPI();
         }
-        AuctionHouse.switchStates();
         Flipper.switchStates();
+        if ((mc.currentScreen instanceof GuiDisconnected)) {
+            if (waitTime >= (RECONNECT_DELAY * 20)) {
+                waitTime = 0;
+                FMLClientHandler.instance().connectToServer(new GuiMultiplayer(new GuiMainMenu()), new ServerData(" ", "mc.hypixel.net", false));
+            } else {
+                waitTime++;
+            }
+        }
     }
 
     @SubscribeEvent

@@ -8,10 +8,20 @@ Forge mod will automatiaclly buy item according to your configuration, and send 
 - Can customise fetch time (the faster, the higher chance to get the item you want)
 - Webhook system to send you that an item has been bought
 - Failsafe in Limbo
+- Auto reconnect to server when disconnected
+- Auto skip confirmation screen
+- GUI showing coordinates, fps and clock and more error
+- Auto ungrab mouse when sniping/flipping
 
 # Changelog:
 - v1.0.1-beta - Initial Release, with auto buy
 - v1.0.2 - Added flipper, profit check, auto post
+- v1.0.21 - 
+     Auto reconnect to server when disconnected
+     ungrab mouse when sniping/flipping
+     auto skip confirmation screen, with GUI showing coord fps and time and more error catching
+     however config still broken, keep using Lilase.cfg first. Will fix config and discord in next update
+    
 
 # Example Config:
 ```cfg
@@ -38,12 +48,14 @@ item3 {
     S:Type=
 }
 
-
 main {
     S:APIKey=Paste your API key here
     I:AuctionHouseDelay=15
+    B:GUI=true
+    I:GUI_COLOR=-7237653
     I:Multiplier=400
+    I:ReconnectDelay=20
     S:Webhook=Paste your webhook here
-    B:checkMultiplierBeforeBuy=false
+    B:checkMultiplierBeforeBuy=true
 }
 ```
