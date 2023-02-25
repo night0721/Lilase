@@ -62,17 +62,11 @@ public class Lilase {
     public void onTick(TickEvent.ClientTickEvent event) throws IOException {
         if (mc.thePlayer == null || event.phase != TickEvent.Phase.START) return;
         tickAmount++;
-        if (tickAmount % 20 == 0) {
-            Utils.checkForDungeon();
-        }
-        if (tickAmount % (20 * AUCTION_HOUSE_DELAY) == 0) {
-            auctionHouse.getItem();
-        }
-        if (tickAmount % 2400 == 0) {
-            ConfigUtils.checkWebhookAndAPI();
-        }
+        if (tickAmount % 20 == 0) Utils.checkForDungeon();
+        if (tickAmount % (20 * AUCTION_HOUSE_DELAY) == 0) auctionHouse.getItem();
+        if (tickAmount % 2400 == 0) ConfigUtils.checkWebhookAndAPI();
         AuctionHouse.flipper.switchStates();
-        if ((mc.currentScreen instanceof GuiDisconnected)) {
+        if (mc.currentScreen instanceof GuiDisconnected) {
             if (waitTime >= (RECONNECT_DELAY * 20)) {
                 waitTime = 0;
                 FMLClientHandler.instance().connectToServer(new GuiMultiplayer(new GuiMainMenu()), new ServerData(" ", "mc.hypixel.net", false));
