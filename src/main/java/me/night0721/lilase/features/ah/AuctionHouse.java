@@ -40,7 +40,8 @@ public class AuctionHouse {
         if (!ConfigUtils.getString("item3", "Name").equals("") && !ConfigUtils.getString("item3", "Type").equals("") && !ConfigUtils.getString("item3", "Tier").equals("") && ConfigUtils.getInt("item3", "Price") != 0)
             items.add(new Item(ConfigUtils.getString("item3", "Name"), ItemType.valueOf(ConfigUtils.getString("item3", "Type")), ConfigUtils.getInt("item3", "Price"), ItemTier.valueOf(ConfigUtils.getString("item3", "Tier"))));
         webhook.setUsername("Lilase - Auction House");
-        webhook.setAvatarUrl("https://wallpapercave.com/wp/wp2412537.jpg");
+        //webhook.setAvatarUrl("https://wallpapercave.com/wp/wp2412537.jpg");
+        webhook.setAvatarUrl("https://th.bing.com/th/id/OIP.Lk2cSujieY70GbsgPZ0TyAHaEK?w=325&h=182&c=7&r=0&o=5&pid=1.7");
     }
 
     private JSONObject getHypixelData(String player) throws IOException, JSONException {
