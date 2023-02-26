@@ -2,6 +2,7 @@ package me.night0721.lilase.utils;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import me.night0721.lilase.Lilase;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
@@ -37,8 +38,8 @@ public class ScoreboardUtils {
 
     public static List<String> getSidebarLines() {
         List<String> lines = new ArrayList<>();
-        if (PlayerUtils.mc.theWorld == null) return lines;
-        Scoreboard scoreboard = PlayerUtils.mc.theWorld.getScoreboard();
+        if (Lilase.mc.theWorld == null) return lines;
+        Scoreboard scoreboard = Lilase.mc.theWorld.getScoreboard();
         if (scoreboard == null) return lines;
 
         ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(1);

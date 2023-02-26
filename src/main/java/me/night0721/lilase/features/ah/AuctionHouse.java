@@ -1,5 +1,6 @@
 package me.night0721.lilase.features.ah;
 
+import me.night0721.lilase.Lilase;
 import me.night0721.lilase.features.flip.Flipper;
 import me.night0721.lilase.utils.*;
 import org.json.JSONArray;
@@ -23,14 +24,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AuctionHouse {
-    private static String uuid;
-    private static String message_toSend;
-    public static Flipper flipper;
-    public static final DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
-
-    public Boolean open = false;
+    private String uuid;
+    private String message_toSend;
+    private Boolean open = false;
+    private int auctionsSniped = 0;
+    public DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
     private final List<Item> items = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
+    public static Flipper flipper;
 
     public AuctionHouse() {
         if (!ConfigUtils.getString("item1", "Name").equals("") && !ConfigUtils.getString("item1", "Type").equals("") && !ConfigUtils.getString("item1", "Tier").equals("") && ConfigUtils.getInt("item1", "Price") != 0)
@@ -141,7 +142,7 @@ public class AuctionHouse {
                     flipper = new Flipper(auction.getString("item_name"), auction.getString("item_bytes"), auction.getInt("starting_bid"));
                     NumberFormat format = NumberFormat.getInstance(Locale.US);
                     JSONObject profile = getHypixelData(auction.getString("auctioneer"));
-                    if (profile.getJSONObject("player").getString("displayname").toLowerCase() == PlayerUtils.mc.thePlayer.getName().toLowerCase())
+                    if (profile.getJSONObject("player").getString("displayname").toLowerCase() == Lilase.mc.thePlayer.getName().toLowerCase())
                         break;
                     Pattern pattern = Pattern.compile("§[0-9a-z]", Pattern.MULTILINE);
                     Matcher matcher = pattern.matcher(auction.getString("item_lore"));
@@ -167,7 +168,7 @@ public class AuctionHouse {
         }
     }
 
-    public static void sendAuction() {
+    private void sendAuction() {
         Utils.sendServerMessage("/viewauction " + uuid);
         Utils.sendMessage(message_toSend);
     }
@@ -176,7 +177,6 @@ public class AuctionHouse {
     private final List<String> timesString = Arrays.asList("year", "month", "day", "hour", "minute", "second");
 
     public String toDuration(long duration) {
-
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < times.size(); i++) {
             Long current = times.get(i);
@@ -190,12 +190,11 @@ public class AuctionHouse {
         else return res.toString();
     }
 
-    private static String getTimeSinceDate(long timeSinceDate) {
+    private String getTimeSinceDate(long timeSinceDate) {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(timeSinceDate);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(timeSinceDate);
         long hours = TimeUnit.MILLISECONDS.toHours(timeSinceDate);
         long days = TimeUnit.MILLISECONDS.toDays(timeSinceDate);
-
         if (seconds < 60) return "in " + seconds + " seconds";
         else if (minutes < 60) return "in " + minutes + " minutes";
         else if (hours < 24) return "in " + hours + " hours";
@@ -205,16 +204,32 @@ public class AuctionHouse {
 
     public void toggleAuction() {
         if (open) {
-            Utils.sendMessage("Stopped Auction House");
+            Utils.sendMessage("Stopped AH Sniper");
             open = false;
             UngrabUtils.regrabMouse();
         } else {
             if (Utils.checkInHub()) {
-                Utils.sendMessage("Started Auction House");
+                Utils.sendMessage("Started AH Sniper");
                 open = true;
                 UngrabUtils.ungrabMouse();
             } else Utils.sendMessage("Detected not in hub, please go to hub to start");
         }
+    }
+
+    public Boolean getOpen() {
+        return open;
+    }
+
+    public void setOpen(Boolean open) {
+        this.open = open;
+    }
+
+    public int getAuctionsSniped() {
+        return auctionsSniped;
+    }
+
+    public void incrementAuctionsSniped() {
+        this.auctionsSniped += 1;
     }
 }
 

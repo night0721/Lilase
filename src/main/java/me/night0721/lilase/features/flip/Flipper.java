@@ -17,12 +17,12 @@ import java.nio.charset.StandardCharsets;
 
 
 public class Flipper {
-    private static String itemname = null;
+    private final String itemname;
     private final String bytedata;
     private final int itemprice;
     public static FlipperState state = FlipperState.NONE;
     public static final Rotation rotation = new Rotation();
-    private static final Clock buyWait = new Clock();
+    private final Clock buyWait = new Clock();
 
     public Flipper(String name, String data, int price) {
         itemname = name;
@@ -42,17 +42,17 @@ public class Flipper {
 
     public void sellItem() {
         Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
-        if (Lilase.auctionHouse.open) Lilase.auctionHouse.toggleAuction();
+        if (Lilase.auctionHouse.getOpen()) Lilase.auctionHouse.toggleAuction();
         UngrabUtils.ungrabMouse();
         Utils.sendServerMessage("/hub");
         state = FlipperState.WALKING_TO_FIRST_POINT;
     }
 
-    public static void switchStates() {
+    public void switchStates() {
         switch (state) {
             case WALKING_TO_FIRST_POINT:
-                if (PlayerUtils.mc.currentScreen != null) {
-                    PlayerUtils.mc.thePlayer.closeScreen();
+                if (Lilase.mc.currentScreen != null) {
+                    Lilase.mc.thePlayer.closeScreen();
                 } else if (distanceToFirstPoint() < 0.7f) {
                     Utils.debugLog("[Flipper] Moving to auction house");
                     KeyBindingManager.updateKeys(false, false, false, false, false);
@@ -65,11 +65,11 @@ public class Flipper {
                 }
                 break;
             case WALKING_INTO_AUCTION_HOUSE:
-                if (PlayerUtils.mc.currentScreen != null) {
-                    PlayerUtils.mc.thePlayer.closeScreen();
+                if (Lilase.mc.currentScreen != null) {
+                    Lilase.mc.thePlayer.closeScreen();
                 } else if (AngleUtils.smallestAngleDifference(AngleUtils.get360RotationYaw(), 88f) > 1.2) {
                     Utils.debugLog("[Flipper] Rotating to Auction Master");
-                    rotation.easeTo(88f, PlayerUtils.mc.thePlayer.rotationPitch, 500);
+                    rotation.easeTo(88f, Lilase.mc.thePlayer.rotationPitch, 500);
                 } else if (distanceToAuctionMaster() < 0.7f) {
                     Utils.debugLog("[Flipper] At Auction Master, opening shop");
                     KeyBindingManager.updateKeys(false, false, false, false, false);
@@ -82,13 +82,13 @@ public class Flipper {
                 }
                 break;
             case BUYING:
-                if (PlayerUtils.mc.currentScreen == null && buyWait.passed()) {
+                if (Lilase.mc.currentScreen == null && buyWait.passed()) {
                     final Entity auctionMaster = getAuctionMaster();
                     if (auctionMaster == null) {
                         Utils.debugLog("[Flipper] Cannot find shop NPC, retrying");
                         buyWait.schedule(500);
                     } else {
-                        PlayerUtils.mc.playerController.interactWithEntitySendPacket(PlayerUtils.mc.thePlayer, auctionMaster);
+                        Lilase.mc.playerController.interactWithEntitySendPacket(Lilase.mc.thePlayer, auctionMaster);
                         buyWait.schedule(1500);
                     }
                 } else if (InventoryUtils.inventoryNameContains("Auction House") && buyWait.passed()) {
@@ -99,7 +99,7 @@ public class Flipper {
                         if (InventoryUtils.getSlotForItem(itemname) == -1) {
                             Utils.sendMessage("Cannot find item in inventory, stopping flipper");
                             state = FlipperState.NONE;
-                            Lilase.auctionHouse.open = true;
+                            Lilase.auctionHouse.setOpen(true);
                             return;
                         }
                         InventoryUtils.clickOpenContainerSlot(InventoryUtils.getSlotForItem(itemname));
@@ -125,7 +125,10 @@ public class Flipper {
                     buyWait.schedule(1000);
                 } else if (InventoryUtils.inventoryNameContains("BIN Auction View") && buyWait.passed()) {
                     InventoryUtils.clickOpenContainerSlot(49);
-                    PlayerUtils.mc.thePlayer.closeScreen();
+                    Lilase.auctionHouse.incrementAuctionsSniped();
+                    buyWait.schedule(500);
+                    Lilase.mc.thePlayer.closeScreen();
+                    buyWait.schedule(500);
                     Utils.sendMessage("Posted item on Auction House, continue sniping now");
                     state = FlipperState.NONE;
                     Lilase.auctionHouse.toggleAuction();
@@ -158,16 +161,16 @@ public class Flipper {
         return new JSONObject(content.toString());
     }
 
-    private static float distanceToFirstPoint() {
-        return (float) Math.sqrt(Math.pow(PlayerUtils.mc.thePlayer.posX - (-2.5), 2) + Math.pow(PlayerUtils.mc.thePlayer.posZ - (-91.5), 2));
+    private float distanceToFirstPoint() {
+        return (float) Math.sqrt(Math.pow(Lilase.mc.thePlayer.posX - (-2.5), 2) + Math.pow(Lilase.mc.thePlayer.posZ - (-91.5), 2));
     }
 
-    private static float distanceToAuctionMaster() {
-        return (float) Math.sqrt(Math.pow(PlayerUtils.mc.thePlayer.posX - (-45), 2) + Math.pow(PlayerUtils.mc.thePlayer.posZ - (-90), 2));
+    private float distanceToAuctionMaster() {
+        return (float) Math.sqrt(Math.pow(Lilase.mc.thePlayer.posX - (-45), 2) + Math.pow(Lilase.mc.thePlayer.posZ - (-90), 2));
     }
 
-    private static Entity getAuctionMaster() {
-        for (final Entity e : PlayerUtils.mc.theWorld.loadedEntityList) {
+    private Entity getAuctionMaster() {
+        for (final Entity e : Lilase.mc.theWorld.loadedEntityList) {
             if (e instanceof EntityArmorStand) {
                 final String name = StringUtils.stripControlCodes(e.getDisplayName().getUnformattedText());
                 if (name.startsWith("Auction Master")) {

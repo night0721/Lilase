@@ -1,4 +1,4 @@
-package me.night0721.lilase.config;
+package me.night0721.lilase.features.ah;
 
 import cc.polyfrost.oneconfig.config.Config;
 import cc.polyfrost.oneconfig.config.annotations.Number;
