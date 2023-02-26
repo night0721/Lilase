@@ -99,7 +99,7 @@ public class Flipper {
                 } else if (InventoryUtils.inventoryNameContains("Create BIN Auction")) {
                     if (InventoryUtils.isStoneButton() && buyWait.passed()) {
                         if (InventoryUtils.getSlotForItem(itemname) == -1) {
-                            Utils.sendMessage("Cannot find item in inventory, stopping flipper");
+                            Utils.debugLog("[Flipper] Cannot find item in inventory, stopping flipper");
                             state = FlipperState.NONE;
                             Lilase.auctionHouse.setOpen(true);
                             return;
