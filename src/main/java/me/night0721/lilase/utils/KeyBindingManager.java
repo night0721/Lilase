@@ -29,14 +29,14 @@ public class KeyBindingManager {
     }
 
     public static void rightClick() {
-        if (!ReflectionUtils.invoke(PlayerUtils.mc, "func_147121_ag")) {
-            ReflectionUtils.invoke(PlayerUtils.mc, "rightClickMouse");
+        if (!ReflectionUtils.invoke(Lilase.mc, "func_147121_ag")) {
+            ReflectionUtils.invoke(Lilase.mc, "rightClickMouse");
         }
     }
 
     public static void leftClick() {
-        if (!ReflectionUtils.invoke(PlayerUtils.mc, "func_147116_af")) {
-            ReflectionUtils.invoke(PlayerUtils.mc, "clickMouse");
+        if (!ReflectionUtils.invoke(Lilase.mc, "func_147116_af")) {
+            ReflectionUtils.invoke(Lilase.mc, "clickMouse");
         }
     }
 
@@ -46,27 +46,27 @@ public class KeyBindingManager {
     }
 
     public static void updateKeys(boolean forward, boolean back, boolean right, boolean left, boolean attack, boolean crouch, boolean space) {
-        if (PlayerUtils.mc.currentScreen != null) {
+        if (Lilase.mc.currentScreen != null) {
             stopMovement();
             return;
         }
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindForward.getKeyCode(), forward);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindBack.getKeyCode(), back);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindRight.getKeyCode(), right);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindLeft.getKeyCode(), left);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindAttack.getKeyCode(), attack);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindSneak.getKeyCode(), crouch);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindJump.getKeyCode(), space);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindForward.getKeyCode(), forward);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindBack.getKeyCode(), back);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindRight.getKeyCode(), right);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindLeft.getKeyCode(), left);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindAttack.getKeyCode(), attack);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindSneak.getKeyCode(), crouch);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindJump.getKeyCode(), space);
     }
 
     public static void stopMovement() {
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindForward.getKeyCode(), false);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindBack.getKeyCode(), false);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindRight.getKeyCode(), false);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindLeft.getKeyCode(), false);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindAttack.getKeyCode(), false);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindSneak.getKeyCode(), false);
-        KeyBinding.setKeyBindState(PlayerUtils.mc.gameSettings.keyBindJump.getKeyCode(), false);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindForward.getKeyCode(), false);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindBack.getKeyCode(), false);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindRight.getKeyCode(), false);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindLeft.getKeyCode(), false);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindAttack.getKeyCode(), false);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindSneak.getKeyCode(), false);
+        KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindJump.getKeyCode(), false);
     }
 
 }

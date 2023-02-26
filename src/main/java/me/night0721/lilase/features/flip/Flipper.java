@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 
 
 public class Flipper {
-    private static String itemname = null;
+    private final String itemname;
     private final String bytedata;
     private final int itemprice;
     public static FlipperState state = FlipperState.NONE;
@@ -51,8 +51,8 @@ public class Flipper {
     public void switchStates() {
         switch (state) {
             case WALKING_TO_FIRST_POINT:
-                if (PlayerUtils.mc.currentScreen != null) {
-                    PlayerUtils.mc.thePlayer.closeScreen();
+                if (Lilase.mc.currentScreen != null) {
+                    Lilase.mc.thePlayer.closeScreen();
                 } else if (distanceToFirstPoint() < 0.7f) {
                     Utils.debugLog("[Flipper] Moving to auction house");
                     KeyBindingManager.updateKeys(false, false, false, false, false);
@@ -65,11 +65,11 @@ public class Flipper {
                 }
                 break;
             case WALKING_INTO_AUCTION_HOUSE:
-                if (PlayerUtils.mc.currentScreen != null) {
-                    PlayerUtils.mc.thePlayer.closeScreen();
+                if (Lilase.mc.currentScreen != null) {
+                    Lilase.mc.thePlayer.closeScreen();
                 } else if (AngleUtils.smallestAngleDifference(AngleUtils.get360RotationYaw(), 88f) > 1.2) {
                     Utils.debugLog("[Flipper] Rotating to Auction Master");
-                    rotation.easeTo(88f, PlayerUtils.mc.thePlayer.rotationPitch, 500);
+                    rotation.easeTo(88f, Lilase.mc.thePlayer.rotationPitch, 500);
                 } else if (distanceToAuctionMaster() < 0.7f) {
                     Utils.debugLog("[Flipper] At Auction Master, opening shop");
                     KeyBindingManager.updateKeys(false, false, false, false, false);
@@ -82,13 +82,13 @@ public class Flipper {
                 }
                 break;
             case BUYING:
-                if (PlayerUtils.mc.currentScreen == null && buyWait.passed()) {
+                if (Lilase.mc.currentScreen == null && buyWait.passed()) {
                     final Entity auctionMaster = getAuctionMaster();
                     if (auctionMaster == null) {
                         Utils.debugLog("[Flipper] Cannot find shop NPC, retrying");
                         buyWait.schedule(500);
                     } else {
-                        PlayerUtils.mc.playerController.interactWithEntitySendPacket(PlayerUtils.mc.thePlayer, auctionMaster);
+                        Lilase.mc.playerController.interactWithEntitySendPacket(Lilase.mc.thePlayer, auctionMaster);
                         buyWait.schedule(1500);
                     }
                 } else if (InventoryUtils.inventoryNameContains("Auction House") && buyWait.passed()) {
@@ -127,7 +127,7 @@ public class Flipper {
                     InventoryUtils.clickOpenContainerSlot(49);
                     Lilase.auctionHouse.incrementAuctionsSniped();
                     buyWait.schedule(500);
-                    PlayerUtils.mc.thePlayer.closeScreen();
+                    Lilase.mc.thePlayer.closeScreen();
                     buyWait.schedule(500);
                     Utils.sendMessage("Posted item on Auction House, continue sniping now");
                     state = FlipperState.NONE;
@@ -162,15 +162,15 @@ public class Flipper {
     }
 
     private float distanceToFirstPoint() {
-        return (float) Math.sqrt(Math.pow(PlayerUtils.mc.thePlayer.posX - (-2.5), 2) + Math.pow(PlayerUtils.mc.thePlayer.posZ - (-91.5), 2));
+        return (float) Math.sqrt(Math.pow(Lilase.mc.thePlayer.posX - (-2.5), 2) + Math.pow(Lilase.mc.thePlayer.posZ - (-91.5), 2));
     }
 
     private float distanceToAuctionMaster() {
-        return (float) Math.sqrt(Math.pow(PlayerUtils.mc.thePlayer.posX - (-45), 2) + Math.pow(PlayerUtils.mc.thePlayer.posZ - (-90), 2));
+        return (float) Math.sqrt(Math.pow(Lilase.mc.thePlayer.posX - (-45), 2) + Math.pow(Lilase.mc.thePlayer.posZ - (-90), 2));
     }
 
     private Entity getAuctionMaster() {
-        for (final Entity e : PlayerUtils.mc.theWorld.loadedEntityList) {
+        for (final Entity e : Lilase.mc.theWorld.loadedEntityList) {
             if (e instanceof EntityArmorStand) {
                 final String name = StringUtils.stripControlCodes(e.getDisplayName().getUnformattedText());
                 if (name.startsWith("Auction Master")) {

@@ -58,12 +58,12 @@ public class SniperFlipperEvents {
                 flipper.sellItem();
             } else if (message.equals("Your starting bid must be at least 10 coins!")) {
                 InventoryUtils.clickOpenContainerSlot(13);
-                PlayerUtils.mc.thePlayer.closeScreen();
+                Lilase.mc.thePlayer.closeScreen();
                 Utils.debugLog("[Flipper] Cannot post item as the cost is too low, stopping fliiper and starting sniper");
                 Lilase.auctionHouse.toggleAuction();
                 Flipper.state = FlipperState.NONE;
             } else if (message.contains("Can't create a BIN auction for this item for a PRICE this LOW!")) {
-                PlayerUtils.mc.thePlayer.closeScreen();
+                Lilase.mc.thePlayer.closeScreen();
                 Utils.debugLog("[Flipper] Cannot post item as the cost is too low, stopping fliiper and starting sniper");
                 Lilase.auctionHouse.toggleAuction();
                 Flipper.state = FlipperState.NONE;
@@ -110,12 +110,12 @@ public class SniperFlipperEvents {
                     Thread.sleep(3000);
                     InventoryUtils.clickOpenContainerSlot(10);
                     Thread.sleep(3000);
-                    PlayerUtils.mc.thePlayer.closeScreen();
+                    Lilase.mc.thePlayer.closeScreen();
                 }
             } else {
                 Thread.sleep(1000 * 60 * 5);
             }
-            PlayerUtils.mc.thePlayer.sendChatMessage("/hub");
+            Lilase.mc.thePlayer.sendChatMessage("/hub");
             Thread.sleep(6000);
             Lilase.auctionHouse.toggleAuction();
         } catch (Exception ignore) {
@@ -138,7 +138,7 @@ public class SniperFlipperEvents {
                     try {
                         Utils.debugLog("[Flipper] Interrupting Flipper selling");
                         Thread.sleep(500);
-                        PlayerUtils.mc.thePlayer.closeScreen();
+                        Lilase.mc.thePlayer.closeScreen();
                         Flipper.state = FlipperState.NONE;
                         Lilase.auctionHouse.toggleAuction();
                     } catch (InterruptedException e) {
@@ -159,9 +159,9 @@ public class SniperFlipperEvents {
                 int hour = cal.get(Calendar.HOUR_OF_DAY);
                 int minute = cal.get(Calendar.MINUTE);
                 String time = String.format("%02d:%02d", hour, minute);
-                String lines = "X: " + Math.round(PlayerUtils.mc.thePlayer.posX) + "\n" +
-                        "Y: " + Math.round(PlayerUtils.mc.thePlayer.posY) + "\n" +
-                        "Z: " + Math.round(PlayerUtils.mc.thePlayer.posZ) + "\n" +
+                String lines = "X: " + Math.round(Lilase.mc.thePlayer.posX) + "\n" +
+                        "Y: " + Math.round(Lilase.mc.thePlayer.posY) + "\n" +
+                        "Z: " + Math.round(Lilase.mc.thePlayer.posZ) + "\n" +
                         time + "\n" +
                         "FPS: " + Minecraft.getDebugFPS() + "\n" +
                         "Auctions Sniped: " + Lilase.auctionHouse.getAuctionsSniped();
@@ -177,16 +177,16 @@ public class SniperFlipperEvents {
             ItemStack is = InventoryUtils.getStackInOpenContainerSlot(31);
             if (is != null && (is.getItem() == Items.gold_nugget || (AHConfig.BED_SPAM && is.getItem() == Items.bed))) {
                 buying = true;
-                windowId = PlayerUtils.mc.thePlayer.openContainer.windowId;
-                PlayerUtils.mc.playerController.windowClick(windowId, 31, 0, 0, PlayerUtils.mc.thePlayer);
+                windowId = Lilase.mc.thePlayer.openContainer.windowId;
+                Lilase.mc.playerController.windowClick(windowId, 31, 0, 0, Lilase.mc.thePlayer);
             } else if (is != null && is.getItem() == Items.potato) {
                 buying = false;
-                PlayerUtils.mc.thePlayer.closeScreen();
+                Lilase.mc.thePlayer.closeScreen();
             }
         }
         if (AHConfig.BED_SPAM) {
             if (buying && "Confirm Purchase".equals(windowName)) {
-                PlayerUtils.mc.playerController.windowClick(windowId + 1, 11, 0, 0, PlayerUtils.mc.thePlayer);
+                Lilase.mc.playerController.windowClick(windowId + 1, 11, 0, 0, Lilase.mc.thePlayer);
                 buying = false;
             }
         }

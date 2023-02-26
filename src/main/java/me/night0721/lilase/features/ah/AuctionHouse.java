@@ -1,5 +1,6 @@
 package me.night0721.lilase.features.ah;
 
+import me.night0721.lilase.Lilase;
 import me.night0721.lilase.features.flip.Flipper;
 import me.night0721.lilase.utils.*;
 import org.json.JSONArray;
@@ -140,7 +141,7 @@ public class AuctionHouse {
                     flipper = new Flipper(auction.getString("item_name"), auction.getString("item_bytes"), auction.getInt("starting_bid"));
                     NumberFormat format = NumberFormat.getInstance(Locale.US);
                     JSONObject profile = getHypixelData(auction.getString("auctioneer"));
-                    if (profile.getJSONObject("player").getString("displayname").toLowerCase() == PlayerUtils.mc.thePlayer.getName().toLowerCase())
+                    if (profile.getJSONObject("player").getString("displayname").toLowerCase() == Lilase.mc.thePlayer.getName().toLowerCase())
                         break;
                     Pattern pattern = Pattern.compile("§[0-9a-z]", Pattern.MULTILINE);
                     Matcher matcher = pattern.matcher(auction.getString("item_lore"));
