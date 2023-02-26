@@ -2,15 +2,14 @@
   {
     "modid": "Lilase",
     "name": "Lilase",
-    "description": "AH Flipper Mod",
+    "description": "AH Sniper/Flipper",
     "version": "${version}",
     "mcversion": "1.8.9",
-    "url": "https://github.com/night0721",
-    "updateUrl": "https://github.com/night0721",
+    "url": "https://github.com/night0721/Lilase",
+    "updateUrl": "https://github.com/night0721/Lilase/releases",
     "authorList": ["night0721"],
-    "credits": "FarmHelper/JellyLab",
+    "credits": "JellyLab/FarmHelper",
     "logoFile": "",
-    "description": "Lilac",
     "screenshots": [],
     "dependencies": []
   }

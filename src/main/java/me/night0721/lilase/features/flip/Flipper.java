@@ -1,6 +1,7 @@
 package me.night0721.lilase.features.flip;
 
 import me.night0721.lilase.Lilase;
+import me.night0721.lilase.events.SniperFlipperEvents;
 import me.night0721.lilase.utils.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -41,6 +42,7 @@ public class Flipper {
     }
 
     public void sellItem() {
+        Lilase.auctionHouse.incrementAuctionsSniped();
         Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
         if (Lilase.auctionHouse.getOpen()) Lilase.auctionHouse.toggleAuction();
         UngrabUtils.ungrabMouse();
@@ -97,7 +99,7 @@ public class Flipper {
                 } else if (InventoryUtils.inventoryNameContains("Create BIN Auction")) {
                     if (InventoryUtils.isStoneButton() && buyWait.passed()) {
                         if (InventoryUtils.getSlotForItem(itemname) == -1) {
-                            Utils.sendMessage("Cannot find item in inventory, stopping flipper");
+                            Utils.debugLog("[Flipper] Cannot find item in inventory, stopping flipper");
                             state = FlipperState.NONE;
                             Lilase.auctionHouse.setOpen(true);
                             return;
@@ -125,7 +127,8 @@ public class Flipper {
                     buyWait.schedule(1000);
                 } else if (InventoryUtils.inventoryNameContains("BIN Auction View") && buyWait.passed()) {
                     InventoryUtils.clickOpenContainerSlot(49);
-                    Lilase.auctionHouse.incrementAuctionsSniped();
+                    Lilase.auctionHouse.incrementAuctionsPosted();
+                    SniperFlipperEvents.postedNames.add(itemname);
                     buyWait.schedule(500);
                     Lilase.mc.thePlayer.closeScreen();
                     buyWait.schedule(500);

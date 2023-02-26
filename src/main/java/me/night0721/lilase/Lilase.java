@@ -30,13 +30,12 @@ import static me.night0721.lilase.features.ah.AHConfig.RECONNECT_DELAY;
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "1.0.22";
+    public static final String VERSION = "1.0.23";
     public static final Minecraft mc = Minecraft.getMinecraft();
     public static AuctionHouse auctionHouse;
     public static AHConfig config;
     private int tickAmount;
     private final Clock clock = new Clock();
-
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {

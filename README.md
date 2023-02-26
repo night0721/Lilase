@@ -10,7 +10,7 @@ Forge mod will automatiaclly buy item according to your configuration, and send 
 - Failsafe in Limbo
 - Auto reconnect to server when disconnected
 - Auto skip confirmation screen
-- GUI showing coordinates, fps and clock and more error
+- GUI showing coordinates, fps and clock and stats like auctions bought, sniped, flipped
 - Auto ungrab mouse when sniping/flipping
 - Auto movement during sniping so hypixel won't send to afk
 

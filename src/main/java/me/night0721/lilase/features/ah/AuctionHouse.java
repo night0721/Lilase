@@ -2,7 +2,10 @@ package me.night0721.lilase.features.ah;
 
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.features.flip.Flipper;
-import me.night0721.lilase.utils.*;
+import me.night0721.lilase.utils.ConfigUtils;
+import me.night0721.lilase.utils.DiscordWebhook;
+import me.night0721.lilase.utils.UngrabUtils;
+import me.night0721.lilase.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,11 +26,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static me.night0721.lilase.features.flip.Flipper.rotation;
+
 public class AuctionHouse {
-    private String uuid;
-    private String message_toSend;
     private Boolean open = false;
     private int auctionsSniped = 0;
+    private int auctionsPosted = 0;
+    private int auctionsFlipped = 0;
     public DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
     private final List<Item> items = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
@@ -84,8 +89,8 @@ public class AuctionHouse {
             open = false;
             return;
         }
-        Utils.debugLog("[Sniper] Randomizing motion as we don't want to be AFK");
-        KeyBindingManager.leftClick();
+        Utils.debugLog("[Sniper] Doing some motion as we don't want to be AFK");
+        rotation.easeTo(Lilase.mc.thePlayer.rotationYaw + 1, Lilase.mc.thePlayer.rotationPitch, 500);
         URL url = new URL("https://api.hypixel.net/skyblock/auctions");
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
@@ -149,18 +154,16 @@ public class AuctionHouse {
                     String updated = matcher.replaceAll("");
                     webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Bought an item on low price").setUrl("https://sky.coflnet.com/auction/" + auction.getString("uuid")).setAuthor("night0721", "https://github.com/night0721", "https://avatars.githubusercontent.com/u/77528305?v=4").setDescription(updated.replace("\n", "\\n")).addField("Item", auction.getString("item_name"), true).addField("Price", format.format(auction.getInt("starting_bid")) + " coins", true).addField("Seller", profile.getJSONObject("player").getString("displayname"), true).addField("Started for", toDuration(System.currentTimeMillis() - auction.getLong("start")), true).addField("Ends in", getTimeSinceDate(auction.getLong("end") - System.currentTimeMillis()), true).setColor(Color.decode("#003153")));
                     webhook.setContent(auction.getString("item_name") + " is sale at " + format.format(auction.getInt("starting_bid")) + "!   `" + "/viewauction " + auction.getString("uuid") + "`");
-                    uuid = auction.getString("uuid");
-                    message_toSend = "Auction House: " + auction.getString("item_name") + " is sale for " + format.format(auction.getInt("starting_bid")) + "!";
                     if (ConfigUtils.getBoolean("main", "checkMultiplierBeforeBuy")) {
                         float multi = flipper.checkMultiplier();
                         Utils.debugLog("[Sniper] Found an item, checking profit multiplier");
                         if (multi > ConfigUtils.getInt("main", "Multiplier")) {
                             Utils.debugLog("[Sniper] Higher than required multiplier, buying now");
-                            sendAuction();
+                            Utils.sendServerMessage("/viewauction " + auction.getString("uuid"));
                         }
                     } else {
                         Utils.debugLog("[Sniper] Found an item, trying to buy");
-                        sendAuction();
+                        Utils.sendServerMessage("/viewauction " + auction.getString("uuid"));
                     }
                     return;
                 }
@@ -168,10 +171,6 @@ public class AuctionHouse {
         }
     }
 
-    private void sendAuction() {
-        Utils.sendServerMessage("/viewauction " + uuid);
-        Utils.sendMessage(message_toSend);
-    }
 
     private final List<Long> times = Arrays.asList(TimeUnit.DAYS.toMillis(365), TimeUnit.DAYS.toMillis(30), TimeUnit.DAYS.toMillis(1), TimeUnit.HOURS.toMillis(1), TimeUnit.MINUTES.toMillis(1), TimeUnit.SECONDS.toMillis(1));
     private final List<String> timesString = Arrays.asList("year", "month", "day", "hour", "minute", "second");
@@ -230,6 +229,22 @@ public class AuctionHouse {
 
     public void incrementAuctionsSniped() {
         this.auctionsSniped += 1;
+    }
+
+    public int getAuctionsPosted() {
+        return auctionsPosted;
+    }
+
+    public void incrementAuctionsPosted() {
+        this.auctionsPosted += 1;
+    }
+
+    public int getAuctionsFlipped() {
+        return auctionsFlipped;
+    }
+
+    public void incrementAuctionsFlipped() {
+        this.auctionsFlipped += 1;
     }
 }
 
