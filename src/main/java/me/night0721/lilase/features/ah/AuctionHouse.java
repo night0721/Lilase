@@ -28,6 +28,8 @@ public class AuctionHouse {
     private String message_toSend;
     private Boolean open = false;
     private int auctionsSniped = 0;
+    private int auctionsPosted = 0;
+    private int auctionsFlipped = 0;
     public DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
     private final List<Item> items = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
@@ -229,6 +231,21 @@ public class AuctionHouse {
 
     public void incrementAuctionsSniped() {
         this.auctionsSniped += 1;
+    }
+    public int getAuctionsPosted() {
+        return auctionsPosted;
+    }
+
+    public void incrementAuctionsPosted() {
+        this.auctionsPosted += 1;
+    }
+
+    public int getAuctionsFlipped() {
+        return auctionsFlipped;
+    }
+
+    public void incrementAuctionsFlipped() {
+        this.auctionsFlipped += 1;
     }
 }
 

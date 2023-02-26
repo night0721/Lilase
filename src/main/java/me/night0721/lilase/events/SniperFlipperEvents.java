@@ -24,8 +24,12 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static me.night0721.lilase.features.ah.AHConfig.GUI_COLOR;
 import static me.night0721.lilase.features.ah.AuctionHouse.flipper;
@@ -36,10 +40,13 @@ import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 public class SniperFlipperEvents {
     private int windowId = 1;
     private boolean buying = false;
-
+    private boolean bought = false;
+    private final Pattern boughtPattern = Pattern.compile("^(.*?) bought (.*?) for ([\\d,]+) coins CLICK$");
+    public static List<String> postedNames = new ArrayList<>();
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) throws InterruptedException, IOException {
         String message = event.message.getUnformattedText();
+        Matcher matcher = boughtPattern.matcher(message);
         if (!message.contains(":")) {
             if (message.equals("You didn't participate in this auction!")) {
                 Utils.debugLog("[Sniper] Failed to buy item, not fast enough. Closing the menu");
@@ -52,7 +59,7 @@ public class SniperFlipperEvents {
                 Utils.debugLog("[Sniper] Saved new API key to config");
                 String apiKey = message.replace("Your new API key is ", "");
                 ConfigUtils.writeStringConfig("main", "APIKey", apiKey);
-            } else if (message.equals("Claiming BIN auction...") && buying) {
+            } else if (message.equals("Claiming BIN auction...") && bought) {
                 Utils.debugLog("[Sniper] Bought an item, starting to sell");
                 Lilase.auctionHouse.webhook.execute();
                 flipper.sellItem();
@@ -75,6 +82,8 @@ public class SniperFlipperEvents {
                 Utils.sendServerMessage("/hub");
                 Thread bzchillingthread = new Thread(bazaarChilling);
                 bzchillingthread.start();
+            } else if (matcher.matches() && postedNames.contains(matcher.group(2))) {
+                Lilase.auctionHouse.incrementAuctionsFlipped();
             }
         }
     }
@@ -164,7 +173,9 @@ public class SniperFlipperEvents {
                         "Z: " + Math.round(Lilase.mc.thePlayer.posZ) + "\n" +
                         time + "\n" +
                         "FPS: " + Minecraft.getDebugFPS() + "\n" +
-                        "Auctions Sniped: " + Lilase.auctionHouse.getAuctionsSniped();
+                        "Auctions Sniped: " + Lilase.auctionHouse.getAuctionsSniped() + "\n" +
+                        "Auctions Posted: " + Lilase.auctionHouse.getAuctionsPosted() + "\n" +
+                        "Auctions Flipped: " + Lilase.auctionHouse.getAuctionsFlipped() + "\n";
                 TextRenderer.drawString(lines, 0, 0, 1.5, GUI_COLOR.getRGB());
             }
         }
@@ -188,6 +199,7 @@ public class SniperFlipperEvents {
             if (buying && "Confirm Purchase".equals(windowName)) {
                 Lilase.mc.playerController.windowClick(windowId + 1, 11, 0, 0, Lilase.mc.thePlayer);
                 buying = false;
+                bought = true;
             }
         }
     }
