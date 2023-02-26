@@ -2,10 +2,16 @@
   {
     "modid": "Lilase",
     "name": "Lilase",
+    "description": "AH Flipper Mod",
     "version": "${version}",
-    "mcversion": "${mcversion}",
+    "mcversion": "1.8.9",
+    "url": "https://github.com/night0721",
+    "updateUrl": "https://github.com/night0721",
     "authorList": ["night0721"],
+    "credits": "FarmHelper/JellyLab",
+    "logoFile": "",
     "description": "Lilac",
-    "url": "https://github.com/night0721"
+    "screenshots": [],
+    "dependencies": []
   }
 ]
