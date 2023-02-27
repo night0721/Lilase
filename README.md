@@ -23,6 +23,7 @@ Forge mod will automatiaclly buy item according to your configuration, and send 
      auto skip confirmation screen, with GUI showing coord fps and time and more error catching
      however config still broken, keep using Lilase.cfg first. Will fix config and discord in next update
      some movement during sniping so hypixel won't send to afk
+- v1.0.22 - More lines in GUI, flipped, posted, sniped
 
 # Example Config:
 ```cfg
