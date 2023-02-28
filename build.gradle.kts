@@ -30,13 +30,13 @@ blossom {
 version = mod_version
 group = "me.night0721"
 base {
-    archivesName.set("$mod_name")
+    archivesName.set(mod_name)
 }
 loom {
     noServerRunConfigs()
     if (project.platform.isLegacyForge) {
         launchConfigs.named("client") {
-            arg("--tweakClass", "cc.polyfrost.oneconfigwrapper.OneConfigWrapper")
+            arg("--tweakClass", "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker")
             property("mixin.debug.export", "true")
         }
     }
@@ -63,8 +63,8 @@ repositories {
 }
 
 dependencies {
-    modCompileOnly("cc.polyfrost:oneconfig-$platform:0.2.0-alpha+")
-    implementation("org.json:json:20220924")
+    compileOnly("cc.polyfrost:oneconfig-$platform:0.2.0-alpha+")
+    shade("org.json:json:20220924")
 
     if (platform.isLegacyForge) {
         compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
@@ -111,14 +111,6 @@ tasks.processResources {
     }
 }
 
-afterEvaluate {
-    if (rootProject.file("LICENSE-TEMPLATE").exists()) {
-        logger.error("-------------------------------------------------------")
-        logger.error("PLEASE REPLACE THE `LICENSE-TEMPLATE` FILE WITH YOUR OWN LICENSE")
-        logger.error("-------------------------------------------------------")
-    }
-}
-
 tasks {
     withType(Jar::class.java) {
         if (project.platform.isFabric) {
@@ -156,24 +148,6 @@ tasks {
             dependsOn(shadowJar)
             archiveClassifier.set("")
             enabled = false
-
-            project.gradle.addBuildListener(object : BuildListener {
-                override fun settingsEvaluated(settings: Settings) {
-                    println("settings evaluated!")
-                }
-
-                override fun projectsLoaded(gradle: Gradle) {
-                    println("loaded!")
-                }
-
-                override fun projectsEvaluated(gradle: Gradle) {
-                    println("projects evaluated!")
-                }
-
-                override fun buildFinished(result: BuildResult) {
-                    println(jar)
-                }
-            })
         }
     }
 }

@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixins;
 public class MixinLoader implements IFMLLoadingPlugin {
     public MixinLoader() {
         MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.night0721.json");
+        Mixins.addConfiguration("mixins.lilase.json");
     }
 
     public String[] getASMTransformerClass() {
