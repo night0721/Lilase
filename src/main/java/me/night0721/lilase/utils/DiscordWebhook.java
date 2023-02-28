@@ -144,7 +144,7 @@ public class DiscordWebhook {
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
         OutputStream stream = connection.getOutputStream();
-        stream.write(json.toString().getBytes(StandardCharsets.UTF_8));
+        stream.write(json.toString().getBytes(StandardCharsets.UTF_16));
         stream.flush();
         stream.close();
 

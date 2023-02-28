@@ -150,7 +150,7 @@ public class Flipper {
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
         OutputStream stream = connection.getOutputStream();
-        stream.write(("{\"ByteData\": \"" + bytedata + "\"}").getBytes(StandardCharsets.UTF_8));
+        stream.write(("{\"ByteData\": \"" + bytedata + "\"}").getBytes(StandardCharsets.UTF_16));
         stream.flush();
         stream.close();
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
