@@ -30,7 +30,7 @@ import static me.night0721.lilase.features.ah.AHConfig.RECONNECT_DELAY;
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "1.0.24";
+    public static final String VERSION = "1.0.24-beta";
     public static final Minecraft mc = Minecraft.getMinecraft();
     public static AuctionHouse auctionHouse;
     public static AHConfig config;

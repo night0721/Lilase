@@ -1,5 +1,7 @@
 <h1> Auction House Flipper - Lilase</h1>
 Forge mod will automatiaclly buy item according to your configuration, and send you a webhook when it has been bought.
+If you have any questions please join https://night0721.me/discord for support
+For how to use https://github.com/night0721/lilase#how-to-use
 
 # Features:
 - Auto buy any item you want, with query customised by yourself
@@ -46,7 +48,7 @@ ANY, WEAPON, ARMOR, ACCESSORIES, CONSUMABLES, BLOCKS, MISC
      Some movement during sniping so hypixel won't send to afk
 - v1.0.22 - Fatal bug fixed (before it will crash when open controls gui), also added title for process
 - v1.0.23 - More lines in GUI, flipped, posted, sniped
-- v1.0.24 - 
+- v1.0.24-beta - 
      Remove the use of org.json dependency 
      Fixing flipper could not be started when item is sniped
      Making send auction to webhook to be toggleable
