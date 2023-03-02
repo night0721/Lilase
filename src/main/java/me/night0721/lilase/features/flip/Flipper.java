@@ -151,7 +151,7 @@ public class Flipper {
     }
 
     public JsonObject getItemData() throws IOException {
-        URL url = new URL("https://night0721.me/api//skyblock");
+        URL url = new URL("https://www.night0721.me/api//skyblock");
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty("Content-Type", "application/json");
         connection.addRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11");
