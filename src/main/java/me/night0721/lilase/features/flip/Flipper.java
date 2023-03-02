@@ -1,12 +1,13 @@
 package me.night0721.lilase.features.flip;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.events.SniperFlipperEvents;
 import me.night0721.lilase.utils.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.util.StringUtils;
-import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -24,6 +25,7 @@ public class Flipper {
     public static FlipperState state = FlipperState.NONE;
     public static final Rotation rotation = new Rotation();
     private final Clock buyWait = new Clock();
+    private JsonObject object;
 
     public Flipper(String name, String data, int price) {
         itemname = name;
@@ -31,14 +33,20 @@ public class Flipper {
         itemprice = price;
     }
 
-    public int getItemPrice() throws IOException {
-        JSONObject item = getItemData();
-        return (int) item.get("price");
+    public int getItemPrice()  {
+        if (object == null) {
+            try {
+                object = getItemData();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return object.get("price").getAsInt();
     }
 
-    public int checkMultiplier() throws IOException {
-        JSONObject item = getItemData();
-        return (int) item.get("price") / itemprice * 100;
+    public int checkProfitPercentage() throws IOException {
+        if (object == null) object = getItemData();
+        return object.get("price").getAsInt() / itemprice * 100;
     }
 
     public void sellItem() {
@@ -142,15 +150,17 @@ public class Flipper {
 
     }
 
-    public JSONObject getItemData() throws IOException {
-        URL url = new URL("https://api.night0721.me/api/v1/skyblock");
+    public JsonObject getItemData() throws IOException {
+        URL url = new URL("https://api.night0721.me/api//skyblock");
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty("Content-Type", "application/json");
         connection.addRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11");
         connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod("GET");
         OutputStream stream = connection.getOutputStream();
-        stream.write(("{\"ByteData\": \"" + bytedata + "\"}").getBytes(StandardCharsets.UTF_16));
+        JsonObject bd = new JsonObject();
+        bd.addProperty("ByteData", bytedata);
+        stream.write(bd.toString().getBytes(StandardCharsets.UTF_16));
         stream.flush();
         stream.close();
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -161,7 +171,8 @@ public class Flipper {
         }
         in.close();
         connection.disconnect();
-        return new JSONObject(content.toString());
+        object = (JsonObject) new JsonParser().parse(content.toString());
+        return (JsonObject) new JsonParser().parse(content.toString());
     }
 
     private float distanceToFirstPoint() {

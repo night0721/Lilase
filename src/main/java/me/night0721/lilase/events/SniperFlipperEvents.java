@@ -23,7 +23,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -32,6 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static me.night0721.lilase.features.ah.AHConfig.GUI_COLOR;
+import static me.night0721.lilase.features.ah.AHConfig.SEND_MESSAGE;
 import static me.night0721.lilase.features.ah.AuctionHouse.flipper;
 import static me.night0721.lilase.features.flip.Flipper.rotation;
 import static me.night0721.lilase.features.flip.FlipperState.START;
@@ -39,14 +39,22 @@ import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 
 public class SniperFlipperEvents {
     private int windowId = 1;
+    private int price;
     private boolean buying = false;
     private boolean bought = false;
-    private final Pattern boughtPattern = Pattern.compile("^(.*?) bought (.*?) for ([\\d,]+) coins CLICK$");
+    private final Pattern auctionSoldPattern = Pattern.compile("^(.*?) bought (.*?) for ([\\d,]+) coins CLICK$");
+    private final Pattern boughtPattern = Pattern.compile("You purchased (\\w+(?:\\s+\\w+)*) for ([\\d,]+)\\s*(\\w+)!");
+    private final Pattern boughtPattern2 = Pattern.compile("You claimed (.+?) from (.+?)'s auction!");
+    private final Pattern boughtPattern3 = Pattern.compile("You (purchased|claimed)( (\\\\d+x))? ([^\\\\s]+(\\\\s+[^\\\\d,]+)*)((,| for) (\\\\d+,?)+ coins?(!)?)?");
     public static List<String> postedNames = new ArrayList<>();
+
     @SubscribeEvent
-    public void onChat(ClientChatReceivedEvent event) throws InterruptedException, IOException {
+    public void onChat(ClientChatReceivedEvent event) throws InterruptedException {
         String message = event.message.getUnformattedText();
-        Matcher matcher = boughtPattern.matcher(message);
+        Matcher matcher = auctionSoldPattern.matcher(message);
+        Matcher boughtMatcher = boughtPattern.matcher(message);
+        Matcher boughtMatcher2 = boughtPattern2.matcher(message);
+        Matcher boughtMatcher3 = boughtPattern3.matcher(message);
         if (!message.contains(":")) {
             if (message.equals("You didn't participate in this auction!")) {
                 Utils.debugLog("[Sniper] Failed to buy item, not fast enough. Closing the menu");
@@ -59,10 +67,23 @@ public class SniperFlipperEvents {
                 Utils.debugLog("[Sniper] Saved new API key to config");
                 String apiKey = message.replace("Your new API key is ", "");
                 ConfigUtils.writeStringConfig("main", "APIKey", apiKey);
-            } else if (message.equals("Claiming BIN auction...") && bought) {
-                Utils.debugLog("[Sniper] Bought an item, starting to sell");
-                Lilase.auctionHouse.webhook.execute();
-                flipper.sellItem();
+            } else if ((boughtMatcher.matches() || boughtMatcher2.matches() || boughtMatcher3.matches()) && bought) {
+                new Thread(() -> {
+                    bought = false;
+                    Utils.debugLog("[Sniper] Bought an item, starting to sell");
+                    try {
+                        if (SEND_MESSAGE) Lilase.auctionHouse.webhook.execute();
+                    } catch (Exception e) {
+                        System.out.println("Failed to send webhook");
+                    }
+                    price = flipper.getItemPrice();
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    flipper.sellItem();
+                }).start();
             } else if (message.equals("Your starting bid must be at least 10 coins!")) {
                 InventoryUtils.clickOpenContainerSlot(13);
                 Lilase.mc.thePlayer.closeScreen();
@@ -76,10 +97,13 @@ public class SniperFlipperEvents {
                 Flipper.state = FlipperState.NONE;
             } else if (message.contains("You were spawned in Limbo")) {
                 Utils.sendMessage("Detected in Limbo, stopping everything for 5 minutes");
+                Utils.addTitle("You got sent to Limbo!");
                 Flipper.state = FlipperState.NONE;
                 if (Lilase.auctionHouse.getOpen()) Lilase.auctionHouse.toggleAuction();
                 Thread.sleep(5000);
-                Utils.sendServerMessage("/hub");
+                Utils.sendServerMessage("/lobby");
+                Thread.sleep(5000);
+                Utils.sendServerMessage("/skyblock");
                 Thread bzchillingthread = new Thread(bazaarChilling);
                 bzchillingthread.start();
             } else if (matcher.matches() && postedNames.contains(matcher.group(2))) {
@@ -168,15 +192,9 @@ public class SniperFlipperEvents {
                 int hour = cal.get(Calendar.HOUR_OF_DAY);
                 int minute = cal.get(Calendar.MINUTE);
                 String time = String.format("%02d:%02d", hour, minute);
-                String lines = "X: " + Math.round(Lilase.mc.thePlayer.posX) + "\n" +
-                        "Y: " + Math.round(Lilase.mc.thePlayer.posY) + "\n" +
-                        "Z: " + Math.round(Lilase.mc.thePlayer.posZ) + "\n" +
-                        time + "\n" +
-                        "FPS: " + Minecraft.getDebugFPS() + "\n" +
-                        "Auctions Sniped: " + Lilase.auctionHouse.getAuctionsSniped() + "\n" +
-                        "Auctions Posted: " + Lilase.auctionHouse.getAuctionsPosted() + "\n" +
-                        "Auctions Flipped: " + Lilase.auctionHouse.getAuctionsFlipped() + "\n";
-                TextRenderer.drawString(lines, 0, 0, 1.5, GUI_COLOR.getRGB());
+                int days = (int) (Lilase.mc.theWorld.getWorldTime() / 24000);
+                String lines = "X: " + Math.round(Lilase.mc.thePlayer.posX) + "\n" + "Y: " + Math.round(Lilase.mc.thePlayer.posY) + "\n" + "Z: " + Math.round(Lilase.mc.thePlayer.posZ) + "\n" + time + "\n" + "FPS: " + Minecraft.getDebugFPS() + "\n" + "Day: " + days + "\n" + "Auctions Sniped: " + Lilase.auctionHouse.getAuctionsSniped() + "\n" + "Auctions Posted: " + Lilase.auctionHouse.getAuctionsPosted() + "\n" + "Auctions Flipped: " + Lilase.auctionHouse.getAuctionsFlipped() + "\n";
+                TextRenderer.drawString(lines, 0, 0, 0.9, GUI_COLOR.getRGB());
             }
         }
     }
@@ -199,10 +217,11 @@ public class SniperFlipperEvents {
             if (buying && "Confirm Purchase".equals(windowName)) {
                 Lilase.mc.playerController.windowClick(windowId + 1, 11, 0, 0, Lilase.mc.thePlayer);
                 buying = false;
-                bought = true;
+                if (Lilase.auctionHouse.buying) bought = true;
             }
         }
     }
+
 
     @SubscribeEvent
     public void onPacketReceive(PacketReceivedEvent event) {
@@ -211,15 +230,14 @@ public class SniperFlipperEvents {
                 try {
                     S33PacketUpdateSign packetUpdateSign = (S33PacketUpdateSign) event.packet;
                     IChatComponent[] lines = packetUpdateSign.getLines();
-                    Utils.debugLog("[Flipper] Item price should be " + flipper.getItemPrice());
-                    lines[0] = IChatComponent.Serializer.jsonToComponent("{\"text\":\"" + flipper.getItemPrice() + "\"}");
-                    Thread.sleep(1500);
+                    Utils.debugLog("[Flipper] Item price should be " + price);
+                    Thread.sleep(300);
+                    lines[0] = IChatComponent.Serializer.jsonToComponent("{\"text\":\"" + price + "\"}");
                     C12PacketUpdateSign packetUpdateSign1 = new C12PacketUpdateSign(packetUpdateSign.getPos(), lines);
                     sendPacketWithoutEvent(packetUpdateSign1);
-                } catch (IOException | InterruptedException | RuntimeException e) {
+                } catch (RuntimeException | InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }).start();
         }
 

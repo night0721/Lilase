@@ -30,13 +30,13 @@ public class ConfigUtils {
         if (!hasKey("main", "ProfitPercentage")) writeIntConfig("main", "ProfitPercentage", 400); //400%
         if (!hasKey("main", "GUI")) writeBooleanConfig("main", "GUI", true);
         if (!hasKey("main", "GUI_COLOR")) writeIntConfig("main", "GUI_COLOR", 0x003153);
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 3; i++) {
             if (!hasKey("item" + i, "Name")) writeStringConfig("item" + i, "Name", "");
             if (!hasKey("item" + i, "Type")) writeStringConfig("item" + i, "Type", "");
             if (!hasKey("item" + i, "Price")) writeIntConfig("item" + i, "Price", 0);
             if (!hasKey("item" + i, "Tier")) writeStringConfig("item" + i, "Tier", "");
         }
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 3; i++) {
             if (!hasKey("blacklist" + i, "Name")) writeStringConfig("blacklist" + i, "Name", "");
             if (!hasKey("blacklist" + i, "Type")) writeStringConfig("blacklist" + i, "Type", "");
             if (!hasKey("blacklist" + i, "Price")) writeIntConfig("blacklist" + i, "Price", 0);

@@ -40,17 +40,24 @@ ANY, WEAPON, ARMOR, ACCESSORIES, CONSUMABLES, BLOCKS, MISC
 - v1.0.2 - Added flipper, profit check, auto post
 - v1.0.21 - 
      Auto reconnect to server when disconnected
-     ungrab mouse when sniping/flipping
-     auto skip confirmation screen, with GUI showing coord fps and time and more error catching
-     however config still broken, keep using Lilase.cfg first. Will fix config and discord in next update
-     some movement during sniping so hypixel won't send to afk
+     Ungrab mouse when sniping/flipping
+     Auto skip confirmation screen, with GUI showing coord fps and time and more error catching
+     However config still broken, keep using Lilase.cfg first. Will fix config and discord in next update
+     Some movement during sniping so hypixel won't send to afk
 - v1.0.22 - Fatal bug fixed (before it will crash when open controls gui), also added title for process
 - v1.0.23 - More lines in GUI, flipped, posted, sniped
 - v1.0.24 - 
-     remove the use of org.json dependency 
-     fixing flipper could not be started when item is sniped
-     making send auction to be toggleable
-     added blacklist for sniping
+     Remove the use of org.json dependency 
+     Fixing flipper could not be started when item is sniped
+     Making send auction to webhook to be toggleable
+     Added blacklist for sniping 
+     Changing API URL to a more stable one
+     Have at most 99 items to snipe at the same time, with 99 items to blacklist too
+     Mod will now only generate first three items config in the file, but you can add yourself
+     Fetching price of item earlier so it won't be bugged when posting on auctio house
+     Fix the weird lag when doing random motion when sniping
+     Changed names in config so it is more readable and understanable
+     Added days in GUI
      
 # To Do Features:
 - Console client??

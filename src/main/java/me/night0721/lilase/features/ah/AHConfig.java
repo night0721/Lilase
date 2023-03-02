@@ -13,11 +13,12 @@ public class AHConfig extends Config {
     public AHConfig() {
         super(new Mod("Lilase", ModType.UTIL_QOL), "lilase.json");
         initialize();
+        addListener("SEND_MESSAGE", () -> ConfigUtils.writeBooleanConfig("main", "SendMessageToWebhook", AHConfig.SEND_MESSAGE));
         addListener("WEBHOOK", () -> ConfigUtils.writeStringConfig("main", "Webhook", AHConfig.WEBHOOK));
         addListener("RECONNECT_DELAY", () -> ConfigUtils.writeIntConfig("main", "ReconnectDelay", Math.round(AHConfig.RECONNECT_DELAY)));
         addListener("AUCTION_HOUSE_DELAY", () -> ConfigUtils.writeIntConfig("main", "AuctionHouseDelay", Math.round(AHConfig.AUCTION_HOUSE_DELAY)));
-        addListener("CHECK_MULTIPLIER", () -> ConfigUtils.writeBooleanConfig("main", "checkMultiplierBeforeBuy", AHConfig.CHECK_MULTIPLIER));
-        addListener("MULTIPLIER", () -> ConfigUtils.writeIntConfig("main", "MULTIPLIER", Math.round(AHConfig.MULTIPLIER)));
+        addListener("CHECK_PERCENTAGE", () -> ConfigUtils.writeBooleanConfig("main", "checkProfitPercentageBeforeBuy", AHConfig.CHECK_PERCENTAGE));
+        addListener("PROFIT_PERCENTAGE", () -> ConfigUtils.writeIntConfig("main", "ProfitPercentage", Math.round(AHConfig.PROFIT_PERCENTAGE)));
         addListener("GUI", () -> ConfigUtils.writeBooleanConfig("main", "GUI", AHConfig.GUI));
         addListener("GUI_COLOR", () -> ConfigUtils.writeIntConfig("main", "GUI_COLOR", AHConfig.GUI_COLOR.getRGB()));
         addListener("ITEM_1_NAME", () -> ConfigUtils.writeStringConfig("item1", "Name", AHConfig.ITEM_1_NAME));
@@ -60,7 +61,8 @@ public class AHConfig extends Config {
         addListener("ITEM_10_TYPE", () -> ConfigUtils.writeStringConfig("item10", "Type", AHConfig.ITEM_10_TYPE));
         addListener("ITEM_10_PRICE", () -> ConfigUtils.writeIntConfig("item10", "Price", Math.round(AHConfig.ITEM_10_PRICE)));
         addListener("ITEM_10_TIER", () -> ConfigUtils.writeStringConfig("item10", "Tier", AHConfig.ITEM_10_TIER));
-        addDependency("MULTIPLIER", "CHECK_MULTIPLIER");
+        addDependency("WEBHOOK", "SEND_MESSAGE");
+        addDependency("PROFIT_PERCENTAGE", "CHECK_PERCENTAGE");
         addDependency("GUI_COLOR", "GUI");
         addDependency("ITEM_1_NAME", "addItem", () -> ConfigUtils.getString("item1", "Name").equals(""));
         addDependency("ITEM_1_TYPE", "addItem", () -> ConfigUtils.getString("item1", "Type").equals(""));
@@ -110,14 +112,17 @@ public class AHConfig extends Config {
     @Text(name = "Discord Webhook", placeholder = "URL", category = "Auction House", description = "Discord webhook to send messages to")
     public static String WEBHOOK = "";
 
+    @Switch(name = "Send message to webhook", category = "Auction House", description = "Send a message to the webhook when an item is bought")
+    public static boolean SEND_MESSAGE = true;
+
     @Number(name = "Reconnect Delay", min = 5, max = 20, category = "Auction House", description = "Delay between each reconnect attempt to the server")
     public static int RECONNECT_DELAY = 20;
 
-    @Switch(name = "Check Multiplier Before Buying", category = "Flipper", description = "Check the multiplier before buying the item, if the multiplier is too low, it will not buy the item")
-    public static boolean CHECK_MULTIPLIER = false;
+    @Switch(name = "Check Profit Percentage Before Buying", category = "Flipper", description = "Check the profit percentage before buying the item, if the profit percentage is too low, it will not buy the item")
+    public static boolean CHECK_PERCENTAGE = false;
 
-    @Number(name = "Multiplier", min = 100, max = 5000, step = 50, category = "Flipper", description = "Multiplier to check before buying the item, if the multiplier is too low, it will not buy the item")
-    public static int MULTIPLIER = 400;
+    @Number(name = "ProfitPercentage", min = 100, max = 5000, step = 50, category = "Flipper", description = "Profit percentage to check before buying the item, if the profit percentage is too low, it will not buy the item")
+    public static int PROFIT_PERCENTAGE = 400;
 
     @Switch(name = "Bed Spam & Skip Confirm", category = "Auction House", description = "Spam the bed to buy the item just after the grace period ends and skips the confirmation of buying the item")
     public static boolean BED_SPAM = true;

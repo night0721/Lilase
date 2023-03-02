@@ -4,11 +4,20 @@ import me.night0721.lilase.Lilase;
 import net.minecraft.network.play.server.S45PacketTitle;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
     public static boolean inHub = false;
+    public static IChatComponent header = null;
+    public static IChatComponent footer = null;
+    private static final Pattern PATTERN_ACTIVE_EFFECTS = Pattern.compile(
+            "§r§r§7You have a §r§cGod Potion §r§7active! §r§d([0-9]*?:?[0-9]*?:?[0-9]*)§r");
+    public static EffectState cookie;
+    public static EffectState godPot;
 
     public static String translateAlternateColorCodes(String text) {
         char[] b = text.toCharArray();
@@ -38,6 +47,39 @@ public class Utils {
         return inHub;
     }
 
+    public static void checkFooter() {
+        //
+        boolean foundGodPot = false;
+        boolean foundCookieText = false;
+        boolean loaded = false;
+
+        if (footer != null) {
+            String formatted = footer.getFormattedText();
+            for (String line : formatted.split("\n")) {
+                Matcher activeEffectsMatcher = PATTERN_ACTIVE_EFFECTS.matcher(line);
+                if (activeEffectsMatcher.matches()) {
+                    foundGodPot = true;
+                } else if (line.contains("§d§lCookie Buff")) {
+                    foundCookieText = true;
+                } else if (foundCookieText && line.contains("Not active! Obtain")) {
+                    foundCookieText = false;
+                    cookie = EffectState.OFF;
+                } else if (foundCookieText) {
+                    foundCookieText = false;
+                    cookie = EffectState.ON;
+                }
+                if (line.contains("Active")) {
+                    loaded = true;
+                }
+            }
+            godPot = foundGodPot ? EffectState.ON : EffectState.OFF;
+            if (!loaded) {
+                godPot = EffectState.INDETERMINABLE;
+                cookie = EffectState.INDETERMINABLE;
+            }
+        }
+    }
+
     public static void sendMessage(String message) {
         Lilase.mc.thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + EnumChatFormatting.BOLD + "Liliase" + EnumChatFormatting.RESET + EnumChatFormatting.DARK_GRAY + " » " + EnumChatFormatting.RESET + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + message));
     }
@@ -49,4 +91,8 @@ public class Utils {
     public static void sendServerMessage(String message) {
         Lilase.mc.thePlayer.sendChatMessage(message);
     }
+}
+
+enum EffectState {
+    ON, OFF, INDETERMINABLE
 }

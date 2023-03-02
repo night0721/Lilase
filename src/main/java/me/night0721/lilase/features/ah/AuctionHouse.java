@@ -1,14 +1,15 @@
 package me.night0721.lilase.features.ah;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.features.flip.Flipper;
+import me.night0721.lilase.features.flip.FlipperState;
 import me.night0721.lilase.utils.ConfigUtils;
 import me.night0721.lilase.utils.DiscordWebhook;
 import me.night0721.lilase.utils.UngrabUtils;
 import me.night0721.lilase.utils.Utils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.*;
@@ -16,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,34 +25,36 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static me.night0721.lilase.features.flip.Flipper.rotation;
 
 public class AuctionHouse {
     private Boolean open = false;
+    public Boolean buying = false;
     private int auctionsSniped = 0;
     private int auctionsPosted = 0;
     private int auctionsFlipped = 0;
     public DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
     private final List<Item> items = new ArrayList<>();
+    private final List<Item> blacklist = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
+    private final ThreadLocalRandom randomSlot;
     public static Flipper flipper;
 
     public AuctionHouse() {
-        if (!ConfigUtils.getString("item1", "Name").equals("") && !ConfigUtils.getString("item1", "Type").equals("") && !ConfigUtils.getString("item1", "Tier").equals("") && ConfigUtils.getInt("item1", "Price") != 0)
-            items.add(new Item(ConfigUtils.getString("item1", "Name"), ItemType.valueOf(ConfigUtils.getString("item1", "Type")), ConfigUtils.getInt("item1", "Price"), ItemTier.valueOf(ConfigUtils.getString("item1", "Tier"))));
-        if (!ConfigUtils.getString("item2", "Name").equals("") && !ConfigUtils.getString("item2", "Type").equals("") && !ConfigUtils.getString("item2", "Tier").equals("") && ConfigUtils.getInt("item2", "Price") != 0)
-            items.add(new Item(ConfigUtils.getString("item2", "Name"), ItemType.valueOf(ConfigUtils.getString("item2", "Type")), ConfigUtils.getInt("item2", "Price"), ItemTier.valueOf(ConfigUtils.getString("item2", "Tier"))));
-        if (!ConfigUtils.getString("item3", "Name").equals("") && !ConfigUtils.getString("item3", "Type").equals("") && !ConfigUtils.getString("item3", "Tier").equals("") && ConfigUtils.getInt("item3", "Price") != 0)
-            items.add(new Item(ConfigUtils.getString("item3", "Name"), ItemType.valueOf(ConfigUtils.getString("item3", "Type")), ConfigUtils.getInt("item3", "Price"), ItemTier.valueOf(ConfigUtils.getString("item3", "Tier"))));
+        for (int i = 1; i <= 99; i++) {
+            if (!ConfigUtils.getString("item" + i, "Name").equals("") && !ConfigUtils.getString("item" + i, "Type").equals("") && !ConfigUtils.getString("item" + i, "Tier").equals("") && ConfigUtils.getInt("item" + i, "Price") != 0)
+                items.add(new Item(ConfigUtils.getString("item" + i, "Name"), ItemType.valueOf(ConfigUtils.getString("item" + i, "Type")), ConfigUtils.getInt("item" + i, "Price"), ItemTier.valueOf(ConfigUtils.getString("item" + i, "Tier"))));
+        }
+        for (int i = 1; i <= 99; i++) {
+            if (!ConfigUtils.getString("blacklist" + i, "Name").equals("") && !ConfigUtils.getString("blacklist" + i, "Type").equals("") && !ConfigUtils.getString("blacklist" + i, "Tier").equals("") && ConfigUtils.getInt("blacklist" + i, "Price") != 0)
+                blacklist.add(new Item(ConfigUtils.getString("blacklist" + i, "Name"), ItemType.valueOf(ConfigUtils.getString("blacklist" + i, "Type")), ConfigUtils.getInt("blacklist" + i, "Price"), ItemTier.valueOf(ConfigUtils.getString("blacklist" + i, "Tier"))));
+        }
         webhook.setUsername("Lilase - Auction House");
-        //webhook.setAvatarUrl("https://wallpapercave.com/wp/wp2412537.jpg");
         webhook.setAvatarUrl("https://th.bing.com/th/id/OIP.Lk2cSujieY70GbsgPZ0TyAHaEK?w=325&h=182&c=7&r=0&o=5&pid=1.7");
+        webhook.setTts(false);
+        randomSlot = ThreadLocalRandom.current();
     }
 
-    private JSONObject getHypixelData(String player) throws IOException, JSONException {
+    private JsonObject getHypixelData(String player) throws IOException {
         URL url = new URL("https://api.hypixel.net/player?key=" + ConfigUtils.getString("main", "APIKey") + "&uuid=" + player);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
@@ -65,15 +69,11 @@ public class AuctionHouse {
         }
         in.close();
         connection.disconnect();
-        return new JSONObject(content.toString());
+        return (JsonObject) new JsonParser().parse(content.toString());
     }
 
-    private float generateRandomFloat() {
-        return (float) (ThreadLocalRandom.current().nextFloat() * 180);
-    }
-
-    public void getItem() throws IOException, JSONException {
-        if (open == false) return;
+    public void getItem() throws IOException {
+        if (!open) return;
         if (!Utils.checkInHub()) {
             Utils.sendMessage("Not in hub, stopping");
             open = false;
@@ -89,8 +89,14 @@ public class AuctionHouse {
             open = false;
             return;
         }
+        if (Flipper.state != FlipperState.NONE) {
+            Utils.sendMessage("Flipper is running, stopping");
+            open = false;
+            return;
+        }
+        if (Lilase.mc.currentScreen != null) Lilase.mc.thePlayer.closeScreen();
         Utils.debugLog("[Sniper] Doing some motion as we don't want to be AFK");
-        rotation.easeTo(Lilase.mc.thePlayer.rotationYaw + 1, Lilase.mc.thePlayer.rotationPitch, 500);
+        Lilase.mc.thePlayer.inventory.currentItem = randomSlot.nextInt(9);
         URL url = new URL("https://api.hypixel.net/skyblock/auctions");
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
@@ -108,13 +114,17 @@ public class AuctionHouse {
         in.close();
         connection.disconnect();
         Utils.sendMessage("Getting item from auction house");
-        JSONObject data = new JSONObject(content.toString());
-        JSONArray auctions = data.getJSONArray("auctions");
-        for (int i = 0; i < auctions.length(); i++) {
-            JSONObject auction = auctions.getJSONObject(i);
+        JsonObject data = (JsonObject) new JsonParser().parse(content.toString());
+        JsonArray auctions = data.getAsJsonArray("auctions");
+        for (int i = 0; i < auctions.size(); i++) {
+            JsonObject auction = auctions.get(i).getAsJsonObject();
             for (Item item : items) {
                 String lore = " ";
                 ItemType type = item.type;
+                String itemName = auction.get("item_name").getAsString();
+                String uuid = auction.get("uuid").getAsString();
+                Integer price = auction.get("starting_bid").getAsInt();
+                boolean found = false;
                 switch (item.query) {
                     case "Bal":
                         lore = "Made of Lava";
@@ -135,35 +145,43 @@ public class AuctionHouse {
                         lore = "Water Bender";
                         break;
                 }
-                if (posted.contains(auction.getString("uuid"))) break;
-                if (!auction.getString("item_name").toLowerCase().contains(item.query.toLowerCase())) break;
-                if (!auction.getString("item_lore").contains(lore)) break;
-                if (auction.getInt("starting_bid") > item.price) break;
-                if (item.tier != ItemTier.ANY) if (!auction.getString("tier").equals(item.tier.name())) break;
-                if (type != ItemType.ANY) if (!auction.getString("category").equals(type.lowercase)) break;
-                if (!auction.getBoolean("bin")) break;
-                if (!posted.contains(auction.getString("uuid"))) {
-                    posted.add(auction.getString("uuid"));
-                    flipper = new Flipper(auction.getString("item_name"), auction.getString("item_bytes"), auction.getInt("starting_bid"));
-                    NumberFormat format = NumberFormat.getInstance(Locale.US);
-                    JSONObject profile = getHypixelData(auction.getString("auctioneer"));
-                    if (profile.getJSONObject("player").getString("displayname").toLowerCase() == Lilase.mc.thePlayer.getName().toLowerCase())
+                if (posted.contains(uuid)) break;
+                for (Item blacklisted : blacklist) {
+                    if (itemName.contains(blacklisted.getQuery())) {
+                        found = true;
                         break;
-                    Pattern pattern = Pattern.compile("§[0-9a-z]", Pattern.MULTILINE);
-                    Matcher matcher = pattern.matcher(auction.getString("item_lore"));
-                    String updated = matcher.replaceAll("");
-                    webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Bought an item on low price").setUrl("https://sky.coflnet.com/auction/" + auction.getString("uuid")).setAuthor("night0721", "https://github.com/night0721", "https://avatars.githubusercontent.com/u/77528305?v=4").setDescription(updated.replace("\n", "\\n")).addField("Item", auction.getString("item_name"), true).addField("Price", format.format(auction.getInt("starting_bid")) + " coins", true).addField("Seller", profile.getJSONObject("player").getString("displayname"), true).addField("Started for", toDuration(System.currentTimeMillis() - auction.getLong("start")), true).addField("Ends in", getTimeSinceDate(auction.getLong("end") - System.currentTimeMillis()), true).setColor(Color.decode("#003153")));
-                    webhook.setContent(auction.getString("item_name") + " is sale at " + format.format(auction.getInt("starting_bid")) + "!   `" + "/viewauction " + auction.getString("uuid") + "`");
-                    if (ConfigUtils.getBoolean("main", "checkMultiplierBeforeBuy")) {
-                        float multi = flipper.checkMultiplier();
-                        Utils.debugLog("[Sniper] Found an item, checking profit multiplier");
-                        if (multi > ConfigUtils.getInt("main", "Multiplier")) {
-                            Utils.debugLog("[Sniper] Higher than required multiplier, buying now");
-                            Utils.sendServerMessage("/viewauction " + auction.getString("uuid"));
+                    }
+                }
+                if (found) break;
+                if (!itemName.toLowerCase().contains(item.query.toLowerCase())) break;
+                if (!auction.get("item_lore").getAsString().contains(lore)) break;
+                if (price > item.price) break;
+                if (item.tier != ItemTier.ANY) if (!auction.get("tier").getAsString().equals(item.tier.name())) break;
+                if (type != ItemType.ANY) if (!auction.get("category").getAsString().equals(type.getLowercase())) break;
+                if (!auction.get("bin").getAsBoolean()) break;
+                if (!posted.contains(uuid)) {
+                    posted.add(uuid);
+                    flipper = new Flipper(itemName, auction.get("item_bytes").getAsString(), price);
+                    NumberFormat format = NumberFormat.getInstance(Locale.US);
+                    JsonObject profile = getHypixelData(auction.get("auctioneer").getAsString());
+                    String profileName = profile.get("player").getAsJsonObject().get("displayname").getAsString();
+                    if (profileName.equalsIgnoreCase(Lilase.mc.thePlayer.getName())) break;
+                    String updated = auction.get("item_lore").getAsString().replaceAll("§[0-9a-z]", "");
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Bought an item on low price").setUrl("https://sky.coflnet.com/auction/" + uuid).setAuthor("night0721", "https://github.com/night0721", "https://avatars.githubusercontent.com/u/77528305?v=4").setDescription(updated.replace("\n", "\\n")).addField("Item", itemName, true).addField("Price", format.format(price) + " coins", true).addField("Profit", format.format(flipper.getItemPrice() - price) + " coins", true).addField("Profit Percentage", Float.parseFloat(df.format(flipper.getItemPrice() - price)) + "%", true).addField("Seller", profileName, true).addField("Started for", toDuration(System.currentTimeMillis() - auction.get("start").getAsLong()), true).addField("Ends in", getTimeSinceDate(auction.get("end").getAsLong() - System.currentTimeMillis()), true).setColor(Color.decode("#003153")));
+                    webhook.setContent(itemName + " is sale at " + format.format(price) + "!   `" + "/viewauction " + uuid + "`");
+                    if (ConfigUtils.getBoolean("main", "checkProfitPercentageBeforeBuy")) {
+                        float multi = flipper.checkProfitPercentage();
+                        Utils.debugLog("[Sniper] Found an item, checking profit percentage");
+                        if (multi > ConfigUtils.getInt("main", "ProfitPercentage")) {
+                            Utils.debugLog("[Sniper] Higher than required profit percentage, buying now");
+                            Utils.sendServerMessage("/viewauction " + uuid);
+                            buying = true;
                         }
                     } else {
                         Utils.debugLog("[Sniper] Found an item, trying to buy");
-                        Utils.sendServerMessage("/viewauction " + auction.getString("uuid"));
+                        Utils.sendServerMessage("/viewauction " + uuid);
+                        buying = true;
                     }
                     return;
                 }
@@ -278,5 +296,21 @@ class Item {
         this.type = type;
         this.price = price;
         this.tier = tier;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public ItemType getType() {
+        return type;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public ItemTier getTier() {
+        return tier;
     }
 }
