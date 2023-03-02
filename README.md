@@ -69,6 +69,7 @@ ANY, WEAPON, ARMOR, ACCESSORIES, CONSUMABLES, BLOCKS, MISC
 - Cookie compatible
 - pre api?
 - upper bound and lower bound for sniping as upper bound is specified right now
+- Minimum profit check
 
 # Example Config:
 ```cfg
