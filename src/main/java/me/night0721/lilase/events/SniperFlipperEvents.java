@@ -46,7 +46,7 @@ public class SniperFlipperEvents {
     private final Pattern boughtPattern = Pattern.compile("You purchased (\\w+(?:\\s+\\w+)*) for ([\\d,]+)\\s*(\\w+)!");
     private final Pattern boughtPattern2 = Pattern.compile("You claimed (.+?) from (.+?)'s auction!");
     private final Pattern boughtPattern3 = Pattern.compile("You (purchased|claimed)( (\\\\d+x))? ([^\\\\s]+(\\\\s+[^\\\\d,]+)*)((,| for) (\\\\d+,?)+ coins?(!)?)?");
-    public static List<String> postedNames = new ArrayList<>();
+    public static final List<String> postedNames = new ArrayList<>();
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) throws InterruptedException {
@@ -112,7 +112,7 @@ public class SniperFlipperEvents {
         }
     }
 
-    Runnable bazaarChilling = () -> {
+    private final Runnable bazaarChilling = () -> {
         try {
             rotation.reset();
             rotation.easeTo(103f, -11f, 1000);

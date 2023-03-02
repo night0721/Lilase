@@ -107,31 +107,31 @@ public class AHConfig extends Config {
     }
 
     @Slider(name = "Time per fetch (seconds)", min = 5, max = 15, step = 1, category = "Auction House", description = "Time between each fetch of the auction house, the faster the fetch, the more likely you will snipe the item")
-    public static int AUCTION_HOUSE_DELAY = 8;
+    public static final int AUCTION_HOUSE_DELAY = 8;
 
     @Text(name = "Discord Webhook", placeholder = "URL", category = "Auction House", description = "Discord webhook to send messages to")
-    public static String WEBHOOK = "";
+    public static final String WEBHOOK = "";
 
     @Switch(name = "Send message to webhook", category = "Auction House", description = "Send a message to the webhook when an item is bought")
-    public static boolean SEND_MESSAGE = true;
+    public static final boolean SEND_MESSAGE = true;
 
     @Number(name = "Reconnect Delay", min = 5, max = 20, category = "Auction House", description = "Delay between each reconnect attempt to the server")
-    public static int RECONNECT_DELAY = 20;
+    public static final int RECONNECT_DELAY = 20;
 
     @Switch(name = "Check Profit Percentage Before Buying", category = "Flipper", description = "Check the profit percentage before buying the item, if the profit percentage is too low, it will not buy the item")
-    public static boolean CHECK_PERCENTAGE = false;
+    public static final boolean CHECK_PERCENTAGE = false;
 
     @Number(name = "ProfitPercentage", min = 100, max = 5000, step = 50, category = "Flipper", description = "Profit percentage to check before buying the item, if the profit percentage is too low, it will not buy the item")
-    public static int PROFIT_PERCENTAGE = 400;
+    public static final int PROFIT_PERCENTAGE = 400;
 
     @Switch(name = "Bed Spam & Skip Confirm", category = "Auction House", description = "Spam the bed to buy the item just after the grace period ends and skips the confirmation of buying the item")
-    public static boolean BED_SPAM = true;
+    public static final boolean BED_SPAM = true;
 
     @Checkbox(name = "GUI", category = "GUI", description = "Enable the GUI")
-    public static boolean GUI = true;
+    public static final boolean GUI = true;
 
     @Color(name = "GUI_COLOR", category = "GUI")
-    public static OneColor GUI_COLOR = new OneColor(0, 49, 83);
+    public static final OneColor GUI_COLOR = new OneColor(0, 49, 83);
 
     @Button(name = "Add Item", text = "Click to add an item to snipe", category = "Auction House")
     public static void addItem() {
@@ -142,123 +142,123 @@ public class AHConfig extends Config {
     public static int value = 0;
 
     @Text(name = "Item 1 Name", placeholder = "Item Name")
-    public static String ITEM_1_NAME = " ";
+    public static final String ITEM_1_NAME = " ";
 
     @Text(name = "Item 1 Type", placeholder = "Item Type")
-    public static String ITEM_1_TYPE = "ANY";
+    public static final String ITEM_1_TYPE = "ANY";
 
     @Number(name = "Item 1 Price", min = 1, max = 1000000000)
-    public static int ITEM_1_PRICE = 1;
+    public static final int ITEM_1_PRICE = 1;
 
     @Text(name = "Item 1 Tier", placeholder = "Item Tier")
-    public static String ITEM_1_TIER = "ANY";
+    public static final String ITEM_1_TIER = "ANY";
 
     @Text(name = "Item 2 Name", placeholder = "Item Name")
-    public static String ITEM_2_NAME = " ";
+    public static final String ITEM_2_NAME = " ";
 
     @Text(name = "Item 2 Type", placeholder = "Item Type")
-    public static String ITEM_2_TYPE = "ANY";
+    public static final String ITEM_2_TYPE = "ANY";
 
     @Number(name = "Item 2 Price", min = 1, max = 1000000000)
-    public static int ITEM_2_PRICE = 1;
+    public static final int ITEM_2_PRICE = 1;
 
     @Text(name = "Item 2 Tier", placeholder = "Item Tier")
-    public static String ITEM_2_TIER = "ANY";
+    public static final String ITEM_2_TIER = "ANY";
 
     @Text(name = "Item 3 Name", placeholder = "Item Name")
-    public static String ITEM_3_NAME = " ";
+    public static final String ITEM_3_NAME = " ";
 
     @Text(name = "Item 3 Type", placeholder = "Item Type")
-    public static String ITEM_3_TYPE = "ANY";
+    public static final String ITEM_3_TYPE = "ANY";
 
     @Number(name = "Item 3 Price", min = 1, max = 1000000000)
-    public static int ITEM_3_PRICE = 1;
+    public static final int ITEM_3_PRICE = 1;
 
     @Text(name = "Item 3 Tier", placeholder = "Item Tier")
-    public static String ITEM_3_TIER = "ANY";
+    public static final String ITEM_3_TIER = "ANY";
 
     @Text(name = "Item 4 Name", placeholder = "Item Name")
-    public static String ITEM_4_NAME = " ";
+    public static final String ITEM_4_NAME = " ";
 
     @Text(name = "Item 4 Type", placeholder = "Item Type")
-    public static String ITEM_4_TYPE = "ANY";
+    public static final String ITEM_4_TYPE = "ANY";
 
     @Number(name = "Item 4 Price", min = 1, max = 1000000000)
-    public static int ITEM_4_PRICE = 1;
+    public static final int ITEM_4_PRICE = 1;
 
     @Text(name = "Item 4 Tier", placeholder = "Item Tier")
-    public static String ITEM_4_TIER = "ANY";
+    public static final String ITEM_4_TIER = "ANY";
 
     @Text(name = "Item 5 Name", placeholder = "Item Name")
-    public static String ITEM_5_NAME = " ";
+    public static final String ITEM_5_NAME = " ";
 
     @Text(name = "Item 5 Type", placeholder = "Item Type")
-    public static String ITEM_5_TYPE = "ANY";
+    public static final String ITEM_5_TYPE = "ANY";
 
     @Number(name = "Item 5 Price", min = 1, max = 1000000000)
-    public static int ITEM_5_PRICE = 1;
+    public static final int ITEM_5_PRICE = 1;
 
     @Text(name = "Item 5 Tier", placeholder = "Item Tier")
-    public static String ITEM_5_TIER = "ANY";
+    public static final String ITEM_5_TIER = "ANY";
 
     @Text(name = "Item 6 Name", placeholder = "Item Name")
-    public static String ITEM_6_NAME = " ";
+    public static final String ITEM_6_NAME = " ";
 
     @Text(name = "Item 6 Type", placeholder = "Item Type")
-    public static String ITEM_6_TYPE = "ANY";
+    public static final String ITEM_6_TYPE = "ANY";
 
     @Number(name = "Item 6 Price", min = 1, max = 1000000000)
-    public static int ITEM_6_PRICE = 1;
+    public static final int ITEM_6_PRICE = 1;
 
     @Text(name = "Item 6 Tier", placeholder = "Item Tier")
-    public static String ITEM_6_TIER = "ANY";
+    public static final String ITEM_6_TIER = "ANY";
 
     @Text(name = "Item 7 Name", placeholder = "Item Name")
-    public static String ITEM_7_NAME = " ";
+    public static final String ITEM_7_NAME = " ";
 
     @Text(name = "Item 7 Type", placeholder = "Item Type")
-    public static String ITEM_7_TYPE = "ANY";
+    public static final String ITEM_7_TYPE = "ANY";
 
     @Number(name = "Item 7 Price", min = 1, max = 1000000000)
-    public static int ITEM_7_PRICE = 1;
+    public static final int ITEM_7_PRICE = 1;
 
     @Text(name = "Item 7 Tier", placeholder = "Item Tier")
-    public static String ITEM_7_TIER = "ANY";
+    public static final String ITEM_7_TIER = "ANY";
 
     @Text(name = "Item 8 Name", placeholder = "Item Name")
-    public static String ITEM_8_NAME = " ";
+    public static final String ITEM_8_NAME = " ";
 
     @Text(name = "Item 8 Type", placeholder = "Item Type")
-    public static String ITEM_8_TYPE = "ANY";
+    public static final String ITEM_8_TYPE = "ANY";
 
     @Number(name = "Item 8 Price", min = 1, max = 1000000000)
-    public static int ITEM_8_PRICE = 1;
+    public static final int ITEM_8_PRICE = 1;
 
     @Text(name = "Item 8 Tier", placeholder = "Item Tier")
-    public static String ITEM_8_TIER = "ANY";
+    public static final String ITEM_8_TIER = "ANY";
 
     @Text(name = "Item 9 Name", placeholder = "Item Name")
-    public static String ITEM_9_NAME = " ";
+    public static final String ITEM_9_NAME = " ";
 
     @Text(name = "Item 9 Type", placeholder = "Item Type")
-    public static String ITEM_9_TYPE = "ANY";
+    public static final String ITEM_9_TYPE = "ANY";
 
     @Number(name = "Item 9 Price", min = 1, max = 1000000000)
-    public static int ITEM_9_PRICE = 1;
+    public static final int ITEM_9_PRICE = 1;
 
     @Text(name = "Item 9 Tier", placeholder = "Item Tier")
-    public static String ITEM_9_TIER = "ANY";
+    public static final String ITEM_9_TIER = "ANY";
 
     @Text(name = "Item 10 Name", placeholder = "Item Name")
-    public static String ITEM_10_NAME = " ";
+    public static final String ITEM_10_NAME = " ";
 
     @Text(name = "Item 10 Type", placeholder = "Item Type")
-    public static String ITEM_10_TYPE = "ANY";
+    public static final String ITEM_10_TYPE = "ANY";
 
     @Number(name = "Item 10 Price", min = 1, max = 1000000000)
-    public static int ITEM_10_PRICE = 1;
+    public static final int ITEM_10_PRICE = 1;
 
     @Text(name = "Item 10 Tier", placeholder = "Item Tier")
-    public static String ITEM_10_TIER = "ANY";
+    public static final String ITEM_10_TIER = "ANY";
 
 }

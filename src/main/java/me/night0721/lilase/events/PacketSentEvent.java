@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 @Cancelable
 public class PacketSentEvent extends Event {
-    public final Packet<?> packet;
+    private final Packet<?> packet;
 
     public PacketSentEvent(Packet<?> packet) {
         this.packet = packet;

@@ -21,26 +21,26 @@ public class ConfigUtils {
     }
 
     public static void reloadConfig() {
-        if (!hasKey("main", "APIKey")) writeStringConfig("main", "APIKey", "");
-        if (!hasKey("main", "SendMessageToWebhook")) writeBooleanConfig("main", "SendMessageToWebhook", true);
-        if (!hasKey("main", "Webhook")) writeStringConfig("main", "Webhook", "");
-        if (!hasKey("main", "ReconnectDelay")) writeIntConfig("main", "ReconnectDelay", 20);
-        if (!hasKey("main", "AuctionHouseDelay")) writeIntConfig("main", "AuctionHouseDelay", 8);
-        if (!hasKey("main", "checkProfitPercentageBeforeBuy")) writeBooleanConfig("main", "checkProfitPercentageBeforeBuy", false);
-        if (!hasKey("main", "ProfitPercentage")) writeIntConfig("main", "ProfitPercentage", 400); //400%
-        if (!hasKey("main", "GUI")) writeBooleanConfig("main", "GUI", true);
-        if (!hasKey("main", "GUI_COLOR")) writeIntConfig("main", "GUI_COLOR", 0x003153);
+        if (hasNoKey("main", "APIKey")) writeStringConfig("main", "APIKey", "");
+        if (hasNoKey("main", "SendMessageToWebhook")) writeBooleanConfig("main", "SendMessageToWebhook", true);
+        if (hasNoKey("main", "Webhook")) writeStringConfig("main", "Webhook", "");
+        if (hasNoKey("main", "ReconnectDelay")) writeIntConfig("main", "ReconnectDelay", 20);
+        if (hasNoKey("main", "AuctionHouseDelay")) writeIntConfig("main", "AuctionHouseDelay", 8);
+        if (hasNoKey("main", "checkProfitPercentageBeforeBuy")) writeBooleanConfig("main", "checkProfitPercentageBeforeBuy", false);
+        if (hasNoKey("main", "ProfitPercentage")) writeIntConfig("main", "ProfitPercentage", 400); //400%
+        if (hasNoKey("main", "GUI")) writeBooleanConfig("main", "GUI", true);
+        if (hasNoKey("main", "GUI_COLOR")) writeIntConfig("main", "GUI_COLOR", 0x003153);
         for (int i = 1; i <= 3; i++) {
-            if (!hasKey("item" + i, "Name")) writeStringConfig("item" + i, "Name", "");
-            if (!hasKey("item" + i, "Type")) writeStringConfig("item" + i, "Type", "");
-            if (!hasKey("item" + i, "Price")) writeIntConfig("item" + i, "Price", 0);
-            if (!hasKey("item" + i, "Tier")) writeStringConfig("item" + i, "Tier", "");
+            if (hasNoKey("item" + i, "Name")) writeStringConfig("item" + i, "Name", "");
+            if (hasNoKey("item" + i, "Type")) writeStringConfig("item" + i, "Type", "");
+            if (hasNoKey("item" + i, "Price")) writeIntConfig("item" + i, "Price", 0);
+            if (hasNoKey("item" + i, "Tier")) writeStringConfig("item" + i, "Tier", "");
         }
         for (int i = 1; i <= 3; i++) {
-            if (!hasKey("blacklist" + i, "Name")) writeStringConfig("blacklist" + i, "Name", "");
-            if (!hasKey("blacklist" + i, "Type")) writeStringConfig("blacklist" + i, "Type", "");
-            if (!hasKey("blacklist" + i, "Price")) writeIntConfig("blacklist" + i, "Price", 0);
-            if (!hasKey("blacklist" + i, "Tier")) writeStringConfig("blacklist" + i, "Tier", "");
+            if (hasNoKey("blacklist" + i, "Name")) writeStringConfig("blacklist" + i, "Name", "");
+            if (hasNoKey("blacklist" + i, "Type")) writeStringConfig("blacklist" + i, "Type", "");
+            if (hasNoKey("blacklist" + i, "Price")) writeIntConfig("blacklist" + i, "Price", 0);
+            if (hasNoKey("blacklist" + i, "Tier")) writeStringConfig("blacklist" + i, "Tier", "");
         }
     }
 
@@ -125,7 +125,7 @@ public class ConfigUtils {
         config = new Configuration(new File(file));
         try {
             config.load();
-            int set = config.get(category, key, value).getInt();
+//            int set = config.get(category, key, value).getInt();
             config.getCategory(category).get(key).set(value);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -139,7 +139,7 @@ public class ConfigUtils {
         config = new Configuration(new File(file));
         try {
             config.load();
-            double set = config.get(category, key, value).getDouble();
+//            double set = config.get(category, key, value).getDouble();
             config.getCategory(category).get(key).set(value);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -153,7 +153,7 @@ public class ConfigUtils {
         config = new Configuration(new File(file));
         try {
             config.load();
-            String set = config.get(category, key, value).getString();
+//            String set = config.get(category, key, value).getString();
             config.getCategory(category).get(key).set(value);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -167,7 +167,7 @@ public class ConfigUtils {
         config = new Configuration(new File(file));
         try {
             config.load();
-            boolean set = config.get(category, key, value).getBoolean();
+//            boolean set = config.get(category, key, value).getBoolean();
             config.getCategory(category).get(key).set(value);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -176,19 +176,19 @@ public class ConfigUtils {
         }
     }
 
-    public static boolean hasKey(String category, String key) {
+    public static boolean hasNoKey(String category, String key) {
         category = category.toLowerCase();
         config = new Configuration(new File(file));
         try {
             config.load();
-            if (!config.hasCategory(category)) return false;
-            return config.getCategory(category).containsKey(key);
+            if (!config.hasCategory(category)) return true;
+            return !config.getCategory(category).containsKey(key);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             config.save();
         }
-        return false;
+        return true;
     }
 
     public static void deleteCategory(String category) {

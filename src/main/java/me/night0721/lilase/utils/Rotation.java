@@ -11,9 +11,9 @@ public class Rotation {
     private long startTime;
     private long endTime;
 
-    MutablePair<Float, Float> start = new MutablePair<>(0f, 0f);
-    MutablePair<Float, Float> target = new MutablePair<>(0f, 0f);
-    MutablePair<Float, Float> difference = new MutablePair<>(0f, 0f);
+    final MutablePair<Float, Float> start = new MutablePair<>(0f, 0f);
+    final MutablePair<Float, Float> target = new MutablePair<>(0f, 0f);
+    final MutablePair<Float, Float> difference = new MutablePair<>(0f, 0f);
 
     public void easeTo(float yaw, float pitch, long time) {
         completed = false;

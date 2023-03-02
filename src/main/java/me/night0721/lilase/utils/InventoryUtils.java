@@ -18,10 +18,6 @@ import java.util.regex.Pattern;
 
 
 public class InventoryUtils {
-    static int opened = 0;
-    /*
-     *  @Author Mostly Apfelsaft
-     */
     private static final Minecraft mc = Minecraft.getMinecraft();
 
 
@@ -154,7 +150,7 @@ public class InventoryUtils {
     }
 
     public static List<ItemStack> getInventoryStacks() {
-        final List<ItemStack> ret = new ArrayList<ItemStack>();
+        final List<ItemStack> ret = new ArrayList<>();
         for (int i = 9; i < 44; ++i) {
             final Slot slot = InventoryUtils.mc.thePlayer.inventoryContainer.getSlot(i);
             if (slot != null) {

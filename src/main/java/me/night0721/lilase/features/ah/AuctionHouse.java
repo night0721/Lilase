@@ -26,13 +26,15 @@ import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+import static me.night0721.lilase.features.ah.AHConfig.SEND_MESSAGE;
+
 public class AuctionHouse {
     private Boolean open = false;
     public Boolean buying = false;
     private int auctionsSniped = 0;
     private int auctionsPosted = 0;
     private int auctionsFlipped = 0;
-    public DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
+    public final DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
     private final List<Item> items = new ArrayList<>();
     private final List<Item> blacklist = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
@@ -41,12 +43,19 @@ public class AuctionHouse {
 
     public AuctionHouse() {
         for (int i = 1; i <= 99; i++) {
-            if (!ConfigUtils.getString("item" + i, "Name").equals("") && !ConfigUtils.getString("item" + i, "Type").equals("") && !ConfigUtils.getString("item" + i, "Tier").equals("") && ConfigUtils.getInt("item" + i, "Price") != 0)
+            if (!ConfigUtils.getString("item" + i, "Name").equals("") && !ConfigUtils.getString("item" + i, "Type").equals("") && !ConfigUtils.getString("item" + i, "Tier").equals("") && ConfigUtils.getInt("item" + i, "Price") != 0){
+                try {
+                    ItemType.valueOf(ConfigUtils.getString("item" + i, "Type"));
+                    ItemType.valueOf(ConfigUtils.getString("item" + i, "Tier"));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid item type for item " + i + ", please check your config");
+                }
                 items.add(new Item(ConfigUtils.getString("item" + i, "Name"), ItemType.valueOf(ConfigUtils.getString("item" + i, "Type")), ConfigUtils.getInt("item" + i, "Price"), ItemTier.valueOf(ConfigUtils.getString("item" + i, "Tier"))));
+            }
         }
         for (int i = 1; i <= 99; i++) {
-            if (!ConfigUtils.getString("blacklist" + i, "Name").equals("") && !ConfigUtils.getString("blacklist" + i, "Type").equals("") && !ConfigUtils.getString("blacklist" + i, "Tier").equals("") && ConfigUtils.getInt("blacklist" + i, "Price") != 0)
-                blacklist.add(new Item(ConfigUtils.getString("blacklist" + i, "Name"), ItemType.valueOf(ConfigUtils.getString("blacklist" + i, "Type")), ConfigUtils.getInt("blacklist" + i, "Price"), ItemTier.valueOf(ConfigUtils.getString("blacklist" + i, "Tier"))));
+            if (!ConfigUtils.getString("blacklist" + i, "Name").equals(""))
+                blacklist.add(new Item(ConfigUtils.getString("blacklist" + i, "Name"), null, null, null));
         }
         webhook.setUsername("Lilase - Auction House");
         webhook.setAvatarUrl("https://th.bing.com/th/id/OIP.Lk2cSujieY70GbsgPZ0TyAHaEK?w=325&h=182&c=7&r=0&o=5&pid=1.7");
@@ -85,7 +94,12 @@ public class AuctionHouse {
             return;
         }
         if (ConfigUtils.getString("main", "APIKey").equals("") || ConfigUtils.getString("main", "Webhook").equals("")) {
-            Utils.sendMessage("Missing APIKey or Webhook, stopping");
+            Utils.sendMessage("Missing APIKey, stopping");
+            open = false;
+            return;
+        }
+        if (SEND_MESSAGE && ConfigUtils.getString("main", "Webhook").equals("")) {
+            Utils.sendMessage("Sending message to Webhook is on but Webhook is missing, stopping");
             open = false;
             return;
         }
@@ -104,7 +118,10 @@ public class AuctionHouse {
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
         int status = connection.getResponseCode();
-        if (status != 200) return;
+        if (status != 200) {
+            Utils.sendMessage("Error getting data from Hypixel API, either API down or internal error");
+            return;
+        }
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
         StringBuilder content = new StringBuilder();

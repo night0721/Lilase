@@ -32,6 +32,6 @@ public class TextRenderer {
     }
 
     public void drawCenteredString(String text, int x, int y, double scale) {
-        drawString(text, x - Minecraft.getMinecraft().fontRendererObj.getStringWidth(text) / 2, y - Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT / 2, 1);
+        drawString(text, x - Minecraft.getMinecraft().fontRendererObj.getStringWidth(text) / 2, y - Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT / 2, scale);
     }
 }
