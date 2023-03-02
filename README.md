@@ -76,15 +76,15 @@ blacklist1 {
     S:Tier=ANY
     S:Type=ANY
 }
-
 main {
     S:APIKey=Paste your API key here
-    I:AuctionHouseDelay=15
+    I:AuctionHouseDelay=9
     B:GUI=true
-    I:GUI_COLOR=-7237653
-    I:Multiplier=400
+    I:GUI_COLOR=-65536
+    I:ProfitPercentage=400
     I:ReconnectDelay=20
+    B:SendMessageToWebhook=true
     S:Webhook=Paste your webhook here
-    B:checkMultiplierBeforeBuy=true
+    B:checkProfitPercentageBeforeBuy=false
 }
 ```
