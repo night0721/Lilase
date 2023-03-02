@@ -22,25 +22,26 @@ public class ConfigUtils {
 
     public static void reloadConfig() {
         if (!hasKey("main", "APIKey")) writeStringConfig("main", "APIKey", "");
+        if (!hasKey("main", "SendMessageToWebhook")) writeBooleanConfig("main", "SendMessageToWebhook", true);
         if (!hasKey("main", "Webhook")) writeStringConfig("main", "Webhook", "");
         if (!hasKey("main", "ReconnectDelay")) writeIntConfig("main", "ReconnectDelay", 20);
         if (!hasKey("main", "AuctionHouseDelay")) writeIntConfig("main", "AuctionHouseDelay", 8);
-        if (!hasKey("main", "checkMultiplierBeforeBuy")) writeBooleanConfig("main", "checkMultiplierBeforeBuy", false);
-        if (!hasKey("main", "Multiplier")) writeIntConfig("main", "Multiplier", 400); //400%
+        if (!hasKey("main", "checkProfitPercentageBeforeBuy")) writeBooleanConfig("main", "checkProfitPercentageBeforeBuy", false);
+        if (!hasKey("main", "ProfitPercentage")) writeIntConfig("main", "ProfitPercentage", 400); //400%
         if (!hasKey("main", "GUI")) writeBooleanConfig("main", "GUI", true);
         if (!hasKey("main", "GUI_COLOR")) writeIntConfig("main", "GUI_COLOR", 0x003153);
-//        if (!hasKey("item1", "Name")) writeStringConfig("item1", "Name", "");
-//        if (!hasKey("item1", "Type")) writeStringConfig("item1", "Type", "");
-//        if (!hasKey("item1", "Price")) writeIntConfig("item1", "Price", 0);
-//        if (!hasKey("item1", "Tier")) writeStringConfig("item1", "Tier", "");
-//        if (!hasKey("item2", "Name")) writeStringConfig("item2", "Name", "");
-//        if (!hasKey("item2", "Type")) writeStringConfig("item2", "Type", "");
-//        if (!hasKey("item2", "Price")) writeIntConfig("item2", "Price", 0);
-//        if (!hasKey("item2", "Tier")) writeStringConfig("item2", "Tier", "");
-//        if (!hasKey("item3", "Name")) writeStringConfig("item3", "Name", "");
-//        if (!hasKey("item3", "Type")) writeStringConfig("item3", "Type", "");
-//        if (!hasKey("item3", "Price")) writeIntConfig("item3", "Price", 0);
-//        if (!hasKey("item3", "Tier")) writeStringConfig("item3", "Tier", "");
+        for (int i = 1; i <= 10; i++) {
+            if (!hasKey("item" + i, "Name")) writeStringConfig("item" + i, "Name", "");
+            if (!hasKey("item" + i, "Type")) writeStringConfig("item" + i, "Type", "");
+            if (!hasKey("item" + i, "Price")) writeIntConfig("item" + i, "Price", 0);
+            if (!hasKey("item" + i, "Tier")) writeStringConfig("item" + i, "Tier", "");
+        }
+        for (int i = 1; i <= 10; i++) {
+            if (!hasKey("blacklist" + i, "Name")) writeStringConfig("blacklist" + i, "Name", "");
+            if (!hasKey("blacklist" + i, "Type")) writeStringConfig("blacklist" + i, "Type", "");
+            if (!hasKey("blacklist" + i, "Price")) writeIntConfig("blacklist" + i, "Price", 0);
+            if (!hasKey("blacklist" + i, "Tier")) writeStringConfig("blacklist" + i, "Tier", "");
+        }
     }
 
     public static void init() {
