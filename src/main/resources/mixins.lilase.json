@@ -3,7 +3,7 @@
   "package": "me.night0721.lilase.mixins",
   "refmap": "mixins.lilase.refmap.json",
   "compatibilityLevel": "JAVA_8",
-  "minVersion": "0.8.2",
+  "minVersion": "0.7.11",
   "mixins": [
     "MixinNetworkManager"
   ],
