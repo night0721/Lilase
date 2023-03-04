@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage", "UnstableApiUsage", "UnstableApiUsage", "UnstableApiUsage")
+@file:Suppress("UnstableApiUsage")
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import gg.essential.gradle.util.noServerRunConfigs
