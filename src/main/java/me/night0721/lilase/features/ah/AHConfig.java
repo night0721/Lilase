@@ -21,6 +21,7 @@ public class AHConfig extends Config {
         addListener("PROFIT_PERCENTAGE", () -> ConfigUtils.writeIntConfig("main", "ProfitPercentage", Math.round(AHConfig.PROFIT_PERCENTAGE)));
         addListener("GUI", () -> ConfigUtils.writeBooleanConfig("main", "GUI", AHConfig.GUI));
         addListener("GUI_COLOR", () -> ConfigUtils.writeIntConfig("main", "GUI_COLOR", AHConfig.GUI_COLOR.getRGB()));
+        addListener("CRABBY_COLOR", () -> ConfigUtils.writeIntConfig("main", "CRABBY_COLOR", AHConfig.CRABBY_COLOR));
         addListener("ITEM_1_NAME", () -> ConfigUtils.writeStringConfig("item1", "Name", AHConfig.ITEM_1_NAME));
         addListener("ITEM_1_TYPE", () -> ConfigUtils.writeStringConfig("item1", "Type", AHConfig.ITEM_1_TYPE));
         addListener("ITEM_1_PRICE", () -> ConfigUtils.writeIntConfig("item1", "Price", Math.round(AHConfig.ITEM_1_PRICE)));
@@ -106,16 +107,27 @@ public class AHConfig extends Config {
         addDependency("ITEM_10_TIER", "addItem", () -> !ConfigUtils.getString("item10", "Tier").equals(""));
     }
 
-    @Slider(name = "Time per fetch (seconds)", min = 5, max = 15, step = 1, category = "Auction House", description = "Time between each fetch of the auction house, the faster the fetch, the more likely you will snipe the item")
+    @Slider(name = "Time per fetch (seconds)", min = 5, max = 15, step = 1, category = "Auction House", subcategory = "Sniper", description = "Time between each fetch of the auction house, the faster the fetch, the more likely you will snipe the item")
     public static int AUCTION_HOUSE_DELAY = 8;
 
-    @Text(name = "Discord Webhook", placeholder = "URL", category = "Auction House", description = "Discord webhook to send messages to")
+    @Switch(name = "Bed Spam & Skip Confirm", category = "Auction House", subcategory = "Sniper", description = "Spam the bed to buy the item just after the grace period ends and skips the confirmation of buying the item")
+    public static boolean BED_SPAM = true;
+
+    @Button(name = "Add Item", text = "Click to add an item to snipe", subcategory = "Items", category = "Auction House")
+    public static void addItem() {
+        Utils.debugLog("[AHConfig] Add Item Button Clicked");
+    }
+
+    @Dropdown(name = "Remove Item", category = "Auction House", subcategory = "Items", description = "Remove an item from the snipe list", options = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"})
+    public static int value = 0;
+
+    @Text(name = "Discord Webhook", placeholder = "URL", category = "Auction House", subcategory = "Webhook", description = "Discord webhook to send messages to")
     public static String WEBHOOK = "";
 
-    @Switch(name = "Send message to webhook", category = "Auction House", description = "Send a message to the webhook when an item is bought")
+    @Switch(name = "Send message to webhook", category = "Auction House", subcategory = "Webhook", description = "Send a message to the webhook when an item is bought")
     public static boolean SEND_MESSAGE = true;
 
-    @Number(name = "Reconnect Delay", min = 5, max = 20, category = "Auction House", description = "Delay between each reconnect attempt to the server")
+    @Number(name = "Reconnect Delay", min = 5, max = 20, category = "Failsafe", description = "Delay between each reconnect attempt to the server")
     public static int RECONNECT_DELAY = 20;
 
     @Switch(name = "Check Profit Percentage Before Buying", category = "Flipper", description = "Check the profit percentage before buying the item, if the profit percentage is too low, it will not buy the item")
@@ -124,22 +136,14 @@ public class AHConfig extends Config {
     @Number(name = "ProfitPercentage", min = 100, max = 5000, step = 50, category = "Flipper", description = "Profit percentage to check before buying the item, if the profit percentage is too low, it will not buy the item")
     public static int PROFIT_PERCENTAGE = 400;
 
-    @Switch(name = "Bed Spam & Skip Confirm", category = "Auction House", description = "Spam the bed to buy the item just after the grace period ends and skips the confirmation of buying the item")
-    public static boolean BED_SPAM = true;
-
     @Checkbox(name = "GUI", category = "GUI", description = "Enable the GUI")
     public static boolean GUI = true;
 
-    @Color(name = "GUI_COLOR", category = "GUI")
+    @Color(name = "GUI Color", category = "GUI")
     public static OneColor GUI_COLOR = new OneColor(0, 49, 83);
 
-    @Button(name = "Add Item", text = "Click to add an item to snipe", category = "Auction House")
-    public static void addItem() {
-        Utils.debugLog("[AHConfig] Add Item Button Clicked");
-    }
-
-    @Dropdown(name = "Remove Item", category = "Auction House", description = "Remove an item from the snipe list", options = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"})
-    public static int value = 0;
+    @Number(name = "Crabby Theme Color", min = 0, max = 7, category = "GUI")
+    public static int CRABBY_COLOR = 0;
 
     @Text(name = "Item 1 Name", placeholder = "Item Name")
     public static String ITEM_1_NAME = " ";
