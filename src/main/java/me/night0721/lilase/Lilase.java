@@ -6,6 +6,7 @@ import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
 import me.night0721.lilase.events.SniperFlipperEvents;
 import me.night0721.lilase.features.ah.AHConfig;
 import me.night0721.lilase.features.ah.AuctionHouse;
+import me.night0721.lilase.gui.ImageRenderer;
 import me.night0721.lilase.utils.Clock;
 import me.night0721.lilase.utils.ConfigUtils;
 import me.night0721.lilase.utils.KeyBindingManager;
@@ -30,7 +31,7 @@ import static me.night0721.lilase.features.ah.AHConfig.RECONNECT_DELAY;
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "1.0.24-beta";
+    public static final String VERSION = "1.0.25";
     public static final Minecraft mc = Minecraft.getMinecraft();
     public static AuctionHouse auctionHouse;
     public static AHConfig config;
@@ -43,6 +44,7 @@ public class Lilase {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(keyBindingManager);
         MinecraftForge.EVENT_BUS.register(new SniperFlipperEvents());
+        MinecraftForge.EVENT_BUS.register(new ImageRenderer());
         EventManager.INSTANCE.register(this);
         ConfigUtils.register();
         auctionHouse = new AuctionHouse();
