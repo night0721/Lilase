@@ -1,7 +1,12 @@
 <h1> Auction House Flipper - Lilase</h1>
-Forge mod will automatiaclly buy item according to your configuration, and send you a webhook when it has been bought.
-If you have any questions please join https://night0721.me/discord for support
-For how to use https://github.com/night0721/lilase#how-to-use
+<div style="text-align: center;">
+<img align="center" src="https://cdn.discordapp.com/attachments/842014909264953354/1082373275038003210/lilase.png" width="300" />
+</div>
+
+# Introduction:
+A simple Forge mod will automatiaclly buy item according to your configuration, and send you a webhook when it has been bought.
+If you have any questions please join [Discord Server](https://night0721.me/discord) for support
+For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 
 # Features:
 - Auto buy any item you want, with query customised by yourself

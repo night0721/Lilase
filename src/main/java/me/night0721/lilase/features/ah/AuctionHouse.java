@@ -185,20 +185,21 @@ public class AuctionHouse {
                     if (profileName.equalsIgnoreCase(Lilase.mc.thePlayer.getName())) break;
                     String updated = auction.get("item_lore").getAsString().replaceAll("§[0-9a-z]", "");
                     DecimalFormat df = new DecimalFormat("#.##");
-                    webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Bought an item on low price").setUrl("https://sky.coflnet.com/auction/" + uuid).setAuthor("night0721", "https://github.com/night0721", "https://avatars.githubusercontent.com/u/77528305?v=4").setDescription(updated.replace("\n", "\\n")).addField("Item", itemName, true).addField("Price", format.format(price) + " coins", true).addField("Profit", format.format(flipper.getItemPrice() - price) + " coins", true).addField("Profit Percentage", Float.parseFloat(df.format(flipper.getItemPrice() - price)) + "%", true).addField("Seller", profileName, true).addField("Started for", toDuration(System.currentTimeMillis() - auction.get("start").getAsLong()), true).addField("Ends in", getTimeSinceDate(auction.get("end").getAsLong() - System.currentTimeMillis()), true).setColor(Color.decode("#003153")));
-                    webhook.setContent(itemName + " is sale at " + format.format(price) + "!   `" + "/viewauction " + uuid + "`");
                     if (ConfigUtils.getBoolean("main", "checkProfitPercentageBeforeBuy")) {
                         float multi = flipper.checkProfitPercentage();
                         Utils.debugLog("[Sniper] Found an item, checking profit percentage");
                         if (multi > ConfigUtils.getInt("main", "ProfitPercentage")) {
                             Utils.debugLog("[Sniper] Higher than required profit percentage, buying now");
-                            Utils.sendServerMessage("/viewauction " + uuid);
                             buying = true;
                         }
                     } else {
                         Utils.debugLog("[Sniper] Found an item, trying to buy");
-                        Utils.sendServerMessage("/viewauction " + uuid);
                         buying = true;
+                    }
+                    if (buying) {
+                        Utils.sendServerMessage("/viewauction " + uuid);
+                        webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Bought an item on low price").setUrl("https://sky.coflnet.com/auction/" + uuid).setAuthor("night0721", "https://github.com/night0721", "https://avatars.githubusercontent.com/u/77528305?v=4").setDescription(updated.replace("\n", "\\n")).addField("Item", itemName, true).addField("Price", format.format(price) + " coins", true).addField("Profit", format.format(flipper.getItemPrice() - price) + " coins", true).addField("Profit Percentage", Float.parseFloat(df.format(flipper.getItemPrice() - price)) + "%", true).addField("Seller", profileName, true).addField("Started for", toDuration(System.currentTimeMillis() - auction.get("start").getAsLong()), true).addField("Ends in", getTimeSinceDate(auction.get("end").getAsLong() - System.currentTimeMillis()), true).setColor(Color.decode("#003153")));
+                        webhook.setContent(itemName + " is sale at " + format.format(price) + "!   `" + "/viewauction " + uuid + "`");
                     }
                     return;
                 }

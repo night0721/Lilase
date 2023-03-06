@@ -221,8 +221,6 @@ public class SniperFlipperEvents {
             }
         }
     }
-
-
     @SubscribeEvent
     public void onPacketReceive(PacketReceivedEvent event) {
         if (event.packet instanceof S33PacketUpdateSign && Utils.checkInHub() && Flipper.state.equals(START)) {

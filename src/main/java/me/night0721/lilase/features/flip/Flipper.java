@@ -60,11 +60,11 @@ public class Flipper {
                 if (Lilase.mc.currentScreen != null) {
                     Lilase.mc.thePlayer.closeScreen();
                 } else if (distanceToFirstPoint() < 0.7f) {
-                    Utils.debugLog("[Flipper] Moving to auction house");
+                    System.out.println("[Flipper] Moving to auction house");
                     KeyBindingManager.updateKeys(false, false, false, false, false);
                     state = FlipperState.WALKING_INTO_AUCTION_HOUSE;
                 } else if (distanceToFirstPoint() < 5f) {
-                    Utils.debugLog("[Flipper] Crouching to point 1");
+                    System.out.println("[Flipper] Crouching to point 1");
                     KeyBindingManager.updateKeys(true, false, false, false, false, true, false);
                 } else {
                     KeyBindingManager.updateKeys(true, false, false, false, false);
@@ -74,14 +74,14 @@ public class Flipper {
                 if (Lilase.mc.currentScreen != null) {
                     Lilase.mc.thePlayer.closeScreen();
                 } else if (AngleUtils.smallestAngleDifference(AngleUtils.get360RotationYaw(), 88f) > 1.2) {
-                    Utils.debugLog("[Flipper] Rotating to Auction Master");
+                     System.out.println("[Flipper] Rotating to Auction Master");
                     rotation.easeTo(88f, Lilase.mc.thePlayer.rotationPitch, 500);
                 } else if (distanceToAuctionMaster() < 0.7f) {
                     Utils.debugLog("[Flipper] At Auction Master, opening shop");
                     KeyBindingManager.updateKeys(false, false, false, false, false);
                     state = FlipperState.BUYING;
                 } else if (distanceToAuctionMaster() < 5f) {
-                    Utils.debugLog("[Flipper] Crouching to Auction Master");
+                    System.out.println("[Flipper] Crouching to Auction Master");
                     KeyBindingManager.updateKeys(true, false, false, false, false, true, false);
                 } else {
                     KeyBindingManager.updateKeys(true, false, false, false, false);
@@ -164,6 +164,7 @@ public class Flipper {
         in.close();
         connection.disconnect();
         object = (JsonObject) new JsonParser().parse(content.toString());
+        System.out.println("Price" + object.get("price"));
         return (JsonObject) new JsonParser().parse(content.toString());
     }
 
