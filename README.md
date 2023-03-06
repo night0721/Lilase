@@ -53,7 +53,7 @@ ANY, WEAPON, ARMOR, ACCESSORIES, CONSUMABLES, BLOCKS, MISC
      - Some movement during sniping so hypixel won't send to afk
 - v1.0.22 - Fatal bug fixed (before it will crash when open controls gui), also added title for process
 - v1.0.23 - More lines in GUI, flipped, posted, sniped
-- v1.0.24-beta - 
+- v1.0.24-beta
      - Remove the use of org.json dependency 
      - Fixing flipper could not be started when item is sniped
      - Making send auction to webhook to be toggleable
@@ -65,6 +65,8 @@ ANY, WEAPON, ARMOR, ACCESSORIES, CONSUMABLES, BLOCKS, MISC
      - Fix the weird lag when doing random motion when sniping
      - Changed names in config so it is more readable and understanable
      - Added days in GUI
+- v1.0.25 - Fix in crash in flipper, some code optimisation, having a better config
+- v1.0.26 - Image render on GUI of crabby
      
 # To Do Features:
 - Console client??
