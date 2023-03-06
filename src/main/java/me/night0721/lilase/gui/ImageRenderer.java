@@ -20,7 +20,7 @@ public class ImageRenderer {
     }
 
     @SubscribeEvent
-    public void onRender(RenderGameOverlayEvent e) {
+    public void onRender(RenderGameOverlayEvent.Post e) {
         if (e.type == RenderGameOverlayEvent.ElementType.ALL) {
             draw();
         }

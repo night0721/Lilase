@@ -10,12 +10,8 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.util.StringUtils;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 
 public class Flipper {
@@ -151,18 +147,14 @@ public class Flipper {
     }
 
     public JsonObject getItemData() throws IOException {
-        URL url = new URL("https://www.night0721.me/api//skyblock");
+        URL url = new URL("https://www.night0721.me/api/skyblock");
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-        connection.addRequestProperty("Content-Type", "application/json");
-        connection.addRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11");
+        connection.addRequestProperty("Content-Type", "text/plain");
         connection.setDoOutput(true);
-        connection.setRequestMethod("GET");
-        OutputStream stream = connection.getOutputStream();
-        JsonObject bd = new JsonObject();
-        bd.addProperty("ByteData", bytedata);
-        stream.write(bd.toString().getBytes(StandardCharsets.UTF_16));
-        stream.flush();
-        stream.close();
+        connection.setRequestMethod("POST");
+        OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+        out.write(bytedata);
+        out.close();
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
         StringBuilder content = new StringBuilder();
