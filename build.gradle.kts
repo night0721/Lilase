@@ -116,11 +116,11 @@ tasks {
             archiveClassifier.set("dev")
             configurations = listOf(shade)
             duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-            archiveFileName.set("Lilase.jar")
         }
         remapJar {
             input.set(shadowJar.get().archiveFile)
             archiveClassifier.set("")
+            archiveFileName.set("Lilase.jar")
         }
         jar {
             manifest {
