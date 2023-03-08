@@ -136,7 +136,7 @@ public class AuctionHouse {
             JsonObject auction = auctions.get(i).getAsJsonObject();
             for (Item item : items) {
                 String lore = " ";
-                ItemType type = item.type;
+                ItemType type = item.getType();
                 String itemName = auction.get("item_name").getAsString();
                 String uuid = auction.get("uuid").getAsString();
                 Integer price = auction.get("starting_bid").getAsInt();
@@ -171,8 +171,8 @@ public class AuctionHouse {
                 if (found) break;
                 if (!itemName.toLowerCase().contains(item.query.toLowerCase())) break;
                 if (!auction.get("item_lore").getAsString().contains(lore)) break;
-                if (price > item.price) break;
-                if (item.tier != ItemTier.ANY) if (!auction.get("tier").getAsString().equals(item.tier.name())) break;
+                if (price > item.getPrice()) break;
+                if (item.getTier() != ItemTier.ANY) if (!auction.get("tier").getAsString().equals(item.getTier().name())) break;
                 if (type != ItemType.ANY) if (!auction.get("category").getAsString().equals(type.getLowercase())) break;
                 if (!auction.get("bin").getAsBoolean()) break;
                 if (!posted.contains(uuid)) {
