@@ -32,6 +32,10 @@ public class ConfigUtils {
         if (hasNoKey("main", "OnlySniper")) writeBooleanConfig("main", "OnlySniper", false);
         if (hasNoKey("main", "checkProfitPercentageBeforeBuy"))
             writeBooleanConfig("main", "checkProfitPercentageBeforeBuy", false);
+        if (hasNoKey("main", "checkMaxiumProfitPercentageBeforeBuy"))
+            writeBooleanConfig("main", "checkMaxiumProfitPercentageBeforeBuy", false);
+        if (hasNoKey("main", "MaximumProfitPercentage"))
+            writeIntConfig("main", "MaximumProfitPercentage", 1000); //1000%
         if (hasNoKey("main", "MinimumProfitPercentage")) writeIntConfig("main", "MinimumProfitPercentage", 400); //400%
         if (hasNoKey("main", "GUI")) writeBooleanConfig("main", "GUI", true);
         if (hasNoKey("main", "GUI_COLOR")) writeIntConfig("main", "GUI_COLOR", 0x003153);

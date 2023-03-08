@@ -21,6 +21,8 @@ public class AHConfig extends Config {
         addListener("ONLY_SNIPER", () -> ConfigUtils.writeBooleanConfig("main", "OnlySniper", AHConfig.ONLY_SNIPER));
         addListener("CHECK_PERCENTAGE", () -> ConfigUtils.writeBooleanConfig("main", "checkProfitPercentageBeforeBuy", AHConfig.CHECK_PERCENTAGE));
         addListener("MINIMUM_PROFIT_PERCENTAGE", () -> ConfigUtils.writeIntConfig("main", "MinimumProfitPercentage", Math.round(AHConfig.MINIMUM_PROFIT_PERCENTAGE)));
+        addListener("CHECK_MAXIMAL_PROFIT", () -> ConfigUtils.writeBooleanConfig("main", "checkMaxiumProfitPercentageBeforeBuy", AHConfig.CHECK_MAXIMUM_PROFIT));
+        addListener("MAXIMUM_PROFIT_PERCENTAGE", () -> ConfigUtils.writeIntConfig("main", "MaximumProfitPercentage", AHConfig.MAXIMUM_PROFIT_PERCENTAGE));
         addListener("GUI", () -> ConfigUtils.writeBooleanConfig("main", "GUI", AHConfig.GUI));
         addListener("GUI_COLOR", () -> ConfigUtils.writeIntConfig("main", "GUI_COLOR", AHConfig.GUI_COLOR.getRGB()));
         addListener("ITEM_1_NAME", () -> ConfigUtils.writeStringConfig("item1", "Name", AHConfig.ITEM_1_NAME));
@@ -67,6 +69,12 @@ public class AHConfig extends Config {
 
     @Number(name = "Minimum Profit Percentage", min = 100, max = 5000, step = 50, category = "Flipper", description = "Profit percentage to check before buying the item, if the profit percentage is too low, it will not buy the item")
     public static int MINIMUM_PROFIT_PERCENTAGE = 400;
+
+    @Switch(name = "Check Maximum Profit Before Buying", category = "Flipper", description = "Check the maximal profit before buying the item, if the maximal profit is too high, it will not buy the item (Can prevent duped items)")
+    public static boolean CHECK_MAXIMUM_PROFIT = false;
+
+    @Number(name = "Maximum Profit Percentage", min = 1000, max = 10000, step = 1000, category = "Flipper", description = "Maximum profit to check before buying the item, if the maximal profit is too high, it will not buy the item (Can prevent duped items)")
+    public static int MAXIMUM_PROFIT_PERCENTAGE = 1000;
 
     @Checkbox(name = "GUI", category = "GUI", description = "Enable the GUI")
     public static boolean GUI = true;
