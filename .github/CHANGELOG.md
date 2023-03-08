@@ -25,6 +25,6 @@
     - Image render on GUI of crabby
     - Renamed ProfitPercentage to MinimumProfitPercentage
     - Added "Bed Spam Delay" and "Only Sniper" in config so you can set the delay between each bed spam and config sniper to not autosell
-    - Added auto detect of cookie so you can start sniper at everywhere
+    - Cookie compatible, with auto detect of cookie so you can start sniper at everywhere
     - Refactoring AuctionHouse class to Sniper
     - Adding maxium profit check so it can prvent buying duped items

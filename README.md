@@ -51,7 +51,6 @@ ANY, WEAPON, ARMOR, ACCESSORIES, CONSUMABLES, BLOCKS, MISC
 - Wither Impact in lore check
 - Blue omelette in lore check
 - pre api?
-- upper bound and lower bound for sniping as upper bound is specified right now
 
 # Example Config:
 ```cfg
