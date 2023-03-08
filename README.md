@@ -50,10 +50,8 @@ ANY, WEAPON, ARMOR, ACCESSORIES, CONSUMABLES, BLOCKS, MISC
 - Page flipper for specific items(query)
 - Wither Impact in lore check
 - Blue omelette in lore check
-- Cookie compatible
 - pre api?
 - upper bound and lower bound for sniping as upper bound is specified right now
-- Minimum profit check
 
 # Example Config:
 ```cfg
