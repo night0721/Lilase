@@ -1,7 +1,5 @@
 package me.night0721.lilase.utils;
 
-import me.night0721.lilase.features.ah.AHConfig;
-
 import java.awt.*;
 
 /**
@@ -12,7 +10,7 @@ import java.awt.*;
 
 public class CurrentColor {
     public static int currentColorGet(float offset) {
-        switch (AHConfig.CRABBY_COLOR) {
+        switch (0) {
             case 0:
                 return getRainbow(-4000, (int) (offset * 3000)).getRGB();
             case 1:
@@ -33,10 +31,10 @@ public class CurrentColor {
         return Color.WHITE.getRGB();
     }
 
-    public static float getFloatValue(float offset, int color){
+    public static float getFloatValue(float offset, int color) {
         Color tempC = new Color(CurrentColor.currentColorGet(offset));
         int tempC_ = 0;
-        switch (color){
+        switch (color) {
             case 0:
                 tempC_ = tempC.getRed();
                 break;
@@ -50,19 +48,20 @@ public class CurrentColor {
         }
         return (((float) tempC_) / 255F);
     }
+
     /**
      * Following method has been circulating in Minecraft Hacking Community for a while, making it impossible to trace original author.
      */
     protected static Color getGradientOffset(final Color color1, final Color color2, double offset) {
         if (offset > 1.0) {
             final double left = offset % 1.0;
-            final int off = (int)offset;
+            final int off = (int) offset;
             offset = ((off % 2 == 0) ? left : (1.0 - left));
         }
         final double inverse_percent = 1.0 - offset;
-        final int redPart = (int)(color1.getRed() * inverse_percent + color2.getRed() * offset);
-        final int greenPart = (int)(color1.getGreen() * inverse_percent + color2.getGreen() * offset);
-        final int bluePart = (int)(color1.getBlue() * inverse_percent + color2.getBlue() * offset);
+        final int redPart = (int) (color1.getRed() * inverse_percent + color2.getRed() * offset);
+        final int greenPart = (int) (color1.getGreen() * inverse_percent + color2.getGreen() * offset);
+        final int bluePart = (int) (color1.getBlue() * inverse_percent + color2.getBlue() * offset);
         return new Color(redPart, greenPart, bluePart);
     }
 

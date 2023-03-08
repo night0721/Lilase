@@ -1,9 +1,10 @@
 package me.night0721.lilase.events;
 
 import me.night0721.lilase.Lilase;
-import me.night0721.lilase.features.ah.AHConfig;
-import me.night0721.lilase.features.flip.Flipper;
-import me.night0721.lilase.features.flip.FlipperState;
+import me.night0721.lilase.config.AHConfig;
+import me.night0721.lilase.config.ConfigUtils;
+import me.night0721.lilase.features.flipper.Flipper;
+import me.night0721.lilase.features.flipper.FlipperState;
 import me.night0721.lilase.gui.TextRenderer;
 import me.night0721.lilase.utils.*;
 import net.minecraft.client.Minecraft;
@@ -30,11 +31,11 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static me.night0721.lilase.features.ah.AHConfig.GUI_COLOR;
-import static me.night0721.lilase.features.ah.AHConfig.SEND_MESSAGE;
-import static me.night0721.lilase.features.ah.AuctionHouse.flipper;
-import static me.night0721.lilase.features.flip.Flipper.rotation;
-import static me.night0721.lilase.features.flip.FlipperState.START;
+import static me.night0721.lilase.config.AHConfig.GUI_COLOR;
+import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
+import static me.night0721.lilase.features.flipper.Flipper.rotation;
+import static me.night0721.lilase.features.flipper.FlipperState.START;
+import static me.night0721.lilase.features.sniper.AuctionHouse.flipper;
 import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 
 public class SniperFlipperEvents {
@@ -42,6 +43,7 @@ public class SniperFlipperEvents {
     private int price;
     private boolean buying = false;
     private boolean bought = false;
+    private final Clock clock = new Clock();
     private final Pattern auctionSoldPattern = Pattern.compile("^(.*?) bought (.*?) for ([\\d,]+) coins CLICK$");
     private final Pattern boughtPattern = Pattern.compile("You purchased (\\w+(?:\\s+\\w+)*) for ([\\d,]+)\\s*(\\w+)!");
     private final Pattern boughtPattern2 = Pattern.compile("You claimed (.+?) from (.+?)'s auction!");
@@ -82,7 +84,7 @@ public class SniperFlipperEvents {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    flipper.sellItem();
+                    if (!AHConfig.ONLY_SNIPER) flipper.sellItem();
                 }).start();
             } else if (message.equals("Your starting bid must be at least 10 coins!")) {
                 InventoryUtils.clickOpenContainerSlot(13);
@@ -202,18 +204,30 @@ public class SniperFlipperEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onInventoryRendering(GuiScreenEvent.BackgroundDrawnEvent event) {
         String windowName = InventoryUtils.getInventoryName();
-        if ("BIN Auction View".equals(windowName)) {
-            ItemStack is = InventoryUtils.getStackInOpenContainerSlot(31);
-            if (is != null && (is.getItem() == Items.gold_nugget || (AHConfig.BED_SPAM && is.getItem() == Items.bed))) {
-                buying = true;
-                windowId = Lilase.mc.thePlayer.openContainer.windowId;
-                Lilase.mc.playerController.windowClick(windowId, 31, 0, 0, Lilase.mc.thePlayer);
-            } else if (is != null && is.getItem() == Items.potato) {
-                buying = false;
-                Lilase.mc.thePlayer.closeScreen();
-            }
-        }
         if (AHConfig.BED_SPAM) {
+            if ("BIN Auction View".equals(windowName)) {
+                ItemStack is = InventoryUtils.getStackInOpenContainerSlot(31);
+                if (is != null) {
+                    buying = true;
+                    windowId = Lilase.mc.thePlayer.openContainer.windowId;
+                    if (is.getItem() == Items.bed && clock.passed()) {
+                        Lilase.mc.playerController.windowClick(windowId, 31, 0, 0, Lilase.mc.thePlayer);
+                        clock.schedule(AHConfig.BED_SPAM_DELAY);
+                    } else if (is.getItem() == Items.gold_nugget)
+                        Lilase.mc.playerController.windowClick(windowId, 31, 0, 0, Lilase.mc.thePlayer);
+                    else if (is.getItem() == Items.potato) {
+                        buying = false;
+                        Lilase.mc.thePlayer.closeScreen();
+                    } else {
+                        buying = false;
+                        Lilase.mc.thePlayer.closeScreen();
+                    }
+                } else {
+                    System.out.println("Not gonna happen");
+                    buying = false;
+                    Lilase.mc.thePlayer.closeScreen();
+                }
+            }
             if (buying && "Confirm Purchase".equals(windowName)) {
                 Lilase.mc.playerController.windowClick(windowId + 1, 11, 0, 0, Lilase.mc.thePlayer);
                 buying = false;
@@ -221,6 +235,7 @@ public class SniperFlipperEvents {
             }
         }
     }
+
     @SubscribeEvent
     public void onPacketReceive(PacketReceivedEvent event) {
         if (event.packet instanceof S33PacketUpdateSign && Utils.checkInHub() && Flipper.state.equals(START)) {

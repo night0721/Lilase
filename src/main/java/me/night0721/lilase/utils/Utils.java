@@ -93,6 +93,3 @@ public class Utils {
     }
 }
 
-enum EffectState {
-    ON, OFF, INDETERMINABLE
-}

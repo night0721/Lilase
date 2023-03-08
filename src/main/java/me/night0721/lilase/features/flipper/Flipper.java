@@ -1,4 +1,4 @@
-package me.night0721.lilase.features.flip;
+package me.night0721.lilase.features.flipper;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

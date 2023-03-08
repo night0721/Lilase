@@ -98,7 +98,7 @@ main {
     I:AuctionHouseDelay=9
     B:GUI=true
     I:GUI_COLOR=-65536
-    I:ProfitPercentage=400
+    I:MinimumProfitPercentage=400
     I:ReconnectDelay=20
     B:SendMessageToWebhook=true
     S:Webhook=Paste your webhook here

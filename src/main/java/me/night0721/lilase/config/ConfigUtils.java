@@ -1,5 +1,6 @@
-package me.night0721.lilase.utils;
+package me.night0721.lilase.config;
 
+import me.night0721.lilase.utils.Utils;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 
@@ -26,8 +27,12 @@ public class ConfigUtils {
         if (hasNoKey("main", "Webhook")) writeStringConfig("main", "Webhook", "");
         if (hasNoKey("main", "ReconnectDelay")) writeIntConfig("main", "ReconnectDelay", 20);
         if (hasNoKey("main", "AuctionHouseDelay")) writeIntConfig("main", "AuctionHouseDelay", 8);
-        if (hasNoKey("main", "checkProfitPercentageBeforeBuy")) writeBooleanConfig("main", "checkProfitPercentageBeforeBuy", false);
-        if (hasNoKey("main", "ProfitPercentage")) writeIntConfig("main", "ProfitPercentage", 400); //400%
+        if (hasNoKey("main", "BedSpam")) writeBooleanConfig("main", "BedSpam", true);
+        if (hasNoKey("main", "BedSpamDelay")) writeIntConfig("main", "BedSpamDelay", 100);
+        if (hasNoKey("main", "OnlySniper")) writeBooleanConfig("main", "OnlySniper", false);
+        if (hasNoKey("main", "checkProfitPercentageBeforeBuy"))
+            writeBooleanConfig("main", "checkProfitPercentageBeforeBuy", false);
+        if (hasNoKey("main", "MinimumProfitPercentage")) writeIntConfig("main", "MinimumProfitPercentage", 400); //400%
         if (hasNoKey("main", "GUI")) writeBooleanConfig("main", "GUI", true);
         if (hasNoKey("main", "GUI_COLOR")) writeIntConfig("main", "GUI_COLOR", 0x003153);
         for (int i = 1; i <= 3; i++) {

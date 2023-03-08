@@ -1,15 +1,13 @@
-package me.night0721.lilase.features.ah;
+package me.night0721.lilase.features.sniper;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.night0721.lilase.Lilase;
-import me.night0721.lilase.features.flip.Flipper;
-import me.night0721.lilase.features.flip.FlipperState;
-import me.night0721.lilase.utils.ConfigUtils;
-import me.night0721.lilase.utils.DiscordWebhook;
-import me.night0721.lilase.utils.UngrabUtils;
-import me.night0721.lilase.utils.Utils;
+import me.night0721.lilase.config.ConfigUtils;
+import me.night0721.lilase.features.flipper.Flipper;
+import me.night0721.lilase.features.flipper.FlipperState;
+import me.night0721.lilase.utils.*;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.*;
@@ -26,7 +24,7 @@ import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import static me.night0721.lilase.features.ah.AHConfig.SEND_MESSAGE;
+import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 
 public class AuctionHouse {
     private Boolean open = false;
@@ -83,8 +81,9 @@ public class AuctionHouse {
 
     public void getItem() throws IOException {
         if (!open) return;
-        if (!Utils.checkInHub()) {
-            Utils.sendMessage("Not in hub, stopping");
+        Utils.checkFooter();
+        if (Utils.cookie != EffectState.ON && !Utils.checkInHub()) {
+            Utils.sendMessage("You have no cookie but you are not in hub, stopping");
             open = false;
             return;
         }

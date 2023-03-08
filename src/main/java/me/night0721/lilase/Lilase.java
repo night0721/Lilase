@@ -4,10 +4,11 @@ import cc.polyfrost.oneconfig.events.EventManager;
 import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
 import me.night0721.lilase.events.SniperFlipperEvents;
-import me.night0721.lilase.features.ah.AHConfig;
-import me.night0721.lilase.features.ah.AuctionHouse;
+import me.night0721.lilase.config.AHConfig;
+import me.night0721.lilase.features.sniper.AuctionHouse;
+import me.night0721.lilase.gui.ImageRenderer;
 import me.night0721.lilase.utils.Clock;
-import me.night0721.lilase.utils.ConfigUtils;
+import me.night0721.lilase.config.ConfigUtils;
 import me.night0721.lilase.utils.KeyBindingManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
@@ -23,14 +24,14 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.io.IOException;
 
-import static me.night0721.lilase.features.ah.AHConfig.AUCTION_HOUSE_DELAY;
-import static me.night0721.lilase.features.ah.AHConfig.RECONNECT_DELAY;
+import static me.night0721.lilase.config.AHConfig.AUCTION_HOUSE_DELAY;
+import static me.night0721.lilase.config.AHConfig.RECONNECT_DELAY;
 
 @Mod(modid = Lilase.MODID, name = Lilase.MOD_NAME, version = Lilase.VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "1.0.25";
+    public static final String VERSION = "1.0.26";
     public static final Minecraft mc = Minecraft.getMinecraft();
     public static AuctionHouse auctionHouse;
     public static AHConfig config;
@@ -39,13 +40,13 @@ public class Lilase {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        ConfigUtils.register();
         KeyBindingManager keyBindingManager = new KeyBindingManager();
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(keyBindingManager);
         MinecraftForge.EVENT_BUS.register(new SniperFlipperEvents());
-//        MinecraftForge.EVENT_BUS.register(new ImageRenderer());
+        MinecraftForge.EVENT_BUS.register(new ImageRenderer());
         EventManager.INSTANCE.register(this);
-        ConfigUtils.register();
         auctionHouse = new AuctionHouse();
         keyBindingManager.registerKeyBindings();
     }
