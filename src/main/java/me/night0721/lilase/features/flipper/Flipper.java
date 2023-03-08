@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.events.SniperFlipperEvents;
+import me.night0721.lilase.player.Rotation;
 import me.night0721.lilase.utils.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;

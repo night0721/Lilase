@@ -1,6 +1,7 @@
 package me.night0721.lilase.utils;
 
 import me.night0721.lilase.Lilase;
+import me.night0721.lilase.player.EffectState;
 import net.minecraft.network.play.server.S45PacketTitle;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;

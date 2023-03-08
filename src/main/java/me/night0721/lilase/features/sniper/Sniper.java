@@ -7,6 +7,7 @@ import me.night0721.lilase.Lilase;
 import me.night0721.lilase.config.ConfigUtils;
 import me.night0721.lilase.features.flipper.Flipper;
 import me.night0721.lilase.features.flipper.FlipperState;
+import me.night0721.lilase.player.EffectState;
 import me.night0721.lilase.utils.*;
 
 import javax.net.ssl.HttpsURLConnection;

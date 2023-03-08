@@ -1,5 +1,6 @@
-package me.night0721.lilase.utils;
+package me.night0721.lilase.player;
 
+import me.night0721.lilase.utils.AngleUtils;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.tuple.MutablePair;
 
