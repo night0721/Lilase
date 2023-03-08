@@ -43,7 +43,7 @@ List of things you can put in Type section
 ANY, WEAPON, ARMOR, ACCESSORIES, CONSUMABLES, BLOCKS, MISC
 ```
 # Changelog:
-[ChangeLog](https://gtihub.com/night0721/lilase/blob/main/.github/CHANGELOG.md)
+[ChangeLog](https://github.com/night0721/Lilase/blob/master/.github/CHANGELOG.md)
      
 # To Do Features:
 - Console client??
