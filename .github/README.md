@@ -20,6 +20,10 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 - GUI showing coordinates, fps and clock and stats like auctions bought, sniped, flipped
 - Auto ungrab mouse when sniping/flipping
 - Auto movement during sniping so hypixel won't send to afk
+- Cookie Compatible
+- Configurable bed spam delay
+- Modules toggleable in game
+- Check maximum profit percentage before buying so duped items won't be bought
 
 # How to use:
 1. Download the latest version of Lilase from [here](https://github.com/night0721/Lilase/releases)
@@ -67,15 +71,22 @@ blacklist1 {
     S:Tier=ANY
     S:Type=ANY
 }
+
 main {
-    S:APIKey=Paste your API key here
-    I:AuctionHouseDelay=9
-    B:GUI=true
-    I:GUI_COLOR=-65536
-    I:MinimumProfitPercentage=400
-    I:ReconnectDelay=20
+    S:APIKey=Paste your api key here
     B:SendMessageToWebhook=true
     S:Webhook=Paste your webhook here
+    I:ReconnectDelay=20
+    I:AuctionHouseDelay=9
+    B:BedSpawn=true
+    I:BedSpawnDelay=100
+    B:OnlySniper=false
     B:checkProfitPercentageBeforeBuy=false
+    B:checkMaxiumProfitPercentageBeforeBuy=false
+    I:MaximumProfitPercentage=1000
+    I:MinimumProfitPercentage=400
+    B:GUI=false
+    I:GUI_COLOR=-65536
 }
+
 ```
