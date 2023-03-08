@@ -21,7 +21,7 @@ public class KeyBindingManager {
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
         if (keyBindings[0].isPressed()) {
-            Lilase.auctionHouse.toggleAuction();
+            Lilase.sniper.toggleAuction();
         }
         if (keyBindings[1].isPressed()) {
             Lilase.config.openGui();

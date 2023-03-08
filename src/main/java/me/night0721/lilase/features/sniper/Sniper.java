@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 
-public class AuctionHouse {
+public class Sniper {
     private Boolean open = false;
     public Boolean buying = false;
     private int auctionsSniped = 0;
@@ -39,7 +39,7 @@ public class AuctionHouse {
     private final ThreadLocalRandom randomSlot;
     public static Flipper flipper;
 
-    public AuctionHouse() {
+    public Sniper() {
         for (int i = 1; i <= 99; i++) {
             if (!ConfigUtils.getString("item" + i, "Name").equals("") && !ConfigUtils.getString("item" + i, "Type").equals("") && !ConfigUtils.getString("item" + i, "Tier").equals("") && ConfigUtils.getInt("item" + i, "Price") != 0){
                 try {
@@ -84,27 +84,27 @@ public class AuctionHouse {
         Utils.checkFooter();
         if (Utils.cookie != EffectState.ON && !Utils.checkInHub()) {
             Utils.sendMessage("You have no cookie but you are not in hub, stopping");
-            open = false;
+            setOpen(false);
             return;
         }
         if (items.size() == 0) {
             Utils.sendMessage("No Item queued, stopping");
-            open = false;
+            setOpen(false);
             return;
         }
         if (ConfigUtils.getString("main", "APIKey").equals("") || ConfigUtils.getString("main", "Webhook").equals("")) {
             Utils.sendMessage("Missing APIKey, stopping");
-            open = false;
+            setOpen(false);
             return;
         }
         if (SEND_MESSAGE && ConfigUtils.getString("main", "Webhook").equals("")) {
             Utils.sendMessage("Sending message to Webhook is on but Webhook is missing, stopping");
-            open = false;
+            setOpen(false);
             return;
         }
         if (Flipper.state != FlipperState.NONE) {
             Utils.sendMessage("Flipper is running, stopping");
-            open = false;
+            setOpen(false);
             return;
         }
         if (Lilase.mc.currentScreen != null) Lilase.mc.thePlayer.closeScreen();
@@ -239,12 +239,12 @@ public class AuctionHouse {
     public void toggleAuction() {
         if (open) {
             Utils.sendMessage("Stopped AH Sniper");
-            open = false;
+            setOpen(false);
             UngrabUtils.regrabMouse();
         } else {
             if (Utils.checkInHub()) {
                 Utils.sendMessage("Started AH Sniper");
-                open = true;
+                setOpen(true);
                 UngrabUtils.ungrabMouse();
             } else Utils.sendMessage("Detected not in hub, please go to hub to start");
         }

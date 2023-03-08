@@ -46,9 +46,9 @@ public class Flipper {
     }
 
     public void sellItem() {
-        Lilase.auctionHouse.incrementAuctionsSniped();
+        Lilase.sniper.incrementAuctionsSniped();
         Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
-        if (Lilase.auctionHouse.getOpen()) Lilase.auctionHouse.toggleAuction();
+        if (Lilase.sniper.getOpen()) Lilase.sniper.toggleAuction();
         UngrabUtils.ungrabMouse();
         Utils.sendServerMessage("/hub");
         state = FlipperState.WALKING_TO_FIRST_POINT;
@@ -105,7 +105,7 @@ public class Flipper {
                         if (InventoryUtils.getSlotForItem(itemname) == -1) {
                             Utils.debugLog("[Flipper] Cannot find item in inventory, stopping flipper");
                             state = FlipperState.NONE;
-                            Lilase.auctionHouse.setOpen(true);
+                            Lilase.sniper.setOpen(true);
                             return;
                         }
                         InventoryUtils.clickOpenContainerSlot(InventoryUtils.getSlotForItem(itemname));
@@ -131,14 +131,14 @@ public class Flipper {
                     buyWait.schedule(1000);
                 } else if (InventoryUtils.inventoryNameContains("BIN Auction View") && buyWait.passed()) {
                     InventoryUtils.clickOpenContainerSlot(49);
-                    Lilase.auctionHouse.incrementAuctionsPosted();
+                    Lilase.sniper.incrementAuctionsPosted();
                     SniperFlipperEvents.postedNames.add(itemname);
                     buyWait.schedule(500);
                     Lilase.mc.thePlayer.closeScreen();
                     buyWait.schedule(500);
                     Utils.sendMessage("Posted item on Auction House, continue sniping now");
                     state = FlipperState.NONE;
-                    Lilase.auctionHouse.toggleAuction();
+                    Lilase.sniper.toggleAuction();
                 }
             case NONE:
                 break;

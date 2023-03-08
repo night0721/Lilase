@@ -35,7 +35,7 @@ import static me.night0721.lilase.config.AHConfig.GUI_COLOR;
 import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 import static me.night0721.lilase.features.flipper.Flipper.rotation;
 import static me.night0721.lilase.features.flipper.FlipperState.START;
-import static me.night0721.lilase.features.sniper.AuctionHouse.flipper;
+import static me.night0721.lilase.features.sniper.Sniper.flipper;
 import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 
 public class SniperFlipperEvents {
@@ -74,7 +74,7 @@ public class SniperFlipperEvents {
                     bought = false;
                     Utils.debugLog("[Sniper] Bought an item, starting to sell");
                     try {
-                        if (SEND_MESSAGE) Lilase.auctionHouse.webhook.execute();
+                        if (SEND_MESSAGE) Lilase.sniper.webhook.execute();
                     } catch (Exception e) {
                         System.out.println("Failed to send webhook");
                     }
@@ -90,18 +90,18 @@ public class SniperFlipperEvents {
                 InventoryUtils.clickOpenContainerSlot(13);
                 Lilase.mc.thePlayer.closeScreen();
                 Utils.debugLog("[Flipper] Cannot post item as the cost is too low, stopping fliiper and starting sniper");
-                Lilase.auctionHouse.toggleAuction();
+                Lilase.sniper.toggleAuction();
                 Flipper.state = FlipperState.NONE;
             } else if (message.contains("Can't create a BIN auction for this item for a PRICE this LOW!")) {
                 Lilase.mc.thePlayer.closeScreen();
                 Utils.debugLog("[Flipper] Cannot post item as the cost is too low, stopping fliiper and starting sniper");
-                Lilase.auctionHouse.toggleAuction();
+                Lilase.sniper.toggleAuction();
                 Flipper.state = FlipperState.NONE;
             } else if (message.contains("You were spawned in Limbo")) {
                 Utils.sendMessage("Detected in Limbo, stopping everything for 5 minutes");
                 Utils.addTitle("You got sent to Limbo!");
                 Flipper.state = FlipperState.NONE;
-                if (Lilase.auctionHouse.getOpen()) Lilase.auctionHouse.toggleAuction();
+                if (Lilase.sniper.getOpen()) Lilase.sniper.toggleAuction();
                 Thread.sleep(5000);
                 Utils.sendServerMessage("/lobby");
                 Thread.sleep(5000);
@@ -109,7 +109,7 @@ public class SniperFlipperEvents {
                 Thread bzchillingthread = new Thread(bazaarChilling);
                 bzchillingthread.start();
             } else if (matcher.matches() && postedNames.contains(matcher.group(2))) {
-                Lilase.auctionHouse.incrementAuctionsFlipped();
+                Lilase.sniper.incrementAuctionsFlipped();
             }
         }
     }
@@ -152,7 +152,7 @@ public class SniperFlipperEvents {
             }
             Lilase.mc.thePlayer.sendChatMessage("/hub");
             Thread.sleep(6000);
-            Lilase.auctionHouse.toggleAuction();
+            Lilase.sniper.toggleAuction();
         } catch (Exception ignore) {
         }
 
@@ -175,7 +175,7 @@ public class SniperFlipperEvents {
                         Thread.sleep(500);
                         Lilase.mc.thePlayer.closeScreen();
                         Flipper.state = FlipperState.NONE;
-                        Lilase.auctionHouse.toggleAuction();
+                        Lilase.sniper.toggleAuction();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -195,7 +195,7 @@ public class SniperFlipperEvents {
                 int minute = cal.get(Calendar.MINUTE);
                 String time = String.format("%02d:%02d", hour, minute);
                 int days = (int) (Lilase.mc.theWorld.getWorldTime() / 24000);
-                String lines = "X: " + Math.round(Lilase.mc.thePlayer.posX) + "\n" + "Y: " + Math.round(Lilase.mc.thePlayer.posY) + "\n" + "Z: " + Math.round(Lilase.mc.thePlayer.posZ) + "\n" + time + "\n" + "FPS: " + Minecraft.getDebugFPS() + "\n" + "Day: " + days + "\n" + "Auctions Sniped: " + Lilase.auctionHouse.getAuctionsSniped() + "\n" + "Auctions Posted: " + Lilase.auctionHouse.getAuctionsPosted() + "\n" + "Auctions Flipped: " + Lilase.auctionHouse.getAuctionsFlipped() + "\n";
+                String lines = "X: " + Math.round(Lilase.mc.thePlayer.posX) + "\n" + "Y: " + Math.round(Lilase.mc.thePlayer.posY) + "\n" + "Z: " + Math.round(Lilase.mc.thePlayer.posZ) + "\n" + time + "\n" + "FPS: " + Minecraft.getDebugFPS() + "\n" + "Day: " + days + "\n" + "Auctions Sniped: " + Lilase.sniper.getAuctionsSniped() + "\n" + "Auctions Posted: " + Lilase.sniper.getAuctionsPosted() + "\n" + "Auctions Flipped: " + Lilase.sniper.getAuctionsFlipped() + "\n";
                 TextRenderer.drawString(lines, 0, 0, 0.9, GUI_COLOR.getRGB());
             }
         }
@@ -231,7 +231,7 @@ public class SniperFlipperEvents {
             if (buying && "Confirm Purchase".equals(windowName)) {
                 Lilase.mc.playerController.windowClick(windowId + 1, 11, 0, 0, Lilase.mc.thePlayer);
                 buying = false;
-                if (Lilase.auctionHouse.buying) bought = true;
+                if (Lilase.sniper.buying) bought = true;
             }
         }
     }
