@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.events.SniperFlipperEvents;
+import me.night0721.lilase.player.EffectState;
 import me.night0721.lilase.player.Rotation;
 import me.night0721.lilase.utils.*;
 import net.minecraft.entity.Entity;
@@ -11,7 +12,10 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.util.StringUtils;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 
 
@@ -30,7 +34,7 @@ public class Flipper {
         itemprice = price;
     }
 
-    public int getItemPrice()  {
+    public int getItemPrice() {
         if (object == null) {
             try {
                 object = getItemData();
@@ -51,8 +55,11 @@ public class Flipper {
         Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
         if (Lilase.sniper.getOpen()) Lilase.sniper.toggleAuction();
         UngrabUtils.ungrabMouse();
-        Utils.sendServerMessage("/hub");
-        state = FlipperState.WALKING_TO_FIRST_POINT;
+        Utils.checkFooter();
+        if (Utils.cookie != EffectState.ON) {
+            Utils.sendServerMessage("/hub");
+            state = FlipperState.WALKING_TO_FIRST_POINT;
+        } else state = FlipperState.BUYING;
     }
 
     public void switchStates() {
@@ -75,7 +82,7 @@ public class Flipper {
                 if (Lilase.mc.currentScreen != null) {
                     Lilase.mc.thePlayer.closeScreen();
                 } else if (AngleUtils.smallestAngleDifference(AngleUtils.get360RotationYaw(), 88f) > 1.2) {
-                     System.out.println("[Flipper] Rotating to Auction Master");
+                    System.out.println("[Flipper] Rotating to Auction Master");
                     rotation.easeTo(88f, Lilase.mc.thePlayer.rotationPitch, 500);
                 } else if (distanceToAuctionMaster() < 0.7f) {
                     Utils.debugLog("[Flipper] At Auction Master, opening shop");
@@ -89,7 +96,7 @@ public class Flipper {
                 }
                 break;
             case BUYING:
-                if (Lilase.mc.currentScreen == null && buyWait.passed()) {
+                if (Utils.cookie != EffectState.ON && Lilase.mc.currentScreen == null && buyWait.passed()) {
                     final Entity auctionMaster = getAuctionMaster();
                     if (auctionMaster == null) {
                         Utils.debugLog("[Flipper] Cannot find shop NPC, retrying");
