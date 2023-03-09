@@ -28,5 +28,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build-artifacts
-          path: versions/1.8.9-forge/build/libs
+          path: versions/1.8.9-forge/build/libs/Lilase.jar
 #          ./gradlew setupDecompWorkspace
