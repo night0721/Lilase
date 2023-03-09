@@ -5,6 +5,6 @@ public class PageFlipper {
       Utils.checkFooter();
       if (Utils.cookie) {
         Utils.sendServerMessage("/ah")
-          
+        }
   }
 }
