@@ -4,7 +4,7 @@ public class PageFlipper {
   public void start() {
       Utils.checkFooter();
       if (Utils.cookie) {
-        Utils.sendServerMessage("/ah")
+        Utils.sendServerMessage("/ah");
         }
   }
 }
