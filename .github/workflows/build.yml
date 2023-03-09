@@ -21,10 +21,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build
-        run: chmod +x gradlew && ./gradlew build --stacktrace
+        run: chmod +x gradlew && ./gradlew build --stacktrace --info
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: build-artifacts
-          path: build
+          path: build/libs
 #          ./gradlew setupDecompWorkspace
