@@ -26,5 +26,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build-artifacts
-          path: build/libs
+          path: Lilase/build/libs
 #          ./gradlew setupDecompWorkspace
