@@ -58,35 +58,36 @@ ANY, WEAPON, ARMOR, ACCESSORIES, CONSUMABLES, BLOCKS, MISC
 
 # Example Config:
 ```cfg
-item1 {
-    S:Name=Livid Dagger
-    I:Price=5000000
-    S:Tier=LEGENDARY
-    S:Type=WEAPON
+{
+  "APIKey": "",
+  "SendMessageToWebhook": true,
+  "Webhook": "",
+  "ReconnectDelay": 20,
+  "AuctionHouseDelay": 8,
+  "BedSpamDelay": 100,
+  "OnlySniper": false,
+  "checkMaximumProfitPercentageBeforeBuy": false,
+  "MaximumProfitPercentage": 1000,
+  "MinimumProfitPercentage": 400,
+  "items": [
+    {"Name": " ", "Type": "ANY", "Price": 1000, "Tier": "ANY"},
+    {
+      "Name": "Livid Dagger",
+      "Type": "WEAPON",
+      "Price": 5000000,
+      "Tier": "LEGENDARY"
+    },
+    {"Name": "", "Type": "", "Price": 0, "Tier": ""}
+  ],
+  "blacklist": [
+    {"Name": "Rune", "Type": "ANY", "Price": 1, "Tier": "ANY"},
+    {"Name": "", "Type": "", "Price": 0, "Tier": ""},
+    {"Name": "", "Type": "", "Price": 0, "Tier": ""}
+  ],
+  "BedSpam": true,
+  "GUI": true,
+  "checkProfitPercentageBeforeBuy": false,
+  "GUI_COLOR": -1,
+  "SniperMode": true
 }
-
-blacklist1 {
-    S:Name=Rune
-    I:Price=1
-    S:Tier=ANY
-    S:Type=ANY
-}
-
-main {
-    S:APIKey=Paste your api key here
-    B:SendMessageToWebhook=true
-    S:Webhook=Paste your webhook here
-    I:ReconnectDelay=20
-    I:AuctionHouseDelay=9
-    B:BedSpawn=true
-    I:BedSpawnDelay=100
-    B:OnlySniper=false
-    B:checkProfitPercentageBeforeBuy=false
-    B:checkMaxiumProfitPercentageBeforeBuy=false
-    I:MaximumProfitPercentage=1000
-    I:MinimumProfitPercentage=400
-    B:GUI=false
-    I:GUI_COLOR=-65536
-}
-
 ```

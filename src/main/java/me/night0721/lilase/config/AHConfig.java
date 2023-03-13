@@ -6,40 +6,37 @@ import cc.polyfrost.oneconfig.config.annotations.*;
 import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
-import me.night0721.lilase.utils.Utils;
+import me.night0721.lilase.Lilase;
 
 public class AHConfig extends Config {
     public AHConfig() {
         super(new Mod("Lilase", ModType.UTIL_QOL), "lilase.json");
         initialize();
-        addListener("SEND_MESSAGE", () -> ConfigUtils.writeBooleanConfig("main", "SendMessageToWebhook", AHConfig.SEND_MESSAGE));
-        addListener("WEBHOOK", () -> ConfigUtils.writeStringConfig("main", "Webhook", AHConfig.WEBHOOK));
-        addListener("RECONNECT_DELAY", () -> ConfigUtils.writeIntConfig("main", "ReconnectDelay", Math.round(AHConfig.RECONNECT_DELAY)));
-        addListener("AUCTION_HOUSE_DELAY", () -> ConfigUtils.writeIntConfig("main", "AuctionHouseDelay", Math.round(AHConfig.AUCTION_HOUSE_DELAY)));
-        addListener("BED_SPAM", () -> ConfigUtils.writeBooleanConfig("main", "BedSpam", AHConfig.BED_SPAM));
-        addListener("BED_SPAM_DELAY", () -> ConfigUtils.writeIntConfig("main", "BedSpamDelay", Math.round(AHConfig.BED_SPAM_DELAY)));
-        addListener("ONLY_SNIPER", () -> ConfigUtils.writeBooleanConfig("main", "OnlySniper", AHConfig.ONLY_SNIPER));
-        addListener("CHECK_PERCENTAGE", () -> ConfigUtils.writeBooleanConfig("main", "checkProfitPercentageBeforeBuy", AHConfig.CHECK_PERCENTAGE));
-        addListener("MINIMUM_PROFIT_PERCENTAGE", () -> ConfigUtils.writeIntConfig("main", "MinimumProfitPercentage", Math.round(AHConfig.MINIMUM_PROFIT_PERCENTAGE)));
-        addListener("CHECK_MAXIMAL_PROFIT", () -> ConfigUtils.writeBooleanConfig("main", "checkMaxiumProfitPercentageBeforeBuy", AHConfig.CHECK_MAXIMUM_PROFIT));
-        addListener("MAXIMUM_PROFIT_PERCENTAGE", () -> ConfigUtils.writeIntConfig("main", "MaximumProfitPercentage", AHConfig.MAXIMUM_PROFIT_PERCENTAGE));
-        addListener("GUI", () -> ConfigUtils.writeBooleanConfig("main", "GUI", AHConfig.GUI));
-        addListener("GUI_COLOR", () -> ConfigUtils.writeIntConfig("main", "GUI_COLOR", AHConfig.GUI_COLOR.getRGB()));
-        addListener("ITEM_1_NAME", () -> ConfigUtils.writeStringConfig("item1", "Name", AHConfig.ITEM_1_NAME));
-        addListener("ITEM_1_TYPE", () -> ConfigUtils.writeStringConfig("item1", "Type", AHConfig.ITEM_1_TYPE));
-        addListener("ITEM_1_PRICE", () -> ConfigUtils.writeIntConfig("item1", "Price", Math.round(AHConfig.ITEM_1_PRICE)));
-        addListener("ITEM_1_TIER", () -> ConfigUtils.writeStringConfig("item1", "Tier", AHConfig.ITEM_1_TIER));
+        addListener("SEND_MESSAGE", () -> Lilase.configHandler.setBoolean("SendMessageToWebhook", SEND_MESSAGE));
+        addListener("WEBHOOK", () -> Lilase.configHandler.setString("Webhook", WEBHOOK));
+        addListener("RECONNECT_DELAY", () -> Lilase.configHandler.setInt("ReconnectDelay", Math.round(RECONNECT_DELAY)));
+        addListener("AUCTION_HOUSE_DELAY", () -> Lilase.configHandler.setInt("AuctionHouseDelay", Math.round(AUCTION_HOUSE_DELAY)));
+        addListener("SNIPER_MODE", () -> Lilase.configHandler.setInt("SniperMode", SNIPER_MODE));
+        addListener("BED_SPAM", () -> Lilase.configHandler.setBoolean("BedSpam", BED_SPAM));
+        addListener("BED_SPAM_DELAY", () -> Lilase.configHandler.setInt("BedSpamDelay", Math.round(BED_SPAM_DELAY)));
+        addListener("ONLY_SNIPER", () -> Lilase.configHandler.setBoolean("OnlySniper", ONLY_SNIPER));
+        addListener("CHECK_PERCENTAGE", () -> Lilase.configHandler.setBoolean("checkProfitPercentageBeforeBuy", CHECK_PERCENTAGE));
+        addListener("MINIMUM_PROFIT_PERCENTAGE", () -> Lilase.configHandler.setInt("MinimumProfitPercentage", Math.round(MINIMUM_PROFIT_PERCENTAGE)));
+        addListener("CHECK_MAXIMUM_PROFIT", () -> Lilase.configHandler.setBoolean("checkMaxiumProfitPercentageBeforeBuy", CHECK_MAXIMUM_PROFIT));
+        addListener("MAXIMUM_PROFIT_PERCENTAGE", () -> Lilase.configHandler.setInt("MaximumProfitPercentage", MAXIMUM_PROFIT_PERCENTAGE));
+        addListener("GUI", () -> Lilase.configHandler.setBoolean("GUI", GUI));
+        addListener("GUI_COLOR", () -> Lilase.configHandler.setInt("GUI_COLOR", GUI_COLOR.getRGB()));
         addDependency("WEBHOOK", "SEND_MESSAGE");
-        addDependency("PROFIT_PERCENTAGE", "CHECK_PERCENTAGE");
+        addDependency("MINIMUM_PROFIT_PERCENTAGE", "CHECK_PERCENTAGE");
+        addDependency("MAXIMUM_PROFIT_PERCENTAGE", "CHECK_MAXIMUM_PROFIT");
         addDependency("GUI_COLOR", "GUI");
-        addDependency("ITEM_1_NAME", "addItem", () -> ConfigUtils.getString("item1", "Name").equals(""));
-        addDependency("ITEM_1_TYPE", "addItem", () -> ConfigUtils.getString("item1", "Type").equals(""));
-        addDependency("ITEM_1_PRICE", "addItem", () -> ConfigUtils.getString("item1", "Price").equals(""));
-        addDependency("ITEM_1_TIER", "addItem", () -> ConfigUtils.getString("item1", "Tier").equals(""));
-        }
+    }
 
     @Slider(name = "Time per fetch (seconds)", min = 5, max = 15, step = 1, category = "Auction House", subcategory = "Sniper", description = "Time between each fetch of the auction house, the faster the fetch, the more likely you will snipe the item")
     public static int AUCTION_HOUSE_DELAY = 8;
+
+    @Dropdown(name = "Sniper Mode", category = "Auction House", subcategory = "Sniper", options = {"API", "Page Flipper[WIP]", "COFL"})
+    public static int SNIPER_MODE = 2;
 
     @Switch(name = "Bed Spam & Skip Confirm", category = "Auction House", subcategory = "Sniper", description = "Spam the bed to buy the item just after the grace period ends and skips the confirmation of buying the item")
     public static boolean BED_SPAM = true;
@@ -49,11 +46,6 @@ public class AHConfig extends Config {
 
     @Switch(name = "Only Sniper", category = "Auction House", subcategory = "Sniper", description = "Only snipe items, stop auto resell")
     public static boolean ONLY_SNIPER = false;
-
-    @Button(name = "Add Item", text = "Click to add an item to snipe", subcategory = "Items", category = "Auction House")
-    public static void addItem() {
-        Utils.debugLog("[AHConfig] Add Item Button Clicked");
-    }
 
     @Text(name = "Discord Webhook", placeholder = "URL", category = "Auction House", subcategory = "Webhook", description = "Discord webhook to send messages to")
     public static String WEBHOOK = "";
@@ -81,16 +73,4 @@ public class AHConfig extends Config {
 
     @Color(name = "GUI Color", category = "GUI")
     public static OneColor GUI_COLOR = new OneColor(0, 49, 83);
-
-    @Text(name = "Item 1 Name", placeholder = "Item Name")
-    public static String ITEM_1_NAME = " ";
-
-    @Text(name = "Item 1 Type", placeholder = "Item Type")
-    public static String ITEM_1_TYPE = "ANY";
-
-    @Number(name = "Item 1 Price", min = 1, max = 1000000000)
-    public static int ITEM_1_PRICE = 1;
-
-    @Text(name = "Item 1 Tier", placeholder = "Item Tier")
-    public static String ITEM_1_TIER = "ANY";
 }
