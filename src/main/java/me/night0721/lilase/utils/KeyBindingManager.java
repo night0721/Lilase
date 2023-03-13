@@ -1,6 +1,7 @@
 package me.night0721.lilase.utils;
 
 import me.night0721.lilase.Lilase;
+import me.night0721.lilase.config.AHConfig;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -21,7 +22,17 @@ public class KeyBindingManager {
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
         if (keyBindings[0].isPressed()) {
-            Lilase.sniper.toggleAuction();
+            switch (AHConfig.SNIPER_MODE) {
+                case 0:
+                    Lilase.sniper.toggleAuction();
+                    break;
+                case 1:
+                    Lilase.pageFlipper.toggleAuction();
+                    break;
+                case 2:
+                    Lilase.cofl.toggleAuction();
+                    break;
+            }
         }
         if (keyBindings[1].isPressed()) {
             Lilase.config.openGui();

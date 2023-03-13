@@ -21,19 +21,22 @@ import java.net.URL;
 
 public class Flipper {
     private final String itemname;
-    private final String bytedata;
+    private static String bytedata;
     private final int itemprice;
     public static FlipperState state = FlipperState.NONE;
     public static final Rotation rotation = new Rotation();
     private final Clock buyWait = new Clock();
-    private JsonObject object;
+    private static JsonObject object;
 
     public Flipper(String name, String data, int price) {
         itemname = name;
         bytedata = data;
         itemprice = price;
     }
-
+    public Flipper(String name, int price) {
+        itemname = name;
+        itemprice = price;
+    }
     public int getItemPrice() {
         if (object == null) {
             try {
@@ -55,7 +58,6 @@ public class Flipper {
         Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
         if (Lilase.sniper.getOpen()) Lilase.sniper.toggleAuction();
         UngrabUtils.ungrabMouse();
-        Utils.checkFooter();
         if (Utils.cookie != EffectState.ON) {
             Utils.sendServerMessage("/hub");
             state = FlipperState.WALKING_TO_FIRST_POINT;
@@ -68,11 +70,11 @@ public class Flipper {
                 if (Lilase.mc.currentScreen != null) {
                     Lilase.mc.thePlayer.closeScreen();
                 } else if (distanceToFirstPoint() < 0.7f) {
-                    System.out.println("[Flipper] Moving to auction house");
+                    System.out.println("Moving to auction house");
                     KeyBindingManager.updateKeys(false, false, false, false, false);
                     state = FlipperState.WALKING_INTO_AUCTION_HOUSE;
                 } else if (distanceToFirstPoint() < 5f) {
-                    System.out.println("[Flipper] Crouching to point 1");
+                    System.out.println("Crouching to point 1");
                     KeyBindingManager.updateKeys(true, false, false, false, false, true, false);
                 } else {
                     KeyBindingManager.updateKeys(true, false, false, false, false);
@@ -82,14 +84,14 @@ public class Flipper {
                 if (Lilase.mc.currentScreen != null) {
                     Lilase.mc.thePlayer.closeScreen();
                 } else if (AngleUtils.smallestAngleDifference(AngleUtils.get360RotationYaw(), 88f) > 1.2) {
-                    System.out.println("[Flipper] Rotating to Auction Master");
+                    System.out.println("Rotating to Auction Master");
                     rotation.easeTo(88f, Lilase.mc.thePlayer.rotationPitch, 500);
                 } else if (distanceToAuctionMaster() < 0.7f) {
-                    Utils.debugLog("[Flipper] At Auction Master, opening shop");
+                    Utils.debugLog("At Auction Master, opening shop");
                     KeyBindingManager.updateKeys(false, false, false, false, false);
                     state = FlipperState.BUYING;
                 } else if (distanceToAuctionMaster() < 5f) {
-                    System.out.println("[Flipper] Crouching to Auction Master");
+                    System.out.println("Crouching to Auction Master");
                     KeyBindingManager.updateKeys(true, false, false, false, false, true, false);
                 } else {
                     KeyBindingManager.updateKeys(true, false, false, false, false);
@@ -99,7 +101,7 @@ public class Flipper {
                 if (Utils.cookie != EffectState.ON && Lilase.mc.currentScreen == null && buyWait.passed()) {
                     final Entity auctionMaster = getAuctionMaster();
                     if (auctionMaster == null) {
-                        Utils.debugLog("[Flipper] Cannot find shop NPC, retrying");
+                        Utils.debugLog("Cannot find shop NPC, retrying");
                         buyWait.schedule(500);
                     } else {
                         Lilase.mc.playerController.interactWithEntitySendPacket(Lilase.mc.thePlayer, auctionMaster);
@@ -111,7 +113,7 @@ public class Flipper {
                 } else if (InventoryUtils.inventoryNameContains("Create BIN Auction")) {
                     if (InventoryUtils.isStoneButton() && buyWait.passed()) {
                         if (InventoryUtils.getSlotForItem(itemname) == -1) {
-                            Utils.debugLog("[Flipper] Cannot find item in inventory, stopping flipper");
+                            Utils.debugLog("Cannot find item in inventory, stopping flipper");
                             state = FlipperState.NONE;
                             Lilase.sniper.setOpen(true);
                             return;
@@ -151,10 +153,9 @@ public class Flipper {
             case NONE:
                 break;
         }
-
     }
 
-    public JsonObject getItemData() throws IOException {
+    public static JsonObject getItemData() throws IOException {
         URL url = new URL("https://www.night0721.me/api/skyblock");
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty("Content-Type", "text/plain");
@@ -176,15 +177,15 @@ public class Flipper {
         return (JsonObject) new JsonParser().parse(content.toString());
     }
 
-    private float distanceToFirstPoint() {
+    public static float distanceToFirstPoint() {
         return (float) Math.sqrt(Math.pow(Lilase.mc.thePlayer.posX - (-2.5), 2) + Math.pow(Lilase.mc.thePlayer.posZ - (-91.5), 2));
     }
 
-    private float distanceToAuctionMaster() {
+    public static float distanceToAuctionMaster() {
         return (float) Math.sqrt(Math.pow(Lilase.mc.thePlayer.posX - (-45), 2) + Math.pow(Lilase.mc.thePlayer.posZ - (-90), 2));
     }
 
-    private Entity getAuctionMaster() {
+    public static Entity getAuctionMaster() {
         for (final Entity e : Lilase.mc.theWorld.loadedEntityList) {
             if (e instanceof EntityArmorStand) {
                 final String name = StringUtils.stripControlCodes(e.getDisplayName().getUnformattedText());
