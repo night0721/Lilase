@@ -4,11 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.night0721.lilase.Lilase;
-import me.night0721.lilase.config.ConfigUtils;
+import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.features.flipper.Flipper;
 import me.night0721.lilase.features.flipper.FlipperState;
 import me.night0721.lilase.player.EffectState;
-import me.night0721.lilase.utils.*;
+import me.night0721.lilase.utils.DiscordWebhook;
+import me.night0721.lilase.utils.UngrabUtils;
+import me.night0721.lilase.utils.Utils;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.*;
@@ -33,28 +35,30 @@ public class Sniper {
     private int auctionsSniped = 0;
     private int auctionsPosted = 0;
     private int auctionsFlipped = 0;
-    public final DiscordWebhook webhook = new DiscordWebhook(ConfigUtils.getString("main", "Webhook"));
+    public final DiscordWebhook webhook = new DiscordWebhook(Lilase.configHandler.getString("Webhook"));
     private final List<Item> items = new ArrayList<>();
     private final List<Item> blacklist = new ArrayList<>();
     private final List<String> posted = new ArrayList<>();
     private final ThreadLocalRandom randomSlot;
     public static Flipper flipper;
+    private final List<Long> times = Arrays.asList(TimeUnit.DAYS.toMillis(365), TimeUnit.DAYS.toMillis(30), TimeUnit.DAYS.toMillis(1), TimeUnit.HOURS.toMillis(1), TimeUnit.MINUTES.toMillis(1), TimeUnit.SECONDS.toMillis(1));
+    private final List<String> timesString = Arrays.asList("year", "month", "day", "hour", "minute", "second");
 
     public Sniper() {
         for (int i = 1; i <= 99; i++) {
-            if (!ConfigUtils.getString("item" + i, "Name").equals("") && !ConfigUtils.getString("item" + i, "Type").equals("") && !ConfigUtils.getString("item" + i, "Tier").equals("") && ConfigUtils.getInt("item" + i, "Price") != 0){
+            if (!Lilase.configHandler.getString(i, "Name").equals("") && !Lilase.configHandler.getString(i, "Type").equals("") && !Lilase.configHandler.getString(i, "Tier").equals("") && Lilase.configHandler.getInt(i, "Price") != 0) {
                 try {
-                    ItemType.valueOf(ConfigUtils.getString("item" + i, "Type"));
-                    ItemType.valueOf(ConfigUtils.getString("item" + i, "Tier"));
+                    ItemType.valueOf(Lilase.configHandler.getString(i, "Type"));
+                    ItemType.valueOf(Lilase.configHandler.getString(i, "Tier"));
                 } catch (IllegalArgumentException e) {
-                    System.out.println("Invalid item type for item " + i + ", please check your config");
+                    System.out.println("Invalid item type or tier for item " + i + ", please check your config");
                 }
-                items.add(new Item(ConfigUtils.getString("item" + i, "Name"), ItemType.valueOf(ConfigUtils.getString("item" + i, "Type")), ConfigUtils.getInt("item" + i, "Price"), ItemTier.valueOf(ConfigUtils.getString("item" + i, "Tier"))));
+                items.add(new Item(Lilase.configHandler.getString(i, "Name"), ItemType.valueOf(Lilase.configHandler.getString(i, "Type")), Lilase.configHandler.getInt(i, "Price"), ItemTier.valueOf(Lilase.configHandler.getString(i, "Tier"))));
             }
         }
         for (int i = 1; i <= 99; i++) {
-            if (!ConfigUtils.getString("blacklist" + i, "Name").equals(""))
-                blacklist.add(new Item(ConfigUtils.getString("blacklist" + i, "Name"), null, null, null));
+            if (!Lilase.configHandler.getString(i, "Name").equals(""))
+                blacklist.add(new Item(Lilase.configHandler.getString(i, "Name"), null, null, null));
         }
         webhook.setUsername("Lilase - Auction House");
         webhook.setAvatarUrl("https://th.bing.com/th/id/OIP.Lk2cSujieY70GbsgPZ0TyAHaEK?w=325&h=182&c=7&r=0&o=5&pid=1.7");
@@ -63,7 +67,7 @@ public class Sniper {
     }
 
     private JsonObject getHypixelData(String player) throws IOException {
-        URL url = new URL("https://api.hypixel.net/player?key=" + ConfigUtils.getString("main", "APIKey") + "&uuid=" + player);
+        URL url = new URL("https://api.hypixel.net/player?key=" + Lilase.configHandler.getString("APIKey") + "&uuid=" + player);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestMethod("GET");
@@ -80,9 +84,9 @@ public class Sniper {
         return (JsonObject) new JsonParser().parse(content.toString());
     }
 
-    public void getItem() throws IOException {
+    public void start() throws IOException {
+        if (AHConfig.SNIPER_MODE != 0) return;
         if (!open) return;
-        Utils.checkFooter();
         if (Utils.cookie != EffectState.ON && !Utils.checkInHub()) {
             Utils.sendMessage("You have no cookie but you are not in hub, stopping");
             setOpen(false);
@@ -93,12 +97,12 @@ public class Sniper {
             setOpen(false);
             return;
         }
-        if (ConfigUtils.getString("main", "APIKey").equals("") || ConfigUtils.getString("main", "Webhook").equals("")) {
+        if (Lilase.configHandler.getString("APIKey").equals("") || Lilase.configHandler.getString("Webhook").equals("")) {
             Utils.sendMessage("Missing APIKey, stopping");
             setOpen(false);
             return;
         }
-        if (SEND_MESSAGE && ConfigUtils.getString("main", "Webhook").equals("")) {
+        if (SEND_MESSAGE && Lilase.configHandler.getString("Webhook").equals("")) {
             Utils.sendMessage("Sending message to Webhook is on but Webhook is missing, stopping");
             setOpen(false);
             return;
@@ -109,7 +113,7 @@ public class Sniper {
             return;
         }
         if (Lilase.mc.currentScreen != null) Lilase.mc.thePlayer.closeScreen();
-        Utils.debugLog("[Sniper] Doing some motion as we don't want to be AFK");
+        Utils.debugLog("Doing some motion as we don't want to be AFK");
         Lilase.mc.thePlayer.inventory.currentItem = randomSlot.nextInt(9);
         URL url = new URL("https://api.hypixel.net/skyblock/auctions");
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -173,7 +177,8 @@ public class Sniper {
                 if (!itemName.toLowerCase().contains(item.query.toLowerCase())) break;
                 if (!auction.get("item_lore").getAsString().contains(lore)) break;
                 if (price > item.getPrice()) break;
-                if (item.getTier() != ItemTier.ANY) if (!auction.get("tier").getAsString().equals(item.getTier().name())) break;
+                if (item.getTier() != ItemTier.ANY)
+                    if (!auction.get("tier").getAsString().equals(item.getTier().name())) break;
                 if (type != ItemType.ANY) if (!auction.get("category").getAsString().equals(type.getLowercase())) break;
                 if (!auction.get("bin").getAsBoolean()) break;
                 if (!posted.contains(uuid)) {
@@ -185,15 +190,15 @@ public class Sniper {
                     if (profileName.equalsIgnoreCase(Lilase.mc.thePlayer.getName())) break;
                     String updated = auction.get("item_lore").getAsString().replaceAll("§[0-9a-z]", "");
                     DecimalFormat df = new DecimalFormat("#.##");
-                    if (ConfigUtils.getBoolean("main", "checkProfitPercentageBeforeBuy")) {
+                    if (Lilase.configHandler.getBoolean("checkProfitPercentageBeforeBuy")) {
                         float multi = flipper.checkProfitPercentage();
-                        Utils.debugLog("[Sniper] Found an item, checking profit percentage");
-                        if (multi > ConfigUtils.getInt("main", "ProfitPercentage")) {
-                            Utils.debugLog("[Sniper] Higher than required profit percentage, buying now");
+                        Utils.debugLog("Found an item, checking profit percentage");
+                        if (multi > Lilase.configHandler.getInt("ProfitPercentage")) {
+                            Utils.debugLog("Higher than required profit percentage, buying now");
                             buying = true;
                         }
                     } else {
-                        Utils.debugLog("[Sniper] Found an item, trying to buy");
+                        Utils.debugLog("Found an item, trying to buy");
                         buying = true;
                     }
                     if (buying) {
@@ -206,10 +211,6 @@ public class Sniper {
             }
         }
     }
-
-
-    private final List<Long> times = Arrays.asList(TimeUnit.DAYS.toMillis(365), TimeUnit.DAYS.toMillis(30), TimeUnit.DAYS.toMillis(1), TimeUnit.HOURS.toMillis(1), TimeUnit.MINUTES.toMillis(1), TimeUnit.SECONDS.toMillis(1));
-    private final List<String> timesString = Arrays.asList("year", "month", "day", "hour", "minute", "second");
 
     public String toDuration(long duration) {
         StringBuilder res = new StringBuilder();
@@ -238,7 +239,7 @@ public class Sniper {
     }
 
     public void toggleAuction() {
-        if (open) {
+        if (getOpen()) {
             Utils.sendMessage("Stopped AH Sniper");
             setOpen(false);
             UngrabUtils.regrabMouse();
