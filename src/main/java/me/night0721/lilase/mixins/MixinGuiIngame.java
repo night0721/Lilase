@@ -24,7 +24,7 @@ public class MixinGuiIngame {
     public String a(String text) {
         String txt = keepScoreboardCharacters(stripColor(text)).trim();
         if (txt.startsWith("www")) return "§4w§cw§6w§e.§2n§ai§bg§3h§1t§90§d7§42§c1§6.§em§2e";
-        if (txt.startsWith("SKY")) return "§c§lLILASE";
+        if (txt.startsWith("SKY")) return "§d§lLILASE";
         if (Pattern.compile("\\d{2}/\\d{2}/\\d{2}").matcher(txt).find()) return txt.split(" ")[0];
         if (text.startsWith(EnumChatFormatting.RED + "") && Pattern.compile("\\d+").matcher(txt).matches()) return "";
         else return text;
