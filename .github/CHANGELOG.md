@@ -28,3 +28,8 @@
     - Cookie compatible, with auto detect of cookie so you can start sniper at everywhere
     - Refactoring AuctionHouse class to Sniper
     - Adding maxium profit check so it can prvent buying duped items
+    - Cofl macro
+    - Scoreboard edit
+    - Server ID on scoreboard hider
+    - Page flipper [WIP]
+    - new config with json

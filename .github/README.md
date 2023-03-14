@@ -24,6 +24,9 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 - Configurable bed spam delay
 - Modules toggleable in game
 - Check maximum profit percentage before buying so duped items won't be bought
+- COFL macro
+- Server ID on scoreboard hider
+- page flipper [WIP]
 
 # How to use:
 1. Download the latest version of Lilase from [here](https://github.com/night0721/Lilase/releases)
