@@ -202,6 +202,9 @@ public class SniperFlipperEvents {
                 String lines = "X: " + Math.round(Lilase.mc.thePlayer.posX) + "\n" + "Y: " + Math.round(Lilase.mc.thePlayer.posY) + "\n" + "Z: " + Math.round(Lilase.mc.thePlayer.posZ) + "\n" + time + "\n" + "FPS: " + Minecraft.getDebugFPS() + "\n" + "Day: " + days + "\n" + "Auctions Sniped: " + Lilase.sniper.getAuctionsSniped() + "\n" + "Auctions Posted: " + Lilase.sniper.getAuctionsPosted() + "\n" + "Auctions Flipped: " + Lilase.sniper.getAuctionsFlipped() + "\n";
                 TextRenderer.drawString(lines, 0, 0, 0.9, GUI_COLOR.getRGB());
             }
+        } else if (event.type == RenderGameOverlayEvent.ElementType.CHAT) {
+            TextRenderer.drawGradientString(Lilase.mc.fontRendererObj, "Lilase", 50, 100, 0x00FBAA, 0xFF3EFC);
+            TextRenderer.drawAnimatedString(Lilase.mc.fontRendererObj, "Hong Kong No.1", 50, 110, 0x00FBAA, 0xFF3EFC, 0.5f);
         }
     }
 
