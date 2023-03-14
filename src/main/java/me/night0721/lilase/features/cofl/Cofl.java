@@ -68,7 +68,7 @@ public class Cofl {
                 Utils.debugLog("Price: " + Integer.parseInt(priceMatcher.group(1).replaceAll(",", "")));
                 Utils.debugLog("Name: " + nameMatcher.group(1));
                 price = Integer.parseInt(priceMatcher.group(1).replaceAll(",", ""));
-                getQueue().add(new QueueItem(command,nameMatcher.group(1), price));
+                getQueue().add(new QueueItem(command, nameMatcher.group(1), price));
                 getQueue().scheduleClear();
 
             }

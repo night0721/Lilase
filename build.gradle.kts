@@ -54,12 +54,6 @@ val shade: Configuration by configurations.creating {
     configurations.implementation.get().extendsFrom(this)
 }
 
-//sourceSets {
-//    main {
-//        output.setResourcesDir(java.outputDir)
-//    }
-//}
-
 repositories {
     maven("https://repo.polyfrost.cc/releases")
 }
