@@ -42,38 +42,37 @@ public class Cofl {
         });
     }
 
-    public void handleMessage(String str) {
-        if (AHConfig.SNIPER_MODE != 2) return;
-        if (!str.startsWith("Received:")) return;
-        Pattern pattern = Pattern.compile("type[\":]*flip");
-        Matcher matcher = pattern.matcher(str);
-        if (matcher.find()) {
-            Pattern commandPattern = Pattern.compile("/viewauction \\w+");
-            Matcher commandMacther = commandPattern.matcher(str);
-            Pattern pricePattern = Pattern.compile("§7Med: §b(\\d{1,3}(?:,\\d{3})*)");
-            Matcher priceMatcher = pricePattern.matcher(str);
-            String[] split = str.split("Received: ");
-            JsonObject strJson = new JsonParser().parse(split[1]).getAsJsonObject();
-            String data = strJson.get("data").getAsString();
-            String itemName = new JsonParser().parse(data).getAsJsonObject().get("itemName").getAsString();
-            System.out.println(itemName);
-            Pattern namePattern = Pattern.compile("\"itemName\":\"([^\"]+)\"");//Pattern.compile("\"itemName\":\"([^\"]+)\"", Pattern.MULTILINE);
-            Matcher nameMatcher = namePattern.matcher(str);
-            System.out.println("Command: " + commandMacther.find());
-            System.out.println("Price: " + priceMatcher.find());
-            System.out.println("Name: " + nameMatcher.find());
-            if (commandMacther.find() && priceMatcher.find() && nameMatcher.find()) {
-                String command = commandMacther.group();
-                Utils.debugLog("Adding auction to queue: " + command);
-                Utils.debugLog("Price: " + Integer.parseInt(priceMatcher.group(1).replaceAll(",", "")));
-                Utils.debugLog("Name: " + nameMatcher.group(1));
-                price = Integer.parseInt(priceMatcher.group(1).replaceAll(",", ""));
-                getQueue().add(new QueueItem(command, nameMatcher.group(1), price));
-                getQueue().scheduleClear();
+    Pattern pattern = Pattern.compile("type[\":]*flip");
+    Pattern commandPattern = Pattern.compile("/viewauction \\w+");
+    Pattern pricePattern = Pattern.compile("§7Med: §b(\\d{1,3}(?:,\\d{3})*)");
 
+    public void handleMessage(String str) {
+        try {
+            if (AHConfig.SNIPER_MODE != 2) return;
+            if (!getOpen()) return;
+            if (!str.startsWith("Received:")) return;
+            Matcher matcher = pattern.matcher(str);
+            if (matcher.find()) {
+                Matcher commandMacther = commandPattern.matcher(str);
+                Matcher priceMatcher = pricePattern.matcher(str);
+                String[] split = str.split("Received: ");
+                JsonObject strJson = new JsonParser().parse(split[1]).getAsJsonObject();
+                String itemName = new JsonParser().parse(strJson.get("data").getAsString()).getAsJsonObject().get("auction").getAsJsonObject().get("itemName").getAsString();
+                if (commandMacther.find() && priceMatcher.find() && itemName != null) {
+                    String command = commandMacther.group();
+                    Utils.debugLog("Adding auction to queue: " + command);
+                    Utils.debugLog("Price: " + Integer.parseInt(priceMatcher.group(1).replaceAll(",", "")));
+                    Utils.debugLog("Name: " + itemName);
+                    price = Integer.parseInt(priceMatcher.group(1).replaceAll(",", ""));
+                    getQueue().add(new QueueItem(command, itemName, price));
+                    getQueue().scheduleClear();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
 
     public void toggleAuction() {
         if (getOpen()) {
