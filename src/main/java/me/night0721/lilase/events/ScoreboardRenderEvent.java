@@ -5,6 +5,7 @@ import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+// TODO: Implement Lombok Library for clean code
 @Cancelable
 public class ScoreboardRenderEvent extends Event {
     public ScoreObjective objective;

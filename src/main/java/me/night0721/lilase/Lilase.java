@@ -45,19 +45,18 @@ public class Lilase {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        configHandler = new ConfigHandler();
-        configHandler.init();
+        (configHandler = new ConfigHandler()).init();
         KeyBindingManager keyBindingManager = new KeyBindingManager();
-        MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(keyBindingManager);
-        MinecraftForge.EVENT_BUS.register(new SniperFlipperEvents());
-        MinecraftForge.EVENT_BUS.register(new ImageRenderer());
+        addToEventBus(this, keyBindingManager, new SniperFlipperEvents(), new ImageRenderer());
         EventManager.INSTANCE.register(this);
         sniper = new Sniper();
         pageFlipper = new PageFlipper();
         keyBindingManager.registerKeyBindings();
-        cofl = new Cofl();
-        cofl.onOpen();
+        (cofl = new Cofl()).onOpen();
+    }
+
+    private void addToEventBus(Object... objects) {
+        for (Object object : objects) MinecraftForge.EVENT_BUS.register(object);
     }
 
     @Subscribe

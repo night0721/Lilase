@@ -40,24 +40,24 @@ import static me.night0721.lilase.features.sniper.Sniper.flipper;
 import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 
 public class SniperFlipperEvents {
-    private int windowId = 1;
-    private int price;
-    private boolean buying = false;
-    private boolean bought = false;
+    private int windowId = 1, price;
+    private boolean buying = false, bought = false;
     private final Clock clock = new Clock();
-    private final Pattern auctionSoldPattern = Pattern.compile("^(.*?) bought (.*?) for ([\\d,]+) coins CLICK$");
-    private final Pattern boughtPattern = Pattern.compile("You purchased (\\w+(?:\\s+\\w+)*) for ([\\d,]+)\\s*(\\w+)!");
-    private final Pattern boughtPattern2 = Pattern.compile("You claimed (.+?) from (.+?)'s auction!");
-    private final Pattern boughtPattern3 = Pattern.compile("You (purchased|claimed)( (\\\\d+x))? ([^\\\\s]+(\\\\s+[^\\\\d,]+)*)((,| for) (\\\\d+,?)+ coins?(!)?)?");
+    private final Pattern
+            AUCTION_SOLD_PATTERN = Pattern.compile("^(.*?) bought (.*?) for ([\\d,]+) coins CLICK$"),
+            BOUGHT_PATTERN = Pattern.compile("You purchased (\\w+(?:\\s+\\w+)*) for ([\\d,]+)\\s*(\\w+)!"),
+            BOUGHT_PATTERN_2 = Pattern.compile("You claimed (.+?) from (.+?)'s auction!"),
+            BOUGHT_PATTERN_3 = Pattern.compile("You (purchased|claimed)( (\\\\d+x))? ([^\\\\s]+(\\\\s+[^\\\\d,]+)*)((,| for) (\\\\d+,?)+ coins?(!)?)?");
+    // TODO: Split into one pattern
     public static final List<String> postedNames = new ArrayList<>();
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) throws InterruptedException {
         String message = event.message.getUnformattedText();
-        Matcher matcher = auctionSoldPattern.matcher(message);
-        Matcher boughtMatcher = boughtPattern.matcher(message);
-        Matcher boughtMatcher2 = boughtPattern2.matcher(message);
-        Matcher boughtMatcher3 = boughtPattern3.matcher(message);
+        Matcher matcher = AUCTION_SOLD_PATTERN.matcher(message);
+        Matcher boughtMatcher = BOUGHT_PATTERN.matcher(message);
+        Matcher boughtMatcher2 = BOUGHT_PATTERN_2.matcher(message);
+        Matcher boughtMatcher3 = BOUGHT_PATTERN_3.matcher(message);
         if (!message.contains(":")) {
             if (message.equals("You didn't participate in this auction!")) {
                 Utils.debugLog("Failed to buy item, not fast enough. Closing the menu");
@@ -148,6 +148,7 @@ public class SniperFlipperEvents {
                     Thread.sleep(3000);
                     InventoryUtils.clickOpenContainerSlot(10);
                     Thread.sleep(3000);
+                    // TODO: Remove duplication
                     Lilase.mc.thePlayer.closeScreen();
                 }
             } else {

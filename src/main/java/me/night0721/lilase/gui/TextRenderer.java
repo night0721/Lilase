@@ -6,6 +6,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
+// TODO: Generify repeating code.
 public class TextRenderer {
     public static void drawString(String text, int x, int y, double scale) {
         double scaleReset = Math.pow(scale, -1);

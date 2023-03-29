@@ -6,6 +6,7 @@ import java.awt.*;
  * @author Gabagooooooooooool (ily)
  * @version 1.1
  * Basic utility for aurora theming engine.
+ * <3
  */
 
 public class CurrentColor {
@@ -31,24 +32,6 @@ public class CurrentColor {
         return Color.WHITE.getRGB();
     }
 
-    public static float getFloatValue(float offset, int color) {
-        Color tempC = new Color(CurrentColor.currentColorGet(offset));
-        int tempC_ = 0;
-        switch (color) {
-            case 0:
-                tempC_ = tempC.getRed();
-                break;
-            case 1:
-                tempC_ = tempC.getGreen();
-                break;
-            case 2:
-                tempC_ = tempC.getBlue();
-                break;
-
-        }
-        return (((float) tempC_) / 255F);
-    }
-
     /**
      * Following method has been circulating in Minecraft Hacking Community for a while, making it impossible to trace original author.
      */
@@ -69,7 +52,6 @@ public class CurrentColor {
      * Following method has been circulating in Minecraft Hacking Community for a while, making it impossible to trace original author.
      */
     protected static Color getRainbow(final int speed, final int offset) {
-        float hue = (System.currentTimeMillis() + offset) % speed;
-        return Color.getHSBColor(hue / speed, 0.9f, 1f);
+        return Color.getHSBColor(((System.currentTimeMillis() + offset) % speed) / speed, 0.9f, 1f);
     }
 }

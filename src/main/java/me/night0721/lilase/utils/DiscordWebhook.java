@@ -135,6 +135,7 @@ public class DiscordWebhook {
         this.embeds.clear();
     }
 
+    // TODO: Lombok! I'm gonna add it soon. The code looks bad right now :/
     public static class EmbedObject {
         private String title;
         private String description;

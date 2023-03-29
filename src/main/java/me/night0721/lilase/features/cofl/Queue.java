@@ -7,11 +7,7 @@ import java.util.List;
 
 public class Queue {
     private final List<QueueItem> queue = new ArrayList<>();
-    private boolean running = false;
-
-    private boolean clearTaskRunning = false;
-
-
+    private boolean running = false, clearTaskRunning = false;
     public void add(QueueItem item) {
         this.queue.add(item);
     }
@@ -40,7 +36,6 @@ public class Queue {
     public void scheduleClear() {
         if (!this.clearTaskRunning) {
             this.clearTaskRunning = true;
-
             new Thread(() -> {
                 try {
                     Thread.sleep(30000);
