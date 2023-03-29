@@ -19,6 +19,7 @@ public class ConfigHandler {
     }
 
     public void reloadConfig() {
+        // TODO: Fix
         if (hasNoKey("APIKey")) setString("APIKey", "");
         if (hasNoKey("SendMessageToWebhook")) setBoolean("SendMessageToWebhook", true);
         if (hasNoKey("Webhook")) setString("Webhook", "");

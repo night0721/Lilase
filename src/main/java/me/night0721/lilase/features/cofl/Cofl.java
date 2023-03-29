@@ -42,27 +42,23 @@ public class Cofl {
         });
     }
 
-    Pattern pattern = Pattern.compile("type[\":]*flip");
-    Pattern commandPattern = Pattern.compile("/viewauction \\w+");
-    Pattern pricePattern = Pattern.compile("§7Med: §b(\\d{1,3}(?:,\\d{3})*)");
+    private final Pattern pattern = Pattern.compile("type[\":]*flip");
+    private final Pattern commandPattern = Pattern.compile("/viewauction \\w+");
+    private final Pattern pricePattern = Pattern.compile("§7Med: §b(\\d{1,3}(?:,\\d{3})*)");
 
     public void handleMessage(String str) {
         try {
-            if (AHConfig.SNIPER_MODE != 2) return;
-            if (!getOpen()) return;
-            if (!str.startsWith("Received:")) return;
-            Matcher matcher = pattern.matcher(str);
-            if (matcher.find()) {
+            if (AHConfig.SNIPER_MODE != 2 || !getOpen() || !str.startsWith("Received:")) return;
+            if (pattern.matcher(str).find()) {
                 Matcher commandMacther = commandPattern.matcher(str);
                 Matcher priceMatcher = pricePattern.matcher(str);
                 String[] split = str.split("Received: ");
-                JsonObject strJson = new JsonParser().parse(split[1]).getAsJsonObject();
-                String itemName = new JsonParser().parse(strJson.get("data").getAsString()).getAsJsonObject().get("auction").getAsJsonObject().get("itemName").getAsString();
+                String itemName = new JsonParser().parse(new JsonParser().parse(split[1]).getAsJsonObject().get("data").getAsString()).getAsJsonObject().get("auction").getAsJsonObject().get("itemName").getAsString();
                 if (commandMacther.find() && priceMatcher.find() && itemName != null) {
                     String command = commandMacther.group();
-                    Utils.debugLog("Adding auction to queue: " + command);
-                    Utils.debugLog("Price: " + Integer.parseInt(priceMatcher.group(1).replaceAll(",", "")));
-                    Utils.debugLog("Name: " + itemName);
+                    Utils.debugLog("Adding auction to queue: " + command,
+                            "Price: " + Integer.parseInt(priceMatcher.group(1).replaceAll(",", "")),
+                            "Name: " + itemName);
                     price = Integer.parseInt(priceMatcher.group(1).replaceAll(",", ""));
                     getQueue().add(new QueueItem(command, itemName, price));
                     getQueue().scheduleClear();
@@ -78,22 +74,16 @@ public class Cofl {
         if (getOpen()) {
             Utils.sendMessage("Stopped COFL Sniper");
             Lilase.mc.thePlayer.closeScreen();
-            if (thread.isAlive()) {
-                queue.clear();
-                queue.setRunning(false);
-                thread.interrupt();
-            }
+            stopThread();
             setOpen(false);
             UngrabUtils.regrabMouse();
         } else {
             if (Utils.checkInHub()) {
                 Utils.sendMessage("Started COFL Sniper");
                 setOpen(true);
-                if (thread.isAlive()) {
-                    queue.clear();
-                    queue.setRunning(false);
-                    thread.interrupt();
-                } else {
+                boolean threadStatus = !thread.isAlive();
+                stopThread();
+                if (!threadStatus) {
                     thread.start();
                 }
                 UngrabUtils.ungrabMouse();
@@ -101,6 +91,13 @@ public class Cofl {
         }
     }
 
+    private void stopThread() {
+        if (thread.isAlive()) {
+            queue.clear();
+            queue.setRunning(false);
+            thread.interrupt();
+        }
+    }
     public boolean getOpen() {
         return open;
     }

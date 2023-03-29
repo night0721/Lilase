@@ -4,6 +4,7 @@ import net.minecraft.network.Packet;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+// TODO: Implement Lombok Library for clean code
 @Cancelable
 public class PacketSentEvent extends Event {
     private final Packet<?> packet;

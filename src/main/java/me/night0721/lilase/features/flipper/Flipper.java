@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 
-
+// TODO: Fix repeating code (I will do it soon)
 public class Flipper {
     private final String itemname;
     private static String bytedata;
@@ -100,13 +100,13 @@ public class Flipper {
             case BUYING:
                 if (Utils.cookie != EffectState.ON && Lilase.mc.currentScreen == null && buyWait.passed()) {
                     final Entity auctionMaster = getAuctionMaster();
-                    if (auctionMaster == null) {
-                        Utils.debugLog("Cannot find shop NPC, retrying");
-                        buyWait.schedule(500);
-                    } else {
+                    boolean auctionMasterExists = auctionMaster != null;
+                    if (auctionMasterExists) {
                         Lilase.mc.playerController.interactWithEntitySendPacket(Lilase.mc.thePlayer, auctionMaster);
-                        buyWait.schedule(1500);
+                    } else {
+                        Utils.debugLog("Cannot find shop NPC, retrying");
                     }
+                    buyWait.schedule(auctionMasterExists ? 1500 : 500);
                 } else if (InventoryUtils.inventoryNameContains("Auction House") && buyWait.passed()) {
                     InventoryUtils.clickOpenContainerSlot(15);
                     buyWait.schedule(1500);
@@ -127,7 +127,7 @@ public class Flipper {
                     } else if (!InventoryUtils.isStoneButton() && !InventoryUtils.isToAuctionItem(itemname) && buyWait.passed()) {
                         InventoryUtils.clickOpenContainerSlot(13);
                         buyWait.schedule(1000);
-                    }
+                    } // TODO: Ternary Expression
                 } else if (InventoryUtils.inventoryNameContains("Manage Auction") && buyWait.passed()) {
                     InventoryUtils.clickOpenContainerSlot(24);
                     buyWait.schedule(1500);
@@ -167,14 +167,13 @@ public class Flipper {
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
         StringBuilder content = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
+        while ((inputLine = in.readLine()) != null)
             content.append(inputLine);
-        }
         in.close();
         connection.disconnect();
         object = (JsonObject) new JsonParser().parse(content.toString());
         System.out.println("Price" + object.get("price"));
-        return (JsonObject) new JsonParser().parse(content.toString());
+        return object;
     }
 
     public static float distanceToFirstPoint() {
@@ -186,15 +185,7 @@ public class Flipper {
     }
 
     public static Entity getAuctionMaster() {
-        for (final Entity e : Lilase.mc.theWorld.loadedEntityList) {
-            if (e instanceof EntityArmorStand) {
-                final String name = StringUtils.stripControlCodes(e.getDisplayName().getUnformattedText());
-                if (name.startsWith("Auction Master")) {
-                    return e;
-                }
-            }
-        }
-        return null;
+        return Lilase.mc.theWorld.loadedEntityList.stream().filter(e -> e instanceof EntityArmorStand && StringUtils.stripControlCodes(e.getDisplayName().getUnformattedText()).startsWith("Auction Master")).findFirst().orElse(null);
     }
 }
 

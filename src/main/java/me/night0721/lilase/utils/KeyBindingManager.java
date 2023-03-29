@@ -14,14 +14,13 @@ public class KeyBindingManager {
     public void registerKeyBindings() {
         keyBindings[0] = new KeyBinding("Sniper Toggle", Keyboard.KEY_END, Lilase.MOD_NAME);
         keyBindings[1] = new KeyBinding("Config", Keyboard.KEY_MULTIPLY, Lilase.MOD_NAME);
-        for (KeyBinding keyBinding : keyBindings) {
-            ClientRegistry.registerKeyBinding(keyBinding);
-        }
+        for (KeyBinding keyBinding : keyBindings) ClientRegistry.registerKeyBinding(keyBinding);
     }
 
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
         if (keyBindings[0].isPressed()) {
+            // TODO: Add sniper interface and use nested switch loop to prevent .toggleAuction(); repeating
             switch (AHConfig.SNIPER_MODE) {
                 case 0:
                     Lilase.sniper.toggleAuction();
@@ -34,9 +33,8 @@ public class KeyBindingManager {
                     break;
             }
         }
-        if (keyBindings[1].isPressed()) {
+        if (keyBindings[1].isPressed())
             Lilase.config.openGui();
-        }
     }
 
     public static void rightClick() {
@@ -68,6 +66,8 @@ public class KeyBindingManager {
         KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindAttack.getKeyCode(), attack);
         KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindSneak.getKeyCode(), crouch);
         KeyBinding.setKeyBindState(Lilase.mc.gameSettings.keyBindJump.getKeyCode(), space);
+
+        // TODO: Will fix it. Just give time.
     }
 
     public static void stopMovement() {
