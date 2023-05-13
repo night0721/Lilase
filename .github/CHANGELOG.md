@@ -33,3 +33,7 @@
     - Server ID on scoreboard hider
     - Page flipper [WIP]
     - new config with json
+- v2.0
+    - Added a config for disabling words and crabby
+    - Fixing cofl macro cannot open issue
+    - Adding auto sell to cofl macro
