@@ -7,6 +7,7 @@ import me.night0721.lilase.utils.Utils;
 public class QueueItem {
     private final String command, name;
     private final int price;
+    public static Flipper flipper = null;
 
     public QueueItem(String command, String name, int price) {
         this.command = command;
@@ -16,7 +17,7 @@ public class QueueItem {
 
     public void openAuction() {
         Utils.debugLog("Executing: " + command);
-        Utils.sendServerMessage(command);
-        new Flipper(name, price);
+        Utils.sendServerMessage("/viewauction " + command);
+        flipper = new Flipper(name, price);
     }
 }

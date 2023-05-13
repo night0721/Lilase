@@ -2,6 +2,8 @@ package me.night0721.lilase.events;
 
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.config.AHConfig;
+import me.night0721.lilase.features.cofl.Cofl;
+import me.night0721.lilase.features.cofl.QueueItem;
 import me.night0721.lilase.features.flipper.Flipper;
 import me.night0721.lilase.features.flipper.FlipperState;
 import me.night0721.lilase.features.sniper.PageFlipperState;
@@ -36,7 +38,6 @@ import static me.night0721.lilase.config.AHConfig.GUI_COLOR;
 import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 import static me.night0721.lilase.features.flipper.Flipper.rotation;
 import static me.night0721.lilase.features.flipper.FlipperState.START;
-import static me.night0721.lilase.features.sniper.Sniper.flipper;
 import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 
 public class SniperFlipperEvents {
@@ -79,15 +80,14 @@ public class SniperFlipperEvents {
                     } catch (Exception e) {
                         Utils.debugLog("Failed to send webhook");
                     }
-                    if (flipper == null)
-                        price = Lilase.cofl.price;
-                    else price = flipper.getItemPrice();
+                    Utils.debugLog("Target price " + Cofl.price);
+                    price = Cofl.price;
                     try {
                         Thread.sleep(1500);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    if (!AHConfig.ONLY_SNIPER) flipper.sellItem();
+                    if (!AHConfig.ONLY_SNIPER) QueueItem.flipper.sellItem();
                 }).start();
             } else if (message.equals("Your starting bid must be at least 10 coins!")) {
                 InventoryUtils.clickOpenContainerSlot(13);
@@ -177,7 +177,7 @@ public class SniperFlipperEvents {
                     Utils.debugLog("Interrupting Flipper selling");
                     Lilase.mc.thePlayer.closeScreen();
                     Flipper.state = FlipperState.NONE;
-                    Lilase.sniper.toggleAuction();
+                    Lilase.cofl.toggleAuction();
                 }).start();
             } else if (Lilase.pageFlipper.state != PageFlipperState.NONE) {
                 new Thread(() -> {
@@ -204,8 +204,10 @@ public class SniperFlipperEvents {
                 TextRenderer.drawString(lines, 0, 0, 0.9, GUI_COLOR.getRGB());
             }
         } else if (event.type == RenderGameOverlayEvent.ElementType.CHAT) {
-            TextRenderer.drawGradientString(Lilase.mc.fontRendererObj, "Lilase", 50, 100, 0x00FBAA, 0xFF3EFC);
-            TextRenderer.drawAnimatedString(Lilase.mc.fontRendererObj, "Hong Kong No.1", 50, 110, 0x00FBAA, 0xFF3EFC, 0.5f);
+            if (AHConfig.HKNO1) {
+                TextRenderer.drawGradientString(Lilase.mc.fontRendererObj, "Lilase", 50, 100, 0x00FBAA, 0xFF3EFC);
+                TextRenderer.drawAnimatedString(Lilase.mc.fontRendererObj, "Hong Kong No.1", 50, 110, 0x00FBAA, 0xFF3EFC, 0.5f);
+            }
         }
     }
 

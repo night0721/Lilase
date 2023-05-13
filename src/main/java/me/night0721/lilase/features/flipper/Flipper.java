@@ -33,10 +33,12 @@ public class Flipper {
         bytedata = data;
         itemprice = price;
     }
+
     public Flipper(String name, int price) {
         itemname = name;
         itemprice = price;
     }
+
     public int getItemPrice() {
         if (object == null) {
             try {
@@ -57,11 +59,18 @@ public class Flipper {
         Lilase.sniper.incrementAuctionsSniped();
         Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
         if (Lilase.sniper.getOpen()) Lilase.sniper.toggleAuction();
+        if (Lilase.cofl.getOpen()) Lilase.cofl.toggleAuction();
         UngrabUtils.ungrabMouse();
+        Utils.checkFooter();
+        Utils.debugLog("Cookie: " + (Utils.cookie == EffectState.ON ? "ON" : "OFF"));
+        Utils.debugLog("Have screen: " + (Lilase.mc.currentScreen != null ? "Yes" : "No"));
         if (Utils.cookie != EffectState.ON) {
             Utils.sendServerMessage("/hub");
             state = FlipperState.WALKING_TO_FIRST_POINT;
-        } else state = FlipperState.BUYING;
+        } else {
+            Utils.sendServerMessage("/ah");
+            state = FlipperState.BUYING;
+        }
     }
 
     public void switchStates() {
@@ -148,7 +157,7 @@ public class Flipper {
                     buyWait.schedule(500);
                     Utils.sendMessage("Posted item on Auction House, continue sniping now");
                     state = FlipperState.NONE;
-                    Lilase.sniper.toggleAuction();
+                    Lilase.cofl.toggleAuction();
                 }
             case NONE:
                 break;

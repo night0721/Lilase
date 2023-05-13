@@ -8,13 +8,12 @@ import me.night0721.lilase.utils.UngrabUtils;
 import me.night0721.lilase.utils.Utils;
 
 import java.io.PrintStream;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Cofl {
     private final Queue queue = new Queue();
     private boolean open = false;
-    public int price = 0;
+    public static int price = 0;
     public Thread thread = new Thread(() -> {
         while (true) {
             try {
@@ -43,24 +42,22 @@ public class Cofl {
     }
 
     private final Pattern pattern = Pattern.compile("type[\":]*flip");
-    private final Pattern commandPattern = Pattern.compile("/viewauction \\w+");
-    private final Pattern pricePattern = Pattern.compile("§7Med: §b(\\d{1,3}(?:,\\d{3})*)");
 
     public void handleMessage(String str) {
         try {
             if (AHConfig.SNIPER_MODE != 2 || !getOpen() || !str.startsWith("Received:")) return;
             if (pattern.matcher(str).find()) {
-                Matcher commandMacther = commandPattern.matcher(str);
-                Matcher priceMatcher = pricePattern.matcher(str);
                 String[] split = str.split("Received: ");
-                String itemName = new JsonParser().parse(new JsonParser().parse(split[1]).getAsJsonObject().get("data").getAsString()).getAsJsonObject().get("auction").getAsJsonObject().get("itemName").getAsString();
-                if (commandMacther.find() && priceMatcher.find() && itemName != null) {
-                    String command = commandMacther.group();
-                    Utils.debugLog("Adding auction to queue: " + command,
-                            "Price: " + Integer.parseInt(priceMatcher.group(1).replaceAll(",", "")),
-                            "Name: " + itemName);
-                    price = Integer.parseInt(priceMatcher.group(1).replaceAll(",", ""));
-                    getQueue().add(new QueueItem(command, itemName, price));
+                JsonObject auction = new JsonParser().parse(new JsonParser().parse(split[1]).getAsJsonObject().get("data").getAsString()).getAsJsonObject();
+                String itemName = auction.get("auction").getAsJsonObject().get("itemName").getAsString();
+                String id = auction.get("auction").getAsJsonObject().get("uuid").getAsString();
+                price = auction.get("target").getAsInt();
+//                Utils.debugLog("Item Name: " + itemName);
+//                Utils.debugLog("ID: " + id);
+//                Utils.debugLog("Price: " + price);
+                if (itemName != null && id != null && price != 0) {
+                    Utils.debugLog("Adding auction to queue: " + id, "Target Price: " + price, "Name: " + itemName);
+                    getQueue().add(new QueueItem(id, itemName, price));
                     getQueue().scheduleClear();
                 }
             }
@@ -81,7 +78,7 @@ public class Cofl {
             if (Utils.checkInHub()) {
                 Utils.sendMessage("Started COFL Sniper");
                 setOpen(true);
-                boolean threadStatus = !thread.isAlive();
+                boolean threadStatus = thread.isAlive();
                 stopThread();
                 if (!threadStatus) {
                     thread.start();
@@ -98,6 +95,7 @@ public class Cofl {
             thread.interrupt();
         }
     }
+
     public boolean getOpen() {
         return open;
     }

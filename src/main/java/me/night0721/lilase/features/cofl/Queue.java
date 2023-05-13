@@ -38,7 +38,7 @@ public class Queue {
             this.clearTaskRunning = true;
             new Thread(() -> {
                 try {
-                    Thread.sleep(30000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

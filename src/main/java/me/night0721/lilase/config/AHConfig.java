@@ -71,6 +71,12 @@ public class AHConfig extends Config {
     @Checkbox(name = "GUI", category = "GUI", description = "Enable the GUI")
     public static boolean GUI = true;
 
+    @Checkbox(name = "HK No.1", category = "GUI", description = "Enable the string HK No.1")
+    public static boolean HKNO1 = true;
+
+    @Checkbox(name = "Crabby", category = "GUI", description = "Enable the Crabby image")
+    public static boolean CRABBY = true;
+
     @Color(name = "GUI Color", category = "GUI")
     public static OneColor GUI_COLOR = new OneColor(0, 49, 83);
 }

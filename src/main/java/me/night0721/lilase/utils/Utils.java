@@ -13,10 +13,8 @@ import static me.night0721.lilase.Lilase.mc;
 
 public class Utils {
     public static IChatComponent header = null, footer = null;
-    private static final Pattern
-            PATTERN_ACTIVE_EFFECTS = Pattern.compile("§r§r§7You have a §r§cGod Potion §r§7active! §r§d([0-9]*?:?[0-9]*?:?[0-9]*)§r"),
-            PATTERN_HUB_LOCATIONS = Pattern.compile("(forest|village|farm|mountain|wilderness|community|graveyard|bazaar|auction)");
-    public static EffectState cookie, godPot;
+    private static final Pattern PATTERN_HUB_LOCATIONS = Pattern.compile("(forest|village|farm|mountain|wilderness|community|graveyard|bazaar|auction)");
+    public static EffectState cookie;
 
     public static String translateAlternateColorCodes(String text) {
         char[] b = text.toCharArray();
@@ -35,20 +33,16 @@ public class Utils {
     }
 
     public static boolean checkInHub() {
-        return ScoreboardUtils.getSidebarLines().stream().map(ScoreboardUtils::cleanSB).anyMatch(line -> PATTERN_HUB_LOCATIONS.matcher(line).find());
+        return ScoreboardUtils.getSidebarLines().stream().map(ScoreboardUtils::cleanSB).map(String::toLowerCase).anyMatch(line -> PATTERN_HUB_LOCATIONS.matcher(line).find());
     }
 
     public static void checkFooter() {
         if (footer != null) {
             for (String line : footer.getFormattedText().split("\n")) {
-                boolean foundGodPot = PATTERN_ACTIVE_EFFECTS.matcher(line).matches();
-                godPot = (foundGodPot) ? EffectState.ON : EffectState.OFF;
-                if (!foundGodPot) {
-                    cookie = (line.contains("Not active! Obtain")) ? EffectState.OFF : EffectState.ON;
-                    if (!line.contains("Active")) {
-                        godPot = EffectState.INDETERMINABLE;
-                        cookie = EffectState.INDETERMINABLE;
-                    }
+                if (line.contains("Not active! Obtain")) {
+                    cookie = EffectState.OFF;
+                } else {
+                    cookie = EffectState.ON;
                 }
             }
         }
@@ -59,10 +53,10 @@ public class Utils {
     }
 
     public static void debugLog(String message) {
-        mc.thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + "[Lilase] " + message));
+        mc.thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "" + "[Lilase] " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + message));
     }
 
-    public static void debugLog(String... messages){
+    public static void debugLog(String... messages) {
         for (String message : messages) debugLog(message);
     }
 

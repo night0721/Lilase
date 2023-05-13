@@ -7,6 +7,7 @@ import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.config.ConfigHandler;
 import me.night0721.lilase.events.SniperFlipperEvents;
 import me.night0721.lilase.features.cofl.Cofl;
+import me.night0721.lilase.features.cofl.QueueItem;
 import me.night0721.lilase.features.sniper.PageFlipper;
 import me.night0721.lilase.features.sniper.Sniper;
 import me.night0721.lilase.gui.ImageRenderer;
@@ -72,7 +73,7 @@ public class Lilase {
         if (tickAmount % (20 * 60) == 0) sniper.start();
         if (tickAmount % 2400 == 0) configHandler.checkWebhookAndAPI();
         if (pageFlipper != null) pageFlipper.switchStates();
-        if (Sniper.flipper != null) Sniper.flipper.switchStates();
+        if (QueueItem.flipper != null) QueueItem.flipper.switchStates();
         if (mc.currentScreen instanceof GuiDisconnected && clock.passed()) {
             clock.schedule(RECONNECT_DELAY * 1000L);
             FMLClientHandler.instance().connectToServer(new GuiMultiplayer(new GuiMainMenu()), new ServerData(" ", "mc.hypixel.net", false));
