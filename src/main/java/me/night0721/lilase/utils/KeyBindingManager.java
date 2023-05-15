@@ -24,7 +24,6 @@ public class KeyBindingManager {
         }
         if (keyBindings[1].isPressed()) {
             Lilase.config.openGui();
-            ScoreboardUtils.cleanSB("§6[Auction] §aphiinix_ §ebought §fImplosion Belt §efor §6900,000 coins §lCLICK");
         }
     }
 
