@@ -118,8 +118,14 @@ public class DiscordWebhook {
                 jsonEmbed.put("fields", jsonFields.toArray());
                 embedObjects.add(jsonEmbed);
             }
+            if (embedObjects.size() > 1) {
+                for (int i = 1; i < embedObjects.size(); i++) {
+                    embedObjects.remove(i);
+                }
+            }
             json.put("embeds", embedObjects.toArray());
         }
+        System.out.println(json);
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty("Content-Type", "application/json");
@@ -127,7 +133,7 @@ public class DiscordWebhook {
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
         OutputStream stream = connection.getOutputStream();
-        stream.write(json.toString().getBytes(StandardCharsets.UTF_16));
+        stream.write(json.toString().getBytes(StandardCharsets.UTF_8));
         stream.flush();
         stream.close();
         connection.getInputStream().close();

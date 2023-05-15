@@ -26,15 +26,13 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.io.IOException;
-
 import static me.night0721.lilase.config.AHConfig.RECONNECT_DELAY;
 
 @Mod(modid = Lilase.MODID, name = Lilase.MOD_NAME, version = Lilase.VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "2.0";
+    public static final String VERSION = "2.0.1";
     public static final Minecraft mc = Minecraft.getMinecraft();
     public static Sniper sniper;
     public static PageFlipper pageFlipper;
@@ -66,11 +64,10 @@ public class Lilase {
     }
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) throws IOException {
+    public void onTick(TickEvent.ClientTickEvent event) {
         if (mc.thePlayer == null || event.phase != TickEvent.Phase.START) return;
         tickAmount++;
         if (tickAmount % 20 == 0) Utils.checkFooter();
-        if (tickAmount % (20 * 60) == 0) sniper.start();
         if (tickAmount % 2400 == 0) configHandler.checkWebhookAndAPI();
         if (pageFlipper != null) pageFlipper.switchStates();
         if (QueueItem.flipper != null) QueueItem.flipper.switchStates();

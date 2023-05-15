@@ -1,7 +1,6 @@
 package me.night0721.lilase.utils;
 
 import me.night0721.lilase.Lilase;
-import me.night0721.lilase.config.AHConfig;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -21,20 +20,12 @@ public class KeyBindingManager {
     public void onKeyPress(InputEvent.KeyInputEvent event) {
         if (keyBindings[0].isPressed()) {
             // TODO: Add sniper interface and use nested switch loop to prevent .toggleAuction(); repeating
-            switch (AHConfig.SNIPER_MODE) {
-                case 0:
-                    Lilase.sniper.toggleAuction();
-                    break;
-                case 1:
-                    Lilase.pageFlipper.toggleAuction();
-                    break;
-                case 2:
-                    Lilase.cofl.toggleAuction();
-                    break;
-            }
+            Lilase.cofl.toggleAuction();
         }
-        if (keyBindings[1].isPressed())
+        if (keyBindings[1].isPressed()) {
             Lilase.config.openGui();
+            ScoreboardUtils.cleanSB("§6[Auction] §aphiinix_ §ebought §fImplosion Belt §efor §6900,000 coins §lCLICK");
+        }
     }
 
     public static void rightClick() {

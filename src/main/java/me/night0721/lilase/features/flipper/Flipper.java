@@ -1,7 +1,5 @@
 package me.night0721.lilase.features.flipper;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.events.SniperFlipperEvents;
 import me.night0721.lilase.player.EffectState;
@@ -9,61 +7,64 @@ import me.night0721.lilase.player.Rotation;
 import me.night0721.lilase.utils.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringUtils;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
+import java.awt.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
+import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 
 // TODO: Fix repeating code (I will do it soon)
 public class Flipper {
-    private final String itemname;
-    private static String bytedata;
-    private final int itemprice;
+    private static String itemname = "";
+    private static int itemprice = 0;
+    private static int target = 0;
     public static FlipperState state = FlipperState.NONE;
     public static final Rotation rotation = new Rotation();
     private final Clock buyWait = new Clock();
-    private static JsonObject object;
+    public static final DiscordWebhook webhook = new DiscordWebhook(Lilase.configHandler.getString("Webhook"));
+    public static final NumberFormat format = NumberFormat.getInstance(Locale.US);
+    public static final DecimalFormat df = new DecimalFormat("#.##");
+    public static final String icon = "https://camo.githubusercontent.com/57a8295f890970d2173b895c7a0f6c60527fb3bec4489b233b221ab45cb9fa42/68747470733a2f2f63646e2e646973636f72646170702e636f6d2f6174746163686d656e74732f3834323031343930393236343935333335342f313038323337333237353033383030333231302f6c696c6173652e706e67";
 
-    public Flipper(String name, String data, int price) {
-        itemname = name;
-        bytedata = data;
-        itemprice = price;
-    }
 
-    public Flipper(String name, int price) {
+    public Flipper(String name, int price, int targetprice) {
         itemname = name;
         itemprice = price;
+        target = targetprice;
+        webhook.setUsername("Lilase");
+        webhook.setAvatarUrl(icon);
     }
 
-    public int getItemPrice() {
-        if (object == null) {
-            try {
-                object = getItemData();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return object.get("price").getAsInt();
-    }
-
-    public int checkProfitPercentage() throws IOException {
-        if (object == null) object = getItemData();
-        return object.get("price").getAsInt() / itemprice * 100;
-    }
 
     public void sellItem() {
+        Utils.checkFooter();
         Lilase.sniper.incrementAuctionsSniped();
         Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
-        if (Lilase.sniper.getOpen()) Lilase.sniper.toggleAuction();
         if (Lilase.cofl.getOpen()) Lilase.cofl.toggleAuction();
         UngrabUtils.ungrabMouse();
-        Utils.checkFooter();
         Utils.debugLog("Cookie: " + (Utils.cookie == EffectState.ON ? "ON" : "OFF"));
         Utils.debugLog("Have screen: " + (Lilase.mc.currentScreen != null ? "Yes" : "No"));
+        Utils.debugLog("Profit Percentage: " + target / itemprice);
+        try {
+            webhook.addEmbed(new DiscordWebhook.EmbedObject()
+                    .setTitle("Just purchased an item!")
+                    .setFooter("Purse: " + format.format(Utils.getPurse()), icon)
+                    .addField("Item:", itemname, true)
+                    .addField("Price:", format.format(itemprice), true)
+                    .addField("Target Price:", format.format(target), true)
+                    .addField("Profit Percentage:", df.format(target / itemprice * 100L) + "%", true)
+                    .setColor(Color.decode("#003153")));
+            if (SEND_MESSAGE) webhook.execute();
+            Utils.debugLog("Notified Webhook");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utils.debugLog("Failed to send webhook");
+        }
         if (Utils.cookie != EffectState.ON) {
             Utils.sendServerMessage("/hub");
             state = FlipperState.WALKING_TO_FIRST_POINT;
@@ -123,8 +124,25 @@ public class Flipper {
                     if (InventoryUtils.isStoneButton() && buyWait.passed()) {
                         if (InventoryUtils.getSlotForItem(itemname) == -1) {
                             Utils.debugLog("Cannot find item in inventory, stopping flipper");
+                            try {
+                                webhook.addEmbed(new DiscordWebhook.EmbedObject()
+                                        .setTitle("Failed to post an item!")
+                                        .setDescription("Could not find item in inventory, sending so you can post it manually")
+                                        .setFooter("Purse: " + format.format(Utils.getPurse()), icon)
+                                        .addField("Item:", itemname, true)
+                                        .addField("Price:", format.format(itemprice), true)
+                                        .addField("Target Price:", format.format(target), true)
+                                        .addField("Profit Percentage:", Float.parseFloat(df.format(target / itemprice * 100L)) + "%", true)
+                                        .setColor(Color.decode("#ff0000")));
+                                if (SEND_MESSAGE) webhook.execute();
+                                Utils.debugLog("Notified Webhook");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Utils.debugLog("Failed to send webhook");
+                            }
+                            Lilase.mc.thePlayer.closeScreen();
                             state = FlipperState.NONE;
-                            Lilase.sniper.setOpen(true);
+                            Lilase.cofl.setOpen(true);
                             return;
                         }
                         InventoryUtils.clickOpenContainerSlot(InventoryUtils.getSlotForItem(itemname));
@@ -138,8 +156,46 @@ public class Flipper {
                         buyWait.schedule(1000);
                     } // TODO: Ternary Expression
                 } else if (InventoryUtils.inventoryNameContains("Manage Auction") && buyWait.passed()) {
-                    InventoryUtils.clickOpenContainerSlot(24);
-                    buyWait.schedule(1500);
+                    ItemStack slot24 = InventoryUtils.getStackInOpenContainerSlot(24);
+                    ItemStack slot33 = InventoryUtils.getStackInOpenContainerSlot(33);
+                    ItemStack slot42 = InventoryUtils.getStackInOpenContainerSlot(42);
+                    ItemStack slot51 = InventoryUtils.getStackInOpenContainerSlot(51);
+
+                    if (slot24 != null && slot24.getItem() == Items.golden_horse_armor) {
+                        InventoryUtils.clickOpenContainerSlot(24);
+                        buyWait.schedule(1000);
+                    } else if (slot33 != null && slot33.getItem() == Items.golden_horse_armor) {
+                        InventoryUtils.clickOpenContainerSlot(33);
+                        buyWait.schedule(1000);
+                    } else if (slot42 != null && slot42.getItem() == Items.golden_horse_armor) {
+                        InventoryUtils.clickOpenContainerSlot(42);
+                        buyWait.schedule(1000);
+                    } else if (slot51 != null && slot51.getItem() == Items.golden_horse_armor) {
+                        InventoryUtils.clickOpenContainerSlot(51);
+                        buyWait.schedule(1000);
+                    } else {
+                        Utils.debugLog("Can't find create auction button, stopping flipper");
+                        try {
+                            webhook.addEmbed(new DiscordWebhook.EmbedObject()
+                                    .setTitle("Failed to post an item!")
+                                    .setDescription("Could not find create auction button, sending so you can post it manually")
+                                    .setFooter("Purse: " + format.format(Utils.getPurse()), icon)
+                                    .addField("Item:", itemname, true)
+                                    .addField("Price:", format.format(itemprice), true)
+                                    .addField("Target Price:", format.format(target), true)
+                                    .addField("Profit Percentage:", Float.parseFloat(df.format(target / itemprice * 100L)) + "%", true)
+                                    .setColor(Color.decode("#ff0000")));
+                            if (SEND_MESSAGE) webhook.execute();
+                            Utils.debugLog("Notified Webhook");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Utils.debugLog("Failed to send webhook");
+                        }
+                        Lilase.mc.thePlayer.closeScreen();
+                        state = FlipperState.NONE;
+                        Lilase.cofl.setOpen(true);
+                        return;
+                    }
                 }
             case START:
                 if (!InventoryUtils.isStoneButton() && InventoryUtils.isToAuctionItem(itemname) && InventoryUtils.inventoryNameStartsWith("Create BIN Auction") && buyWait.passed()) {
@@ -163,28 +219,24 @@ public class Flipper {
                 break;
         }
     }
-
-    public static JsonObject getItemData() throws IOException {
-        URL url = new URL("https://www.night0721.me/api/skyblock");
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-        connection.addRequestProperty("Content-Type", "text/plain");
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
-        OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-        out.write(bytedata);
-        out.close();
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String inputLine;
-        StringBuilder content = new StringBuilder();
-        while ((inputLine = in.readLine()) != null)
-            content.append(inputLine);
-        in.close();
-        connection.disconnect();
-        object = (JsonObject) new JsonParser().parse(content.toString());
-        System.out.println("Price" + object.get("price"));
-        return object;
+    public static void sendInterrupt() {
+        try {
+            webhook.addEmbed(new DiscordWebhook.EmbedObject()
+                    .setTitle("Failed to post an item!")
+                    .setDescription("Could not find create as interruption, sending so you can post it manually")
+                    .setFooter("Purse: " + format.format(Utils.getPurse()), icon)
+                    .addField("Item:", itemname, true)
+                    .addField("Price:", format.format(itemprice), true)
+                    .addField("Target Price:", format.format(target), true)
+                    .addField("Profit Percentage:", Float.parseFloat(df.format(target / itemprice * 100L)) + "%", true)
+                    .setColor(Color.decode("#ff0000")));
+            if (SEND_MESSAGE) webhook.execute();
+            Utils.debugLog("Notified Webhook");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utils.debugLog("Failed to send webhook");
+        }
     }
-
     public static float distanceToFirstPoint() {
         return (float) Math.sqrt(Math.pow(Lilase.mc.thePlayer.posX - (-2.5), 2) + Math.pow(Lilase.mc.thePlayer.posZ - (-91.5), 2));
     }

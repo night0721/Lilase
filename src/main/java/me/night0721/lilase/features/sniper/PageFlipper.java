@@ -13,7 +13,7 @@ import static me.night0721.lilase.features.flipper.Flipper.*;
 
 public class PageFlipper {
     public PageFlipperState state = PageFlipperState.NONE;
-    public Clock cooldown = new Clock();
+    public final Clock cooldown = new Clock();
     public boolean open = false;
     private Thread loop;
 

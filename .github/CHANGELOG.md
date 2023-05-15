@@ -37,3 +37,8 @@
     - Added a config for disabling words and crabby
     - Fixing cofl macro cannot open issue
     - Adding auto sell to cofl macro
+- v2.0.1
+    - Fix webhook issues, now it would send when soneone bought your item
+    - Remove sniper option, only cofl macro exist now
+    - Added purse to webhook
+    - Added many more stuff to debug

@@ -1,6 +1,6 @@
 <h1> Auction House Flipper - Lilase</h1>
 <div style="text-align: center;">
-<img align="center" src="https://cdn.discordapp.com/attachments/842014909264953354/1082373275038003210/lilase.png" width="300" />
+<img align="center" src="https://cdn.discordapp.com/attachments/842014909264953354/1082373275038003210/lilase.png" width="300" alt="icon"/>
 </div>
 
 # Introduction:
@@ -9,11 +9,9 @@ If you have any questions please join [Discord Server](https://night0721.me/disc
 For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 
 # Features:
-- Auto buy any item you want, with query customised by yourself
 - Auto walk to the auction house
 - Auto sell after buying with profit check, so profit is ensured
-- Can customise fetch time (the faster, the higher chance to get the item you want)
-- Webhook system to send you that an item has been bought
+- Webhook system to send you that an item has been bought, sold, flipped
 - Failsafe in Limbo
 - Auto reconnect to server when disconnected
 - Auto skip confirmation screen
@@ -25,6 +23,7 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 - Modules toggleable in game
 - Check maximum profit percentage before buying so duped items won't be bought
 - COFL macro
+- auto sell to cofl macro
 - Server ID on scoreboard hider
 - page flipper [WIP]
 
@@ -39,57 +38,24 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 8. save the file and press END key to start auction house sniper(or change it in control settings)
 9. For example configuration, see [here](https://github.com/night0721/Lilase#example-config)
 
-# **IMPORTANT INFO**
-
-List of things you can put in Tier section
-```
-ANY, COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, MYTHIC, DIVINE, SPECIAL, VERY_SPECIAL
-```
-List of things you can put in Type section
-```
-ANY, WEAPON, ARMOR, ACCESSORIES, CONSUMABLES, BLOCKS, MISC
-```
 # Changelog:
 [ChangeLog](https://github.com/night0721/Lilase/blob/master/.github/CHANGELOG.md)
      
 # To Do Features:
 - Console client??
 - Page flipper for specific items(query)
-- Wither Impact in lore check
-- Blue omelette in lore check
 - pre api?
 
 # Example Config:
-```cfg
+```json
 {
-  "APIKey": "",
   "SendMessageToWebhook": true,
   "Webhook": "",
   "ReconnectDelay": 20,
-  "AuctionHouseDelay": 8,
   "BedSpamDelay": 100,
   "OnlySniper": false,
-  "checkMaximumProfitPercentageBeforeBuy": false,
-  "MaximumProfitPercentage": 1000,
-  "MinimumProfitPercentage": 400,
-  "items": [
-    {"Name": " ", "Type": "ANY", "Price": 1000, "Tier": "ANY"},
-    {
-      "Name": "Livid Dagger",
-      "Type": "WEAPON",
-      "Price": 5000000,
-      "Tier": "LEGENDARY"
-    },
-    {"Name": "", "Type": "", "Price": 0, "Tier": ""}
-  ],
-  "blacklist": [
-    {"Name": "Rune", "Type": "ANY", "Price": 1, "Tier": "ANY"},
-    {"Name": "", "Type": "", "Price": 0, "Tier": ""},
-    {"Name": "", "Type": "", "Price": 0, "Tier": ""}
-  ],
   "BedSpam": true,
   "GUI": true,
-  "checkProfitPercentageBeforeBuy": false,
   "GUI_COLOR": -1,
   "SniperMode": true
 }

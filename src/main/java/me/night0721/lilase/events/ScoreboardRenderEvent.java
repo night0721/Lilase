@@ -8,8 +8,8 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 // TODO: Implement Lombok Library for clean code
 @Cancelable
 public class ScoreboardRenderEvent extends Event {
-    public ScoreObjective objective;
-    public ScaledResolution resolution;
+    public final ScoreObjective objective;
+    public final ScaledResolution resolution;
 
     public ScoreboardRenderEvent(ScoreObjective objective, ScaledResolution resolution) {
         this.objective = objective;
