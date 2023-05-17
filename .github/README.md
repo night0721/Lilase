@@ -29,14 +29,12 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 
 # How to use:
 1. Download the latest version of Lilase from [here](https://github.com/night0721/Lilase/releases)
-2. Put it into %APPDATA%/.minecraft/mods
-3. Start forge 1.8.9
-4. Go to %APPDATA%/.minecraft/config
-5. Open Notepad/Notepad++/Visual Studio Code/or any IDE you like to edit Lilase.cfg
-6. Fill item(s) you want to buy, only fill if you need to, don't randomly put something at only one field
-7. Note: You can create as many item as you want, just copy and paste the item section and change the number(the highest number will have the last priority on checking auctions, vice versa)
-8. save the file and press END key to start auction house sniper(or change it in control settings)
-9. For example configuration, see [here](https://github.com/night0721/Lilase#example-config)
+2. Download the latest version of COFL from [here]([https://github.com/night0721/Lilase/releases](https://github.com/Coflnet/SkyblockMod/releases/latest))
+3. Put them into %APPDATA%/.minecraft/mods
+4. Start forge 1.8.9
+5. Press * key to change any config you want including webhooks
+6. Press END key to start cofl macro(or change it in control settings)
+10. For example configuration, see [here](https://github.com/night0721/Lilase#example-config)
 
 # Changelog:
 [ChangeLog](https://github.com/night0721/Lilase/blob/master/.github/CHANGELOG.md)
