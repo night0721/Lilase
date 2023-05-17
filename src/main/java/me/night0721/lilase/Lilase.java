@@ -68,7 +68,6 @@ public class Lilase {
         if (mc.thePlayer == null || event.phase != TickEvent.Phase.START) return;
         tickAmount++;
         if (tickAmount % 20 == 0) Utils.checkFooter();
-        if (tickAmount % 2400 == 0) configHandler.checkWebhookAndAPI();
         if (pageFlipper != null) pageFlipper.switchStates();
         if (QueueItem.flipper != null) QueueItem.flipper.switchStates();
         if (mc.currentScreen instanceof GuiDisconnected && clock.passed()) {

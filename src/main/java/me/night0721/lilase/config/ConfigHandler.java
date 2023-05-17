@@ -3,7 +3,6 @@ package me.night0721.lilase.config;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.night0721.lilase.utils.Utils;
 
 import java.io.*;
 
@@ -29,12 +28,6 @@ public class ConfigHandler {
         if (hasNoKey("OnlySniper")) setBoolean("OnlySniper", false);
         if (hasNoKey("GUI")) setBoolean("GUI", true);
         if (hasNoKey("GUI_COLOR")) setInt("GUI_COLOR", 0x003153);
-    }
-
-    public void checkWebhookAndAPI() {
-        if (getString("APIKey").equals("") || getString("Webhook").equals("")) {
-            Utils.sendMessage("API Key or Webhook is not set, please set it in the menu (Press *)");
-        }
     }
 
     public JsonObject readConfigFile() {
