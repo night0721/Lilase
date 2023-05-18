@@ -32,7 +32,7 @@ import static me.night0721.lilase.config.AHConfig.RECONNECT_DELAY;
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "2.0.1";
+    public static final String VERSION = "2.0.2";
     public static final Minecraft mc = Minecraft.getMinecraft();
     public static Sniper sniper;
     public static PageFlipper pageFlipper;

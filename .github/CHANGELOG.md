@@ -42,3 +42,5 @@
     - Remove sniper option, only cofl macro exist now
     - Added purse to webhook
     - Added many more stuff to debug
+- v2.0.2
+    - Minor bug fixes
