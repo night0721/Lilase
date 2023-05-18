@@ -63,7 +63,7 @@ public class SniperFlipperEvents {
                             .setFooter("Purse: " + format.format(Utils.getPurse()), icon)
                             .addField("Item:", matcher.group(2), true)
                             .addField("Price:", matcher.group(3), true)
-                            .addField("Purchaser:", matcher.group(1).split("[Auction] ")[1], true)
+                            .addField("Purchaser:", matcher.group(1), true)
                             .setColor(Color.decode("#003153")));
                     if (SEND_MESSAGE) webhook.execute();
                     Utils.debugLog("Notified Webhook");
