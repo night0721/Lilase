@@ -63,6 +63,8 @@ dependencies {
     if (platform.isLegacyForge) {
         compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
         shade("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta+")
+        compileOnly("org.projectlombok:lombok:1.18.26")
+        annotationProcessor("org.projectlombok:lombok:1.18.26")
     }
 }
 
