@@ -9,6 +9,7 @@
   ],
   "client": [
     "MixinGuiIngame",
+    "MixinGuiMainMenu",
     "MixinMinecraft",
     "MixinNetHandlerPlayClient"
   ]

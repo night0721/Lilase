@@ -7,12 +7,15 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
+import java.awt.*;
+import java.net.URI;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static me.night0721.lilase.Lilase.mc;
+import static me.night0721.lilase.config.AHConfig.DEBUG;
 
 public class Utils {
     public static IChatComponent header = null, footer = null;
@@ -42,9 +45,10 @@ public class Utils {
 
     public static void checkFooter() {
         if (footer != null) {
-            for (String line : footer.getFormattedText().split("\n")) {
+            for (String line : footer.getUnformattedText().split("\n")) {
                 if (line.contains("Not active! Obtain")) {
                     cookie = EffectState.OFF;
+                    return;
                 } else {
                     cookie = EffectState.ON;
                 }
@@ -54,16 +58,10 @@ public class Utils {
 
     public static int getPurse() {
         String purse = "";
-        List<String> matches = ScoreboardUtils.getSidebarLines().stream()
-                .map(ScoreboardUtils::cleanSB)
-                .map(PATTERN_PURSE::matcher)
-                .filter(Matcher::find)
-                .map(Matcher::group)
-                .collect(Collectors.toList());
+        List<String> matches = ScoreboardUtils.getSidebarLines().stream().map(ScoreboardUtils::cleanSB).map(PATTERN_PURSE::matcher).filter(Matcher::find).map(Matcher::group).collect(Collectors.toList());
         String purseline = matches.get(0);
         Matcher matcher = PATTERN_PURSE.matcher(purseline);
         if (matcher.find()) {
-            System.out.println("Group: " + matcher.group());
             purse = matcher.group(2);
             purse = purse.replace(",", "");
             purse = purse.replaceAll("\\..*", "");
@@ -74,13 +72,33 @@ public class Utils {
 
     }
 
+    public static void openURL(String url) {
+        String os = System.getProperty("os.name").toLowerCase();
+        try {
+            if (Desktop.isDesktopSupported()) { // Probably Windows
+                Desktop desktop = Desktop.getDesktop();
+                desktop.browse(new URI(url));
+            } else { // Definitely Non-windows
+                Runtime runtime = Runtime.getRuntime();
+                if (os.contains("mac")) { // Apple
+                    runtime.exec("open " + url);
+                } else if (os.contains("nix") || os.contains("nux")) { // Linux
+                    runtime.exec("xdg-open " + url);
+                }
+            }
+        } catch (Exception ignored) {
+
+        }
+    }
 
     public static void sendMessage(String message) {
         mc.thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + String.valueOf(EnumChatFormatting.BOLD) + "[Lilase] " + EnumChatFormatting.RESET + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + message));
     }
 
     public static void debugLog(String message) {
-        mc.thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "[Lilase] " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + message));
+        if (DEBUG)
+            mc.thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.LIGHT_PURPLE + "[Lilase] " + EnumChatFormatting.RESET + EnumChatFormatting.WHITE + message));
+        else System.out.println("[Lilase] " + message);
     }
 
     public static void debugLog(String... messages) {

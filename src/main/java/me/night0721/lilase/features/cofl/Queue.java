@@ -1,15 +1,26 @@
 package me.night0721.lilase.features.cofl;
 
+import lombok.Getter;
 import me.night0721.lilase.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Queue {
-    private final List<QueueItem> queue = new ArrayList<>();
+    public final List<QueueItem> queue = new ArrayList<>();
+    private final @Getter List<QueueItem> history = new ArrayList<>();
     private boolean running = false, clearTaskRunning = false;
+
     public void add(QueueItem item) {
         this.queue.add(item);
+        this.history.add(item);
+    }
+
+    public QueueItem getHistoryByUID(String uid) {
+        for (QueueItem item : this.history) {
+            if (uid.contains(item.uid)) return item;
+        }
+        return null;
     }
 
     public QueueItem get() {
@@ -29,6 +40,7 @@ public class Queue {
     public boolean isRunning() {
         return this.running;
     }
+
     public void clear() {
         this.queue.clear();
     }

@@ -13,6 +13,6 @@ import static me.night0721.lilase.Lilase.VERSION;
 public class MixinMinecraft {
     @Inject(method = {"startGame"}, at = {@At("RETURN")})
     private void startGame(CallbackInfo ci) {
-        Display.setTitle("Lilase v" + VERSION + " | night0721");
+        Display.setTitle("Lilase v" + VERSION);
     }
 }

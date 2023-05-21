@@ -44,3 +44,13 @@
     - Added many more stuff to debug
 - v2.0.2
     - Minor bug fixes
+- v2.0.3
+    - Remove unecessary code
+    - Added debug option so you can choose to be spammed by debug message or not
+    - Uses altnative approach to snipe item so it is faster now
+    - Using lombok so less code is needed
+    - Added relist delay so you can set the delay between buying and relist
+    - Using OOP for selling item so less error
+    - Fixed pricing issue
+    - Item not found error should be fixed
+    - Added gui to tell you to update the mod

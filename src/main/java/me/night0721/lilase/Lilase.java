@@ -7,7 +7,6 @@ import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.config.ConfigHandler;
 import me.night0721.lilase.events.SniperFlipperEvents;
 import me.night0721.lilase.features.cofl.Cofl;
-import me.night0721.lilase.features.cofl.QueueItem;
 import me.night0721.lilase.features.sniper.PageFlipper;
 import me.night0721.lilase.features.sniper.Sniper;
 import me.night0721.lilase.gui.ImageRenderer;
@@ -32,7 +31,7 @@ import static me.night0721.lilase.config.AHConfig.RECONNECT_DELAY;
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "2.0.2";
+    public static final String VERSION = "2.0.3";
     public static final Minecraft mc = Minecraft.getMinecraft();
     public static Sniper sniper;
     public static PageFlipper pageFlipper;
@@ -69,7 +68,6 @@ public class Lilase {
         tickAmount++;
         if (tickAmount % 20 == 0) Utils.checkFooter();
         if (pageFlipper != null) pageFlipper.switchStates();
-        if (QueueItem.flipper != null) QueueItem.flipper.switchStates();
         if (mc.currentScreen instanceof GuiDisconnected && clock.passed()) {
             clock.schedule(RECONNECT_DELAY * 1000L);
             FMLClientHandler.instance().connectToServer(new GuiMultiplayer(new GuiMainMenu()), new ServerData(" ", "mc.hypixel.net", false));

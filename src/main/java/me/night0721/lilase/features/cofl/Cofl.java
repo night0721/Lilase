@@ -10,17 +10,14 @@ import me.night0721.lilase.utils.UngrabUtils;
 import me.night0721.lilase.utils.Utils;
 
 import java.io.PrintStream;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 
 public class Cofl {
-    private final Queue queue = new Queue();
+    public final Queue queue = new Queue();
     private boolean open = false;
-    public static int price = 0;
-    public static int target = 0;
-    private final ThreadLocalRandom random = ThreadLocalRandom.current();
     public final Thread thread = new Thread(() -> {
         while (true) {
             try {
@@ -54,20 +51,20 @@ public class Cofl {
         try {
             if (!getOpen() || !str.startsWith("Received:")) return;
             if (pattern.matcher(str).find()) {
-//                Utils.debugLog("Doing some motion as we don't want to be AFK");
+                Random random = new Random();
                 Lilase.mc.thePlayer.inventory.currentItem = random.nextInt(9);
                 String[] split = str.split("Received: ");
-                JsonObject auction = new JsonParser().parse(new JsonParser().parse(split[1]).getAsJsonObject().get("data").getAsString()).getAsJsonObject();
+                JsonObject received = new JsonParser().parse(split[1]).getAsJsonObject();
+                if (!received.get("type").getAsString().equals("flip")) return;
+                JsonObject auction = new JsonParser().parse(received.get("data").getAsString()).getAsJsonObject();
                 String itemName = auction.get("auction").getAsJsonObject().get("itemName").getAsString();
                 String id = auction.get("auction").getAsJsonObject().get("uuid").getAsString();
-                price = auction.get("auction").getAsJsonObject().get("startingBid").getAsInt();
-                target = auction.get("target").getAsInt();
-//                Utils.debugLog("Item Name: " + itemName);
-//                Utils.debugLog("ID: " + id);
-//                Utils.debugLog("Price: " + price);
-                if (itemName != null && id != null && price != 0 && target != 0) {
-                    Utils.debugLog("Adding auction to queue: " + id, "Price: " + price, "Target Price: " + target, "Name: " + itemName);
-                    getQueue().add(new QueueItem(id, itemName, price, target));
+                int price = auction.get("auction").getAsJsonObject().get("startingBid").getAsInt();
+                String uid = auction.get("auction").getAsJsonObject().get("flatNbt").getAsJsonObject().get("uid").getAsString();
+                int target = auction.get("target").getAsInt();
+                if (itemName != null && id != null && price != 0 && target != 0 && uid != null) {
+                    Utils.debugLog("Adding auction to queue: " + id, "Price: " + price, "Target Price: " + target, "Name: " + itemName, "UID: " + uid);
+                    getQueue().add(new QueueItem(id, itemName, price, target, uid));
                     getQueue().scheduleClear();
                 }
             }

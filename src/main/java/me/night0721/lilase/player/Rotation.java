@@ -1,11 +1,10 @@
 package me.night0721.lilase.player;
 
+import me.night0721.lilase.Lilase;
 import me.night0721.lilase.utils.AngleUtils;
-import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 public class Rotation {
-    private final static Minecraft mc = Minecraft.getMinecraft();
     public boolean rotating;
     public boolean completed;
 
@@ -21,36 +20,36 @@ public class Rotation {
         rotating = true;
         startTime = System.currentTimeMillis();
         endTime = System.currentTimeMillis() + time;
-        start.setLeft(mc.thePlayer.rotationYaw);
-        start.setRight(mc.thePlayer.rotationPitch);
+        start.setLeft(Lilase.mc.thePlayer.rotationYaw);
+        start.setRight(Lilase.mc.thePlayer.rotationPitch);
         target.setLeft(AngleUtils.get360RotationYaw(yaw));
         target.setRight(pitch);
         getDifference();
     }
 
     public void lockAngle(float yaw, float pitch) {
-        if (mc.thePlayer.rotationYaw != yaw || mc.thePlayer.rotationPitch != pitch && !rotating)
+        if (Lilase.mc.thePlayer.rotationYaw != yaw || Lilase.mc.thePlayer.rotationPitch != pitch && !rotating)
             easeTo(yaw, pitch, 1000);
     }
 
     public void update() {
         if (System.currentTimeMillis() <= endTime) {
             if (shouldRotateClockwise()) {
-                mc.thePlayer.rotationYaw = start.left + interpolate(difference.left);
+                Lilase.mc.thePlayer.rotationYaw = start.left + interpolate(difference.left);
             } else {
-                mc.thePlayer.rotationYaw = start.left - interpolate(difference.left);
+                Lilase.mc.thePlayer.rotationYaw = start.left - interpolate(difference.left);
             }
-            mc.thePlayer.rotationPitch = start.right + interpolate(difference.right);
+            Lilase.mc.thePlayer.rotationPitch = start.right + interpolate(difference.right);
         } else if (!completed) {
             if (shouldRotateClockwise()) {
-                System.out.println("Rotation final st - " + start.left + ", " + mc.thePlayer.rotationYaw);
-                mc.thePlayer.rotationYaw = target.left;
+                System.out.println("Rotation final st - " + start.left + ", " + Lilase.mc.thePlayer.rotationYaw);
+                Lilase.mc.thePlayer.rotationYaw = target.left;
                 System.out.println("Rotation final - " + start.left + difference.left);
             } else {
-                mc.thePlayer.rotationYaw = target.left;
+                Lilase.mc.thePlayer.rotationYaw = target.left;
                 System.out.println("Rotation final - " + (start.left - difference.left));
             }
-            mc.thePlayer.rotationPitch = start.right + difference.right;
+            Lilase.mc.thePlayer.rotationPitch = start.right + difference.right;
             completed = true;
             rotating = false;
         }

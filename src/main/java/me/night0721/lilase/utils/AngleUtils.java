@@ -1,16 +1,15 @@
 package me.night0721.lilase.utils;
 
-import net.minecraft.client.Minecraft;
+import me.night0721.lilase.Lilase;
 
 public class AngleUtils {
-    private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static float get360RotationYaw(float yaw) {
         return (yaw % 360 + 360) % 360;
     }
 
     public static float get360RotationYaw() {
-        return get360RotationYaw(mc.thePlayer.rotationYaw);
+        return get360RotationYaw(Lilase.mc.thePlayer.rotationYaw);
     }
 
     public static float clockwiseDifference(float initialYaw360, float targetYaw360) {

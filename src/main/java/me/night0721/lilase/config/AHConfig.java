@@ -20,6 +20,8 @@ public class AHConfig extends Config {
         addListener("ONLY_SNIPER", () -> Lilase.configHandler.setBoolean("OnlySniper", ONLY_SNIPER));
         addListener("GUI", () -> Lilase.configHandler.setBoolean("GUI", GUI));
         addListener("GUI_COLOR", () -> Lilase.configHandler.setInt("GUI_COLOR", GUI_COLOR.getRGB()));
+        addListener("RELIST_TIMEOUT", () -> Lilase.configHandler.setInt("RELIST_TIMEOUT", Math.round(RELIST_TIMEOUT)));
+        addListener("DEBUG", () -> Lilase.configHandler.setBoolean("Debug", DEBUG));
         addDependency("WEBHOOK", "SEND_MESSAGE");
         addDependency("MINIMUM_PROFIT_PERCENTAGE", "CHECK_PERCENTAGE");
         addDependency("MAXIMUM_PROFIT_PERCENTAGE", "CHECK_MAXIMUM_PROFIT");
@@ -31,6 +33,12 @@ public class AHConfig extends Config {
 
     @Slider(name = "Bed Spam Delay (ms)", min = 50, max = 500, step = 50, category = "Auction House", subcategory = "Sniper", description = "Delay between each bed spam")
     public static int BED_SPAM_DELAY = 100;
+
+    @Number(name = "Relist timeout", min = 1500, max = 60000, step = 500, category = "Auction House", subcategory = "Sniper", description = "Delay between buying and relisting an item")
+    public static int RELIST_TIMEOUT = 1500;
+
+    @Switch(name = "Debug", category = "Auction House", subcategory = "Sniper", description = "Debug mode")
+    public static boolean DEBUG = false;
 
     @Switch(name = "Only Sniper", category = "Auction House", subcategory = "Sniper", description = "Only snipe items, stop auto resell")
     public static boolean ONLY_SNIPER = false;

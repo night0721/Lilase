@@ -28,6 +28,8 @@ public class ConfigHandler {
         if (hasNoKey("OnlySniper")) setBoolean("OnlySniper", false);
         if (hasNoKey("GUI")) setBoolean("GUI", true);
         if (hasNoKey("GUI_COLOR")) setInt("GUI_COLOR", 0x003153);
+        if (hasNoKey("DEBUG")) setBoolean("DEBUG", false);
+        if (hasNoKey("RELIST_TIMEOUT")) setInt("RELIST_TIMEOUT", 1500);
     }
 
     public JsonObject readConfigFile() {

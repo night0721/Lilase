@@ -1,6 +1,6 @@
 package me.night0721.lilase.utils;
 
-import net.minecraft.client.Minecraft;
+import me.night0721.lilase.Lilase;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.ContainerChest;
@@ -17,27 +17,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class InventoryUtils {
-    private static final Minecraft mc = Minecraft.getMinecraft();
-
-
-    public static boolean isToAuctionItem(String name) {
-        final ItemStack stack = mc.thePlayer.openContainer.getSlot(13).getStack();
+public class InventoryUtils { public static boolean isToAuctionItem(String uuid) {
+        ItemStack stack = Lilase.mc.thePlayer.openContainer.getSlot(13).getStack();
         if (stack != null && stack.hasTagCompound()) {
-            final NBTTagCompound tag = stack.getTagCompound();
-            final Pattern pattern = Pattern.compile(name, Pattern.MULTILINE);
-            final Matcher matcher = pattern.matcher(tag.toString());
-            while (matcher.find()) {
-                if (matcher.group(0) != null) {
-                    return true;
-                }
-            }
+            return stack.getTagCompound().getCompoundTag("ExtraAttributes").getString("uuid").equals(uuid);
         }
         return false;
     }
 
     public static boolean isStoneButton() {
-        final ItemStack stack = mc.thePlayer.openContainer.getSlot(13).getStack();
+        final ItemStack stack = Lilase.mc.thePlayer.openContainer.getSlot(13).getStack();
         if (stack != null && stack.hasTagCompound()) {
             final NBTTagCompound tag = stack.getTagCompound();
             final Pattern pattern = Pattern.compile("Click an item in your inventory!", Pattern.MULTILINE);
@@ -52,8 +41,8 @@ public class InventoryUtils {
     }
 
     public static String getInventoryName() {
-        if (InventoryUtils.mc.currentScreen instanceof GuiChest) {
-            final ContainerChest chest = (ContainerChest) InventoryUtils.mc.thePlayer.openContainer;
+        if (Lilase.mc.currentScreen instanceof GuiChest) {
+            final ContainerChest chest = (ContainerChest) Lilase.mc.thePlayer.openContainer;
             final IInventory inv = chest.getLowerChestInventory();
             return inv.hasCustomName() ? inv.getName() : null;
         }
@@ -61,46 +50,39 @@ public class InventoryUtils {
     }
 
     public static boolean inventoryNameStartsWith(String startsWithString) {
-        return InventoryUtils.getInventoryName() != null && InventoryUtils.getInventoryName().startsWith(startsWithString);
+        return getInventoryName() != null && getInventoryName().startsWith(startsWithString);
     }
 
     public static boolean inventoryNameContains(String startsWithString) {
-        return InventoryUtils.getInventoryName() != null && InventoryUtils.getInventoryName().contains(startsWithString);
+        return getInventoryName() != null && getInventoryName().contains(startsWithString);
     }
 
     public static void openInventory() {
-        mc.displayGuiScreen(new GuiInventory(mc.thePlayer));
+        Lilase.mc.displayGuiScreen(new GuiInventory(Lilase.mc.thePlayer));
     }
 
     public static ItemStack getStackInSlot(final int slot) {
-        return InventoryUtils.mc.thePlayer.inventory.getStackInSlot(slot);
+        return Lilase.mc.thePlayer.inventory.getStackInSlot(slot);
     }
 
     public static ItemStack getStackInOpenContainerSlot(final int slot) {
-        if (InventoryUtils.mc.thePlayer.openContainer.inventorySlots.get(slot).getHasStack()) {
-            return InventoryUtils.mc.thePlayer.openContainer.inventorySlots.get(slot).getStack();
-        }
+        if (Lilase.mc.thePlayer.openContainer.inventorySlots.get(slot).getHasStack())
+            return Lilase.mc.thePlayer.openContainer.inventorySlots.get(slot).getStack();
         return null;
     }
 
-    public static int getSlotForItem(final String itemName) {
-        for (final Slot slot : mc.thePlayer.openContainer.inventorySlots) {
+    public static int getSlotForItemm(String id) {
+        for (final Slot slot : Lilase.mc.thePlayer.inventoryContainer.inventorySlots) {
             if (slot.getHasStack()) {
                 final ItemStack is = slot.getStack();
-                if (is.getDisplayName().contains(itemName)) {
-                    return slot.slotNumber;
-                }
+                if (is.getTagCompound().getCompoundTag("ExtraAttributes").getString("uuid").equals(id)) return slot.getSlotIndex();
             }
         }
         return -1;
     }
 
     public static void clickOpenContainerSlot(final int slot, final int button, final int clickType) {
-        mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, slot, button, clickType, mc.thePlayer);
-    }
-
-    public static void clickOpenContainerSlot(final int slot, final int button) {
-        clickOpenContainerSlot(slot, button, 0);
+        Lilase.mc.playerController.windowClick(Lilase.mc.thePlayer.openContainer.windowId, slot, button, clickType, Lilase.mc.thePlayer);
     }
 
     public static void clickOpenContainerSlot(final int slot) {
@@ -110,7 +92,7 @@ public class InventoryUtils {
 
     public static int getAvailableHotbarSlot(final String name) {
         for (int i = 0; i < 8; ++i) {
-            final ItemStack is = mc.thePlayer.inventory.getStackInSlot(i);
+            final ItemStack is = Lilase.mc.thePlayer.inventory.getStackInSlot(i);
             if (is == null || is.getDisplayName().contains(name)) {
                 return i;
             }
@@ -121,7 +103,7 @@ public class InventoryUtils {
     public static List<Integer> getAllSlots(final String name) {
         final List<Integer> ret = new ArrayList<>();
         for (int i = 9; i < 44; ++i) {
-            final ItemStack is = mc.thePlayer.inventoryContainer.inventorySlots.get(i).getStack();
+            final ItemStack is = Lilase.mc.thePlayer.inventoryContainer.inventorySlots.get(i).getStack();
             if (is != null && is.getDisplayName().contains(name)) {
                 ret.add(i);
             }
@@ -131,7 +113,7 @@ public class InventoryUtils {
 
     public static int getAmountInHotbar(final String item) {
         for (int i = 0; i < 8; ++i) {
-            final ItemStack is = InventoryUtils.mc.thePlayer.inventory.getStackInSlot(i);
+            final ItemStack is = Lilase.mc.thePlayer.inventory.getStackInSlot(i);
             if (is != null && StringUtils.stripControlCodes(is.getDisplayName()).equals(item)) {
                 return is.stackSize;
             }
@@ -141,7 +123,7 @@ public class InventoryUtils {
 
     public static int getItemInHotbar(final String itemName) {
         for (int i = 0; i < 8; ++i) {
-            final ItemStack is = InventoryUtils.mc.thePlayer.inventory.getStackInSlot(i);
+            final ItemStack is = Lilase.mc.thePlayer.inventory.getStackInSlot(i);
             if (is != null && StringUtils.stripControlCodes(is.getDisplayName()).contains(itemName)) {
                 return i;
             }
@@ -152,7 +134,7 @@ public class InventoryUtils {
     public static List<ItemStack> getInventoryStacks() {
         final List<ItemStack> ret = new ArrayList<>();
         for (int i = 9; i < 44; ++i) {
-            final Slot slot = InventoryUtils.mc.thePlayer.inventoryContainer.getSlot(i);
+            final Slot slot = Lilase.mc.thePlayer.inventoryContainer.getSlot(i);
             if (slot != null) {
                 final ItemStack stack = slot.getStack();
                 if (stack != null) {
@@ -166,7 +148,7 @@ public class InventoryUtils {
     public static List<Slot> getInventorySlots() {
         final List<Slot> ret = new ArrayList<>();
         for (int i = 9; i < 44; ++i) {
-            final Slot slot = InventoryUtils.mc.thePlayer.inventoryContainer.getSlot(i);
+            final Slot slot = Lilase.mc.thePlayer.inventoryContainer.getSlot(i);
             if (slot != null) {
                 final ItemStack stack = slot.getStack();
                 if (stack != null) {
@@ -177,17 +159,6 @@ public class InventoryUtils {
         return ret;
     }
 
-
-    public static NBTTagCompound getExtraAttributes(ItemStack item) {
-        if (item == null) {
-            throw new NullPointerException("The item cannot be null!");
-        }
-        if (!item.hasTagCompound()) {
-            return null;
-        }
-
-        return item.getSubCompound("ExtraAttributes", false);
-    }
 
     public static NBTTagList getLore(ItemStack item) {
         if (item == null) {

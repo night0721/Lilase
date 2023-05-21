@@ -1,5 +1,8 @@
 package me.night0721.lilase.utils;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.*;
 import java.io.IOException;
@@ -16,10 +19,10 @@ import java.util.*;
 public class DiscordWebhook {
 
     private final String url;
-    private String content;
-    private String username;
-    private String avatarUrl;
-    private boolean tts;
+    private @Setter String content;
+    private @Setter String username;
+    private @Setter String avatarUrl;
+    private @Setter boolean tts;
     private final List<EmbedObject> embeds = new ArrayList<>();
 
     /**
@@ -29,22 +32,6 @@ public class DiscordWebhook {
      */
     public DiscordWebhook(String url) {
         this.url = url;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public void setTts(boolean tts) {
-        this.tts = tts;
     }
 
     public void addEmbed(EmbedObject embed) {
@@ -143,52 +130,15 @@ public class DiscordWebhook {
 
     // TODO: Lombok! I'm gonna add it soon. The code looks bad right now :/
     public static class EmbedObject {
-        private String title;
-        private String description;
-        private String url;
-        private Color color;
-
-        private Footer footer;
-        private Thumbnail thumbnail;
-        private Image image;
-        private Author author;
-        private final List<Field> fields = new ArrayList<>();
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public Color getColor() {
-            return color;
-        }
-
-        public Footer getFooter() {
-            return footer;
-        }
-
-        public Thumbnail getThumbnail() {
-            return thumbnail;
-        }
-
-        public Image getImage() {
-            return image;
-        }
-
-        public Author getAuthor() {
-            return author;
-        }
-
-        public List<Field> getFields() {
-            return fields;
-        }
+        private @Getter String title;
+        private @Getter String description;
+        private @Getter String url;
+        private @Getter Color color;
+        private @Getter Footer footer;
+        private @Getter Thumbnail thumbnail;
+        private @Getter Image image;
+        private @Getter Author author;
+        private final @Getter List<Field> fields = new ArrayList<>();
 
         public EmbedObject setTitle(String title) {
             this.title = title;
@@ -236,92 +186,52 @@ public class DiscordWebhook {
         }
 
         private static class Footer {
-            private final String text;
-            private final String iconUrl;
+            private @Getter final String text;
+            private @Getter final String iconUrl;
 
             private Footer(String text, String iconUrl) {
                 this.text = text;
                 this.iconUrl = iconUrl;
             }
-
-            private String getText() {
-                return text;
-            }
-
-            private String getIconUrl() {
-                return iconUrl;
-            }
         }
 
         private static class Thumbnail {
-            private final String url;
+            private @Getter final String url;
 
             private Thumbnail(String url) {
                 this.url = url;
             }
-
-            private String getUrl() {
-                return url;
-            }
         }
 
         private static class Image {
-            private final String url;
+            private @Getter final String url;
 
             private Image(String url) {
                 this.url = url;
             }
-
-            private String getUrl() {
-                return url;
-            }
         }
 
         private static class Author {
-            private final String name;
-            private final String url;
-            private final String iconUrl;
+            private @Getter final String name;
+            private @Getter final String url;
+            private @Getter final String iconUrl;
 
             private Author(String name, String url, String iconUrl) {
                 this.name = name;
                 this.url = url;
                 this.iconUrl = iconUrl;
             }
-
-            private String getName() {
-                return name;
-            }
-
-            private String getUrl() {
-                return url;
-            }
-
-            private String getIconUrl() {
-                return iconUrl;
-            }
         }
 
         private static class Field {
-            private final String name;
-            private final String value;
-            private final boolean inline;
+            private @Getter final String name;
+            private @Getter final String value;
+            private @Getter final boolean inline;
 
             private Field(String name, String value, boolean inline) {
                 this.name = name;
                 this.value = value;
                 this.inline = inline;
-            }
-
-            private String getName() {
-                return name;
-            }
-
-            private String getValue() {
-                return value;
-            }
-
-            private boolean isInline() {
-                return inline;
             }
         }
     }
