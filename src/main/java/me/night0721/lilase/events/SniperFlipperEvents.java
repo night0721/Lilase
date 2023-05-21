@@ -207,39 +207,6 @@ public class SniperFlipperEvents {
 
     @SubscribeEvent
     public void onPacketReceive(PacketReceivedEvent event) {
-        if (event.packet instanceof S2FPacketSetSlot) {
-            S2FPacketSetSlot packetSetSlot = (S2FPacketSetSlot) event.packet;
-            ItemStack stack = packetSetSlot.func_149174_e();
-            if (stack != null && packetSetSlot.func_149175_c() == 0) {
-                try {
-                    String uuid = stack.getTagCompound().getCompoundTag("ExtraAttributes").getString("uuid");
-                    String uid = uuid.split("-")[4];
-                    QueueItem item = Lilase.cofl.getQueue().getHistoryByUID(uid);
-                    if (item != null) {
-                        String unFormattedName = ScoreboardUtils.cleanSB(stack.getDisplayName());
-                        int slot = packetSetSlot.func_149173_d();
-                        NBTTagCompound tag = stack.getTagCompound();
-                        System.out.println("Slot: " + slot + "\nStack Name: " + unFormattedName + " \nStack NBT: " + tag);
-                        new Thread(() -> {
-                            if (!ONLY_SNIPER) {
-                                item.flipper = new Flipper(item.name, item.price, item.target, uuid);
-                                item.flipper.sendBought();
-                                Utils.debugLog("Bought an item, starting to sell");
-                                System.out.println("Item Name: " + item.flipper.name);
-                                System.out.println("Item Price: " + item.flipper.price);
-                                System.out.println("Target Price: " + item.flipper.target);
-                                selling_queue.add(item.flipper);
-                                item.flipper.sellItem();
-                            } else {
-                                Utils.debugLog("Bought an item, not selling because only sniper is enabled");
-                            }
-                        }).start();
-                    }
-                } catch (Exception ignored) {
-                }
-
-            }
-        }
         if (AHConfig.BED_SPAM && (Lilase.pageFlipper.getOpen() || Lilase.cofl.getOpen())) {
             if (event.packet instanceof S2DPacketOpenWindow && ((S2DPacketOpenWindow) event.packet).getGuiId().equals("minecraft:chest")) {
                 S2DPacketOpenWindow packetOpenWindow = (S2DPacketOpenWindow) event.packet;
@@ -248,7 +215,8 @@ public class SniperFlipperEvents {
             }
             if (event.packet instanceof S2FPacketSetSlot) {
                 S2FPacketSetSlot packetSetSlot = (S2FPacketSetSlot) event.packet;
-                if (packetSetSlot.func_149173_d() == 31 && packetSetSlot.func_149174_e() != null && packetSetSlot.func_149175_c() == latestWindowId) {
+                ItemStack stack = packetSetSlot.func_149174_e();
+                if (packetSetSlot.func_149173_d() == 31 && stack != null && packetSetSlot.func_149175_c() == latestWindowId) {
                     ItemStack itemStack = packetSetSlot.func_149174_e();
                     Utils.debugLog("Slot 31: " + itemStack.getItem().getRegistryName());
                     if (itemStack.getItem() == Items.bed && clock.passed()) {
@@ -261,6 +229,33 @@ public class SniperFlipperEvents {
                     } else {
                         Utils.debugLog("Auction was bought by someone else, closing window");
                         Lilase.mc.thePlayer.closeScreen();
+                    }
+                } else if (stack != null && packetSetSlot.func_149175_c() == 0) {
+                    try {
+                        String uuid = stack.getTagCompound().getCompoundTag("ExtraAttributes").getString("uuid");
+                        String uid = uuid.split("-")[4];
+                        QueueItem item = Lilase.cofl.getQueue().getHistoryByUID(uid);
+                        if (item != null) {
+                            String unFormattedName = ScoreboardUtils.cleanSB(stack.getDisplayName());
+                            int slot = packetSetSlot.func_149173_d();
+                            NBTTagCompound tag = stack.getTagCompound();
+                            System.out.println("Slot: " + slot + "\nStack Name: " + unFormattedName + " \nStack NBT: " + tag);
+                            new Thread(() -> {
+                                if (!ONLY_SNIPER) {
+                                    item.flipper = new Flipper(item.name, item.price, item.target, uuid);
+                                    item.flipper.sendBought();
+                                    Utils.debugLog("Bought an item, starting to sell");
+                                    System.out.println("Item Name: " + item.flipper.name);
+                                    System.out.println("Item Price: " + item.flipper.price);
+                                    System.out.println("Target Price: " + item.flipper.target);
+                                    selling_queue.add(item.flipper);
+                                    item.flipper.sellItem();
+                                } else {
+                                    Utils.debugLog("Bought an item, not selling because only sniper is enabled");
+                                }
+                            }).start();
+                        }
+                    } catch (Exception ignored) {
                     }
                 }
             }
