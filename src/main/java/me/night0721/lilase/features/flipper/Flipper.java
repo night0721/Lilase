@@ -15,8 +15,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import static me.night0721.lilase.config.AHConfig.RELIST_TIMEOUT;
-import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
+import static me.night0721.lilase.config.AHConfig.*;
 import static me.night0721.lilase.events.SniperFlipperEvents.selling_queue;
 
 // TODO: Fix repeating code (I will do it soon)
@@ -33,7 +32,6 @@ public class Flipper {
     public static final DecimalFormat df = new DecimalFormat("#.##");
     public static final String icon = "https://camo.githubusercontent.com/57a8295f890970d2173b895c7a0f6c60527fb3bec4489b233b221ab45cb9fa42/68747470733a2f2f63646e2e646973636f72646170702e636f6d2f6174746163686d656e74732f3834323031343930393236343935333335342f313038323337333237353033383030333231302f6c696c6173652e706e67";
 
-
     public Flipper(String name, int price, int target, String uuid) {
         this.name = name;
         this.price = price;
@@ -46,7 +44,7 @@ public class Flipper {
 
     public void sellItem() {
         Utils.checkFooter();
-        Lilase.sniper.incrementAuctionsSniped();
+        Lilase.cofl.incrementAuctionsSniped();
         Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
         if (Lilase.cofl.getOpen()) Lilase.cofl.toggleAuction();
         UngrabUtils.ungrabMouse();
@@ -135,13 +133,14 @@ public class Flipper {
                         buyWait.schedule(1000);
                     } else if (!InventoryUtils.isStoneButton() && InventoryUtils.isToAuctionItem(this.uuid) && buyWait.passed()) {
                         InventoryUtils.clickOpenContainerSlot(31);
-                        state = FlipperState.START;
-                        buyWait.schedule(1000);
+                        state = FlipperState.TIME;
+                        buyWait.schedule(3000);
                     } else if (!InventoryUtils.isStoneButton() && !InventoryUtils.isToAuctionItem(this.uuid) && buyWait.passed()) {
                         InventoryUtils.clickOpenContainerSlot(13);
                         buyWait.schedule(1000);
                     } // TODO: Ternary Expression
-                } else if (InventoryUtils.inventoryNameContains("Manage Auctions") && buyWait.passed()) {
+                }
+                if (InventoryUtils.inventoryNameContains("Manage Auctions") && buyWait.passed()) {
                     ItemStack slot24 = InventoryUtils.getStackInOpenContainerSlot(24);
                     ItemStack slot33 = InventoryUtils.getStackInOpenContainerSlot(33);
 
@@ -189,6 +188,16 @@ public class Flipper {
                         return;
                     }
                 }
+            case TIME:
+                if (!InventoryUtils.isStoneButton() && InventoryUtils.isToAuctionItem(this.uuid) && InventoryUtils.inventoryNameStartsWith("Create BIN Auction") && buyWait.passed()) {
+                    InventoryUtils.clickOpenContainerSlot(33);
+                    buyWait.schedule(1000);
+                }
+                if (InventoryUtils.inventoryNameContains("Auction Duration") && buyWait.passed()) {
+                    InventoryUtils.clickOpenContainerSlot(AUCTION_LENGTH == 0 ? 10 : AUCTION_LENGTH == 1 ? 11 : AUCTION_LENGTH == 2 ? 12 : AUCTION_LENGTH == 3 ? 13 : AUCTION_LENGTH == 4 ? 14 : 12);
+                    state = FlipperState.START;
+                    buyWait.schedule(1000);
+                }
             case START:
                 if (!InventoryUtils.isStoneButton() && InventoryUtils.isToAuctionItem(this.uuid) && InventoryUtils.inventoryNameStartsWith("Create BIN Auction") && buyWait.passed()) {
                     InventoryUtils.clickOpenContainerSlot(29);
@@ -198,7 +207,7 @@ public class Flipper {
                     buyWait.schedule(1000);
                 } else if (InventoryUtils.inventoryNameContains("BIN Auction View") && buyWait.passed()) {
                     InventoryUtils.clickOpenContainerSlot(49);
-                    Lilase.sniper.incrementAuctionsPosted();
+                    Lilase.cofl.incrementAuctionsPosted();
                     buyWait.schedule(500);
                     Lilase.mc.thePlayer.closeScreen();
                     buyWait.schedule(500);

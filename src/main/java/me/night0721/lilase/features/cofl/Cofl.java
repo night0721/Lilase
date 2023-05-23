@@ -2,6 +2,7 @@ package me.night0721.lilase.features.cofl;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.Getter;
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.features.flipper.Flipper;
 import me.night0721.lilase.features.flipper.FlipperState;
@@ -18,23 +19,19 @@ import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 public class Cofl {
     public final Queue queue = new Queue();
     private boolean open = false;
-    public final Thread thread = new Thread(() -> {
-        while (true) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ignore) {
-            }
-            if (getOpen()) {
-                if (!this.queue.isEmpty()) {
-                    if (!this.queue.isRunning()) {
-                        this.queue.setRunning(true);
-                        QueueItem item = this.queue.get();
-                        item.openAuction();
-                    }
-                }
-            }
-        }
-    });
+    public @Getter int auctionsSniped = 0;
+    public @Getter int auctionsPosted = 0;
+    public @Getter int auctionsFlipped = 0;
+
+    public void incrementAuctionsSniped() {
+        this.auctionsSniped += 1;
+    }
+    public void incrementAuctionsPosted() {
+        this.auctionsPosted += 1;
+    }
+    public void incrementAuctionsFlipped() {
+        this.auctionsFlipped += 1;
+    }
 
     public void onOpen() {
         System.setOut(new PrintStream(System.out) {
@@ -78,7 +75,8 @@ public class Cofl {
         if (getOpen()) {
             Utils.sendMessage("Stopped COFL Sniper");
             Lilase.mc.thePlayer.closeScreen();
-            stopThread();
+            queue.clear();
+            queue.setRunning(false);
             setOpen(false);
             UngrabUtils.regrabMouse();
         } else {
@@ -95,11 +93,8 @@ public class Cofl {
             if (Utils.cookie == EffectState.ON || Utils.checkInHub()) {
                 Utils.sendMessage("Started COFL Sniper");
                 setOpen(true);
-                boolean threadStatus = thread.isAlive();
-                stopThread();
-                if (!threadStatus) {
-                    thread.start();
-                }
+                queue.clear();
+                queue.setRunning(false);
                 UngrabUtils.ungrabMouse();
             } else {
                 Utils.sendMessage("Detected not in hub, please go to hub to start");
@@ -107,13 +102,6 @@ public class Cofl {
         }
     }
 
-    private void stopThread() {
-        if (thread.isAlive()) {
-            queue.clear();
-            queue.setRunning(false);
-            thread.interrupt();
-        }
-    }
 
     public boolean getOpen() {
         return open;

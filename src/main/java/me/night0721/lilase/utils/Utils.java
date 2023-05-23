@@ -108,5 +108,18 @@ public class Utils {
     public static void sendServerMessage(String message) {
         mc.thePlayer.sendChatMessage(message);
     }
+
+    public static String convertToShort(int number) {
+        if (number >= 1_000_000_000) return formatNumber((double) number / 1_000_000_000, "b", 4);
+        else if (number >= 100_000_000) return formatNumber((double) number / 1_000_000, "m", 4);
+        else if (number >= 1_000_000) return formatNumber((double) number / 1_000_000, "m", 3);
+        else if (number >= 1_000) return formatNumber((double) number / 1_000, "k", 3);
+        else return Integer.toString(number);
+    }
+
+    public static String formatNumber(double number, String suffix, int significantFigures) {
+        String format = "%." + significantFigures + "g";
+        return String.format(format, number) + suffix;
+    }
 }
 

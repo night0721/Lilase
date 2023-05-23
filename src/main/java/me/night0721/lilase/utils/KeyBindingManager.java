@@ -8,11 +8,12 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 public class KeyBindingManager {
-    private final KeyBinding[] keyBindings = new KeyBinding[2];
+    private final KeyBinding[] keyBindings = new KeyBinding[3];
 
     public void registerKeyBindings() {
-        keyBindings[0] = new KeyBinding("Sniper Toggle", Keyboard.KEY_END, Lilase.MOD_NAME);
-        keyBindings[1] = new KeyBinding("Config", Keyboard.KEY_MULTIPLY, Lilase.MOD_NAME);
+        keyBindings[0] = new KeyBinding("Sniper Toggle", Keyboard.KEY_M, Lilase.MOD_NAME);
+        keyBindings[1] = new KeyBinding("Config", Keyboard.KEY_N, Lilase.MOD_NAME);
+        keyBindings[2] = new KeyBinding("Auto Claimer", Keyboard.KEY_B, Lilase.MOD_NAME);
         for (KeyBinding keyBinding : keyBindings) ClientRegistry.registerKeyBinding(keyBinding);
     }
 
@@ -25,6 +26,9 @@ public class KeyBindingManager {
         if (keyBindings[1].isPressed()) {
             Lilase.config.openGui();
         }
+        if (keyBindings[2].isPressed()) {
+            Lilase.claimer.toggle();
+        }
     }
 
     public static void rightClick() {
@@ -32,13 +36,6 @@ public class KeyBindingManager {
             ReflectionUtils.invoke(Lilase.mc, "rightClickMouse");
         }
     }
-
-    public static void leftClick() {
-        if (!ReflectionUtils.invoke(Lilase.mc, "func_147116_af")) {
-            ReflectionUtils.invoke(Lilase.mc, "clickMouse");
-        }
-    }
-
 
     public static void updateKeys(boolean forward, boolean back, boolean right, boolean left, boolean attack) {
         updateKeys(forward, back, right, left, attack, false, false);

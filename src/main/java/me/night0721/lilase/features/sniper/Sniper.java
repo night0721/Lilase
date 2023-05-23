@@ -1,34 +1,17 @@
 package me.night0721.lilase.features.sniper;
 
-public class Sniper {
-    private int auctionsSniped = 0;
-    private int auctionsPosted = 0;
-    private int auctionsFlipped = 0;
+import lombok.*;
+import me.night0721.lilase.utils.Clock;
 
-    public int getAuctionsSniped() {
-        return auctionsSniped;
+public abstract class Sniper {
+    public final Clock cooldown = new Clock();
+    public @Getter @Setter boolean open = false;
+
+    public void toggle() {
+
     }
 
-    public void incrementAuctionsSniped() {
-        this.auctionsSniped += 1;
-    }
+    public void onTick() {
 
-    public int getAuctionsPosted() {
-        return auctionsPosted;
-    }
-
-    public void incrementAuctionsPosted() {
-        this.auctionsPosted += 1;
-    }
-
-    public int getAuctionsFlipped() {
-        return auctionsFlipped;
-    }
-
-    public void incrementAuctionsFlipped() {
-        this.auctionsFlipped += 1;
     }
 }
-
-
-

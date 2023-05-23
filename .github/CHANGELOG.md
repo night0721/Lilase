@@ -54,3 +54,13 @@
     - Fixed pricing issue
     - Item not found error should be fixed
     - Added gui to tell you to update the mod
+- v2.0.4
+    - Remove unecessary code
+    - Added auto claimer for auction house, can be toggled by "B"
+    - Changed Sniper shortcut key to "M"
+    - Changed Config shortcut key to "N"
+    - Changed pricing to use short format instead of real number so it looks more real
+    - Used onTick instead of thread in cofl macro
+    - Added custom listing time, 1, 6, 12, 24, 48 hours
+    - Adding mod id hide
+    - Added image to minecraft mod list and oneconfig

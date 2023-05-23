@@ -6,9 +6,10 @@ import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
 import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.config.ConfigHandler;
 import me.night0721.lilase.events.SniperFlipperEvents;
+import me.night0721.lilase.features.claimer.Claimer;
 import me.night0721.lilase.features.cofl.Cofl;
-import me.night0721.lilase.features.sniper.PageFlipper;
-import me.night0721.lilase.features.sniper.Sniper;
+//import me.night0721.lilase.features.pageflipper.PageFlipper;
+import me.night0721.lilase.features.cofl.QueueItem;
 import me.night0721.lilase.gui.ImageRenderer;
 import me.night0721.lilase.utils.Clock;
 import me.night0721.lilase.utils.KeyBindingManager;
@@ -31,10 +32,10 @@ import static me.night0721.lilase.config.AHConfig.RECONNECT_DELAY;
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "2.0.3";
+    public static final String VERSION = "2.0.4";
     public static final Minecraft mc = Minecraft.getMinecraft();
-    public static Sniper sniper;
-    public static PageFlipper pageFlipper;
+    //    public static PageFlipper pageFlipper;
+    public static Claimer claimer;
     public static Cofl cofl;
     public static AHConfig config;
     public static ConfigHandler configHandler;
@@ -47,10 +48,10 @@ public class Lilase {
         KeyBindingManager keyBindingManager = new KeyBindingManager();
         addToEventBus(this, keyBindingManager, new SniperFlipperEvents(), new ImageRenderer());
         EventManager.INSTANCE.register(this);
-        sniper = new Sniper();
-        pageFlipper = new PageFlipper();
+//        pageFlipper = new PageFlipper();
         keyBindingManager.registerKeyBindings();
         (cofl = new Cofl()).onOpen();
+        claimer = new Claimer();
     }
 
     private void addToEventBus(Object... objects) {
@@ -67,7 +68,13 @@ public class Lilase {
         if (mc.thePlayer == null || event.phase != TickEvent.Phase.START) return;
         tickAmount++;
         if (tickAmount % 20 == 0) Utils.checkFooter();
-        if (pageFlipper != null) pageFlipper.switchStates();
+//        if (pageFlipper != null) pageFlipper.switchStates();
+        if (claimer != null) claimer.onTick();
+        if (cofl.getOpen() && !cofl.queue.isEmpty() && !cofl.queue.isRunning()) {
+            cofl.queue.setRunning(true);
+            QueueItem item = cofl.queue.get();
+            item.openAuction();
+        }
         if (mc.currentScreen instanceof GuiDisconnected && clock.passed()) {
             clock.schedule(RECONNECT_DELAY * 1000L);
             FMLClientHandler.instance().connectToServer(new GuiMultiplayer(new GuiMainMenu()), new ServerData(" ", "mc.hypixel.net", false));

@@ -1,0 +1,17 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "Lilase FAQ",
+      "description": "What is Lilase:\nLilase is a QOL Auction House Mod that is made to auto buy and sell items on the auction house for profit\n\nWhat is Cofl why is it better to buy it:\nCofl is a QOL Auction House mod that tracks and find snipes for the user based on a provided config\n\nWhere can i get Cofl:\nTheir site -> https://sky.coflnet.com/flipper?refId=oedm8r\n\nWhere can I get Cofl Premium:\nhttps://sky.coflnet.com/premium?refId=oedm8r\n\nWhere is showcase of cofl macro:\nhttps://youtu.be/HqYhtSoDGBc\n\nHow to create webhooks:\nhttps://www.youtube.com/watch?v=fKksxz2Gdnc\n\nDoes Lilase have “skip” on the cofl macro:\nYes\n\nWhat is Bed spam and Delay:\nBed spam & Delay is for auctions that just started that have the bed item in the gui to buy\n\nThe sniper isn't buying items/Listing them:\nIf the sniper isn't buying items make sure its actually on (Press end key/rebind in settings on mc), If the sniper isn't listing items make sure sniper only is off if that is off get your log and send it to night (Other sniper mods such as Void can cause issues in sniping make sure if your using lilase that its the only one in the mods folder)\n\nWhere can i get a Cofl config:\nGodflipper: https://discord.gg/godflipper\n\nIs there a paid version of Lilase:\nNo\n\nAre donations accepted:\nYes donations are accepted, dm Night to donate\n\nCan i suggest features to add:\nFeatures can be suggested but make sure they aren't stuff that is already in there\n\nI'm not getting webhook messages:\nMake sure you setup the webhook correctly in the config if so send your log file to night and he can look into it\n\nWill Lilase be able to macro other things in game:\nAt the moment no but that doesn't mean we wont test on other macros such as one for bazzar\n\nWhat is required to run this:\nCofl and forge 1.8.9 + Latest lilase mod file from https://github.com/night0721/Lilase/releases/tag/latest\n\nIs Lilase open source:\nYes lilase is open source the source is located on https://github.com/night0721/Lilase/releases/tag/latest\n\nHow to flip?:\nDownload the latest version of Lilase from https://github.com/night0721/Lilase/releases\nDownload latest version of cofl from https://github.com/Coflnet/SkyblockMod/releases/tag/1.5.2\nPut it into %APPDATA%/.minecraft/mods\nStart forge 1.8.9\nChange any config you like by pressing N (Or any key you changed in settings)\nsave the file and press M key to start COFL sniper(or change it in settings)\nFor example configuration, see https://github.com/night0721/Lilase#example-config \n\nTo get started with sending messages, you need a webhook URL, you can get one via the \"Integrations\" tab in your server's settings. If you're having issues creating a webhook, [the bot](https://discohook.app/bot) can help you create one for you.\n\nKeep in mind that Discohook can't do automation yet, it only sends messages when you tell it to. If you are looking for an automatic feed or custom commands this isn't the right tool for you.",
+      "url": "https://github.com/night0721/Lilase",
+      "color": 131642,
+      "footer": {
+        "text": "Credits: Alex and Raziel",
+        "icon_url": "https://avatars.githubusercontent.com/u/77528305?v=4"
+      },
+      "timestamp": "2023-05-22T23:00:00.000Z"
+    }
+  ],
+  "attachments": []
+}

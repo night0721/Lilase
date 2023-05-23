@@ -48,13 +48,17 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 ```json
 {
   "SendMessageToWebhook": true,
-  "Webhook": "",
   "ReconnectDelay": 20,
   "BedSpamDelay": 100,
   "OnlySniper": false,
   "BedSpam": true,
+  "SniperMode": 2,
   "GUI": true,
-  "GUI_COLOR": -1,
-  "SniperMode": true
+  "Debug": true,
+  "Webhook": "https://discord.com/api/webhooks/23452345234534/qwe78ruifahsdfauserq8734qewuiasfdhasdoifasdfADSFASDF",
+  "GUI_COLOR": -16764590,
+  "RelistTimeout": 1500,
+  "AuctionLength": 2
 }
+
 ```

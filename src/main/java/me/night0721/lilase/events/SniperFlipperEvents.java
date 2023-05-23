@@ -5,7 +5,6 @@ import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.features.cofl.QueueItem;
 import me.night0721.lilase.features.flipper.Flipper;
 import me.night0721.lilase.features.flipper.FlipperState;
-import me.night0721.lilase.features.sniper.PageFlipperState;
 import me.night0721.lilase.gui.TextRenderer;
 import me.night0721.lilase.player.EffectState;
 import me.night0721.lilase.utils.*;
@@ -35,7 +34,7 @@ import java.util.regex.Pattern;
 
 import static me.night0721.lilase.config.AHConfig.*;
 import static me.night0721.lilase.features.flipper.Flipper.*;
-import static me.night0721.lilase.features.flipper.FlipperState.START;
+import static me.night0721.lilase.features.flipper.FlipperState.TIME;
 import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 
 public class SniperFlipperEvents {
@@ -51,6 +50,7 @@ public class SniperFlipperEvents {
                 // §6[Auction] §aphiinix_ §ebought §fImplosion Belt §efor §6900,000 coins §lCLICK
                 Matcher matcher = AUCTION_SOLD_PATTERN.matcher(ScoreboardUtils.cleanSB(message));
                 if (matcher.matches()) {
+                    Lilase.cofl.incrementAuctionsFlipped();
                     String purchaser;
                     try {
                         purchaser = matcher.group(1).split("\\[Auction] ")[1];
@@ -69,21 +69,24 @@ public class SniperFlipperEvents {
                             Utils.debugLog("Failed to send webhook");
                         }
                     }
-                    Lilase.sniper.incrementAuctionsFlipped();
                 }
-            } else if (message.equals("You didn't participate in this auction!")) {
+            }
+            if (message.equals("You didn't participate in this auction!")) {
                 Utils.debugLog("Failed to buy item, not fast enough. Closing the menu");
                 InventoryUtils.clickOpenContainerSlot(49);
-            } else if (message.equals("You don't have enough coins to afford this bid!")) {
+            }
+            if (message.equals("You don't have enough coins to afford this bid!")) {
                 Utils.debugLog("Failed to buy item, not enough money. Closing the menu");
                 InventoryUtils.clickOpenContainerSlot(49);
-            } else if (message.equals("Your starting bid must be at least 10 coins!") || message.contains("Can't create a BIN auction for this item for a PRICE this LOW!")) {
+            }
+            if (message.equals("Your starting bid must be at least 10 coins!") || message.contains("Can't create a BIN auction for this item for a PRICE this LOW!")) {
                 InventoryUtils.clickOpenContainerSlot(13);
                 Lilase.mc.thePlayer.closeScreen();
                 Utils.debugLog("Cannot post item as the cost is too low, stopping fliiper and starting sniper");
                 Lilase.cofl.toggleAuction();
                 Flipper.state = FlipperState.NONE;
-            } else if (message.contains("You were spawned in Limbo")) {
+            }
+            if (message.contains("You were spawned in Limbo")) {
                 Utils.debugLog("Detected in Limbo, stopping everything for 5 minutes");
                 Utils.addTitle("You got sent to Limbo!");
                 Flipper.state = FlipperState.NONE;
@@ -171,11 +174,11 @@ public class SniperFlipperEvents {
                     Flipper.state = FlipperState.NONE;
                     Lilase.cofl.toggleAuction();
                 }).start();
-            } else if (Lilase.pageFlipper.state != PageFlipperState.NONE) {
-                new Thread(() -> {
-                    Utils.debugLog("[PageFlipper] Interrupting PageFlipper sniping");
-                    Lilase.pageFlipper.toggleAuction();
-                }).start();
+//            } else if (Lilase.pageFlipper.state != PageFlipperState.NONE) {
+//                new Thread(() -> {
+//                    Utils.debugLog("[PageFlipper] Interrupting PageFlipper sniping");
+//                    Lilase.pageFlipper.toggleAuction();
+//                }).start();
             } else if (Lilase.cofl.getOpen()) {
                 Lilase.cofl.toggleAuction();
             }
@@ -192,7 +195,7 @@ public class SniperFlipperEvents {
                 int minute = cal.get(Calendar.MINUTE);
                 String time = String.format("%02d:%02d", hour, minute);
                 int days = (int) (Lilase.mc.theWorld.getWorldTime() / 24000);
-                String lines = "X: " + Math.round(Lilase.mc.thePlayer.posX) + "\n" + "Y: " + Math.round(Lilase.mc.thePlayer.posY) + "\n" + "Z: " + Math.round(Lilase.mc.thePlayer.posZ) + "\n" + time + "\n" + "FPS: " + Minecraft.getDebugFPS() + "\n" + "Day: " + days + "\n" + "Auctions Sniped: " + Lilase.sniper.getAuctionsSniped() + "\n" + "Auctions Posted: " + Lilase.sniper.getAuctionsPosted() + "\n" + "Auctions Flipped: " + Lilase.sniper.getAuctionsFlipped() + "\n";
+                String lines = "X: " + Math.round(Lilase.mc.thePlayer.posX) + "\n" + "Y: " + Math.round(Lilase.mc.thePlayer.posY) + "\n" + "Z: " + Math.round(Lilase.mc.thePlayer.posZ) + "\n" + time + "\n" + "FPS: " + Minecraft.getDebugFPS() + "\n" + "Day: " + days + "\n" + "Auctions Sniped: " + Lilase.cofl.getAuctionsSniped() + "\n" + "Auctions Posted: " + Lilase.cofl.getAuctionsPosted() + "\n" + "Auctions Flipped: " + Lilase.cofl.getAuctionsFlipped() + "\n";
                 TextRenderer.drawString(lines, 0, 0, 0.9, GUI_COLOR.getRGB());
             }
         } else if (event.type == RenderGameOverlayEvent.ElementType.CHAT) {
@@ -204,10 +207,25 @@ public class SniperFlipperEvents {
     }
 
     private int latestWindowId = -1;
+    private final Thread spam = new Thread(() -> {
+        int tries = 0;
+        try {
+            while (tries < 50) {
+                if (clock.passed()) {
+                    clickWindow(latestWindowId, 31);
+                    clickWindow(latestWindowId + 1, 11);
+                    tries++;
+                    clock.schedule(AHConfig.BED_SPAM_DELAY);
+                }
+            }
+        } catch (Exception ignored) {
+        }
+    });
 
     @SubscribeEvent
     public void onPacketReceive(PacketReceivedEvent event) {
-        if (AHConfig.BED_SPAM && (Lilase.pageFlipper.getOpen() || Lilase.cofl.getOpen())) {
+        if (AHConfig.BED_SPAM && Lilase.cofl.getOpen()) {
+//        if (AHConfig.BED_SPAM && (Lilase.pageFlipper.getOpen() || Lilase.cofl.getOpen())) {
             if (event.packet instanceof S2DPacketOpenWindow && ((S2DPacketOpenWindow) event.packet).getGuiId().equals("minecraft:chest")) {
                 S2DPacketOpenWindow packetOpenWindow = (S2DPacketOpenWindow) event.packet;
                 if (packetOpenWindow.getWindowTitle().getUnformattedText().equals("BIN Auction View"))
@@ -219,18 +237,24 @@ public class SniperFlipperEvents {
                 if (packetSetSlot.func_149173_d() == 31 && stack != null && packetSetSlot.func_149175_c() == latestWindowId) {
                     ItemStack itemStack = packetSetSlot.func_149174_e();
                     Utils.debugLog("Slot 31: " + itemStack.getItem().getRegistryName());
-                    if (itemStack.getItem() == Items.bed && clock.passed()) {
-                        clickWindow(latestWindowId, 31);
-                        clickWindow(latestWindowId + 1, 11);
-                        clock.schedule(AHConfig.BED_SPAM_DELAY);
+                    if (itemStack.getItem() == Items.bed) {
+                        boolean threadStatus = spam.isAlive();
+                        spam.interrupt();
+                        if (!threadStatus) {
+                            spam.start();
+                        }
                     } else if (itemStack.getItem() == Items.gold_nugget || Item.getItemFromBlock(Blocks.gold_block) == itemStack.getItem()) {
+                        if (spam.isAlive()) {
+                            spam.interrupt();
+                        }
                         clickWindow(latestWindowId, 31);
                         clickWindow(latestWindowId + 1, 11);
                     } else {
                         Utils.debugLog("Auction was bought by someone else, closing window");
                         Lilase.mc.thePlayer.closeScreen();
                     }
-                } else if (stack != null && packetSetSlot.func_149175_c() == 0) {
+                } else if (stack != null && packetSetSlot.func_149175_c() == 0 && Lilase.cofl.getOpen()) {
+//                } else if (stack != null && packetSetSlot.func_149175_c() == 0 && (Lilase.pageFlipper.getOpen() || Lilase.cofl.getOpen())) {
                     try {
                         String uuid = stack.getTagCompound().getCompoundTag("ExtraAttributes").getString("uuid");
                         String uid = uuid.split("-")[4];
@@ -260,24 +284,24 @@ public class SniperFlipperEvents {
                 }
             }
         }
-        if (event.packet instanceof S33PacketUpdateSign && (Flipper.state.equals(START) || Lilase.cofl.getQueue().isRunning())) {
-            if (Utils.cookie == EffectState.ON || (Utils.cookie == EffectState.OFF && Utils.checkInHub()))
-                new Thread(() -> {
-                    try {
-                        S33PacketUpdateSign packetUpdateSign = (S33PacketUpdateSign) event.packet;
-                        IChatComponent[] lines = packetUpdateSign.getLines();
-                        Utils.debugLog("Target Price: " + selling_queue.get(0).target);
-                        Thread.sleep(300);
-                        lines[0] = IChatComponent.Serializer.jsonToComponent("{\"text\":\"" + selling_queue.get(0).target + "\"}");
-                        sendPacketWithoutEvent(new C12PacketUpdateSign(packetUpdateSign.getPos(), lines));
-                    } catch (RuntimeException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+        if (event.packet instanceof S33PacketUpdateSign && (Flipper.state == TIME || Lilase.cofl.getQueue().isRunning())) {
+            if (Utils.cookie == EffectState.ON || (Utils.cookie == EffectState.OFF && Utils.checkInHub())) {
+                try {
+                    S33PacketUpdateSign packetUpdateSign = (S33PacketUpdateSign) event.packet;
+                    System.out.println("Block Pos: " + packetUpdateSign.getPos());
+                    IChatComponent[] lines = packetUpdateSign.getLines();
+                    Utils.debugLog("Target Price: " + selling_queue.get(0).target, "Shortened Target Price: " + Utils.convertToShort(selling_queue.get(0).target));
+                    Thread.sleep(300);
+                    lines[0] = IChatComponent.Serializer.jsonToComponent("{\"text\":\"" + Utils.convertToShort(selling_queue.get(0).target) + "\"}");
+                    sendPacketWithoutEvent(new C12PacketUpdateSign(packetUpdateSign.getPos(), lines));
+                } catch (RuntimeException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
-    public void clickWindow(int window, int slot) {
+    public static void clickWindow(int window, int slot) {
         Lilase.mc.playerController.windowClick(window, slot, 0, 0, Lilase.mc.thePlayer);
     }
 }

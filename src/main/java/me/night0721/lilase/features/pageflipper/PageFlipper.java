@@ -1,4 +1,4 @@
-package me.night0721.lilase.features.sniper;
+package me.night0721.lilase.features.pageflipper;
 
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.player.EffectState;
