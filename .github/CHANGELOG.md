@@ -62,5 +62,5 @@
     - Changed pricing to use short format instead of real number so it looks more real
     - Used onTick instead of thread in cofl macro
     - Added custom listing time, 1, 6, 12, 24, 48 hours
-    - Adding mod id hide
+    - Adding mod id hider
     - Added image to minecraft mod list and oneconfig
