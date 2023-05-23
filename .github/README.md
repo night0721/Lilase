@@ -9,23 +9,27 @@ If you have any questions please join [Discord Server](https://night0721.me/disc
 For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 
 # Features:
+- Supports using and not using Cookie
 - Auto walk to the auction house
-- Auto sell after buying with profit check, so profit is ensured
-- Webhook system to send you that an item has been bought, sold, flipped
+- Webhook system to send you that an item has been bought, sold, flipped, or any error occured with many information
 - Failsafe in Limbo
 - Auto reconnect to server when disconnected
 - Auto skip confirmation screen
 - GUI showing coordinates, fps and clock and stats like auctions bought, sniped, flipped
 - Auto ungrab mouse when sniping/flipping
 - Auto movement during sniping so hypixel won't send to afk
-- Cookie Compatible
 - Configurable bed spam delay
 - Modules toggleable in game
-- Check maximum profit percentage before buying so duped items won't be bought
 - COFL macro
-- auto sell to cofl macro
+- Auto sell to cofl macroauctionsto cofl macro
+- Auto claim auctions
+- Custom listing time for auctions
+- GUI to tell you to update the mod
+- Relist delay so you look less suspicious
 - Server ID on scoreboard hider
 - page flipper [WIP]
+- Mod ID hider
+- Short number to list auctions
 
 # How to use:
 1. Download the latest version of Lilase from [here](https://github.com/night0721/Lilase/releases)
