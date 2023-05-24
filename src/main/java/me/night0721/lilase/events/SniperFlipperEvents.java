@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
+import java.awt.*;
 import java.util.*;
 
 import static me.night0721.lilase.config.AHConfig.*;
@@ -169,6 +170,29 @@ public class SniperFlipperEvents {
         if (event.packet instanceof S33PacketUpdateSign && (Flipper.state == TIME || Lilase.cofl.getQueue().isRunning())) {
             if (Utils.cookie == EffectState.ON || (Utils.cookie == EffectState.OFF && Utils.checkInHub())) {
                 try {
+                    if (selling_queue.size() == 0) {
+                        Utils.debugLog("Selling queue is empty, can't updating sign");
+                        selling_queue.remove(0);
+                        if (SEND_MESSAGE) {
+                            try {
+                                webhook.addEmbed(
+                                        new DiscordWebhook.EmbedObject()
+                                                .setTitle("Unknown Error occured, cannot find flipper")
+                                                .setFooter("Purse: " + format.format(Utils.getPurse()), icon)
+                                                .setDescription("Cannot set list price for item, please contact the developer")
+                                                .setColor(Color.decode("#ff0000")));
+                                webhook.execute();
+                                Utils.debugLog("Notified Webhook");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Utils.debugLog("Failed to send webhook");
+                            }
+                        }
+                        Lilase.mc.thePlayer.closeScreen();
+                        state = FlipperState.NONE;
+                        Lilase.cofl.toggleAuction();
+                        return;
+                    }
                     S33PacketUpdateSign packetUpdateSign = (S33PacketUpdateSign) event.packet;
                     System.out.println("Block Pos: " + packetUpdateSign.getPos());
                     IChatComponent[] lines = packetUpdateSign.getLines();
@@ -177,7 +201,7 @@ public class SniperFlipperEvents {
                     String price = SHORTEN_NUMBERS ? Utils.convertToShort(selling_queue.get(0).target) : String.valueOf(selling_queue.get(0).target);
                     lines[0] = IChatComponent.Serializer.jsonToComponent("{\"text\":\"" + price + "\"}");
                     sendPacketWithoutEvent(new C12PacketUpdateSign(packetUpdateSign.getPos(), lines));
-                } catch (RuntimeException | InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
