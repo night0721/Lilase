@@ -148,7 +148,7 @@ public class SniperFlipperEvents {
                             map.put("price", format.format(item.price));
                             Lilase.cofl.bought_items.add(map);
                             new Thread(() -> {
-                                if (!ONLY_SNIPER) {
+                                if (!ONLY_SNIPER && !ah_full) {
                                     item.flipper = new Flipper(item.name, item.price, item.target, uuid);
                                     item.flipper.sendBought();
                                     Utils.debugLog("Bought an item, starting to sell");
@@ -158,7 +158,7 @@ public class SniperFlipperEvents {
                                     selling_queue.add(item.flipper);
                                     item.flipper.sellItem();
                                 } else {
-                                    Utils.debugLog("Bought an item, not selling because only sniper is enabled");
+                                    Utils.debugLog("Bought an item, not selling because only sniper is enabled or AH slots are full");
                                 }
                             }).start();
                         }

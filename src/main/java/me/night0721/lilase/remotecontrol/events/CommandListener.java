@@ -79,6 +79,14 @@ public class CommandListener extends ListenerAdapter {
                     event.getHook().editOriginal("Macro is currently running, please stop it first").queue();
                 }
             }
+            if (type.equals("relister")) {
+                if (!Lilase.claimer.isOpen()) {
+                    Lilase.relister.toggle();
+                    event.getHook().editOriginal("Relister enabled").queue();
+                } else {
+                    event.getHook().editOriginal("Claimer is currently running, please stop it first").queue();
+                }
+            }
         }
     }
 }

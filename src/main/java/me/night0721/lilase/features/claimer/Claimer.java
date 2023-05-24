@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 import static me.night0721.lilase.events.SniperFlipperEvents.ah_full;
+import static me.night0721.lilase.events.SniperFlipperEvents.selling_queue;
 import static me.night0721.lilase.utils.InventoryUtils.clickWindow;
 import static me.night0721.lilase.features.flipper.Flipper.*;
 import static me.night0721.lilase.utils.KeyBindingManager.stopMovement;
@@ -96,8 +97,13 @@ public class Claimer extends Sniper {
                         if (isOpen()) toggle();
                         if (ah_full) {
                             ah_full = false;
-                            Utils.debugLog("Continue sniping after claiming");
-                            Lilase.cofl.toggleAuction();
+                            if (selling_queue.size() > 0) {
+                                Utils.debugLog("Listing next item from queue");
+                                selling_queue.get(0).sellItem();
+                            } else {
+                                Utils.debugLog("Continue sniping after claiming");
+                                Lilase.cofl.toggleAuction();
+                            }
                         }
                         return;
                     }
