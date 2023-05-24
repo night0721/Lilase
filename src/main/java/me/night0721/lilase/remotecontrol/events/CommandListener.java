@@ -66,7 +66,7 @@ public class CommandListener extends ListenerAdapter {
             if (type.equals("claimer")) {
                 if (!Lilase.relister.isOpen()) {
                     Lilase.claimer.toggle();
-                    event.getHook().editOriginal("Claimer enabled").queue();
+                    event.reply("Claimer enabled").queue();
                 } else {
                     event.getHook().editOriginal("Relister is currently running, please stop it first").queue();
                 }
@@ -74,17 +74,17 @@ public class CommandListener extends ListenerAdapter {
             if (type.equals("macro")) {
                 if (!Lilase.cofl.isOpen()) {
                     Lilase.cofl.toggleAuction();
-                    event.getHook().editOriginal("Macro enabled").queue();
+                    event.reply("Macro enabled").queue();
                 } else {
-                    event.getHook().editOriginal("Macro is currently running, please stop it first").queue();
+                    event.reply("Macro is currently running, please stop it first").queue();
                 }
             }
             if (type.equals("relister")) {
                 if (!Lilase.claimer.isOpen()) {
                     Lilase.relister.toggle();
-                    event.getHook().editOriginal("Relister enabled").queue();
+                    event.reply("Relister enabled").queue();
                 } else {
-                    event.getHook().editOriginal("Claimer is currently running, please stop it first").queue();
+                    event.reply("Claimer is currently running, please stop it first").queue();
                 }
             }
         }
