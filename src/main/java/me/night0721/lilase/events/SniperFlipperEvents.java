@@ -110,8 +110,8 @@ public class SniperFlipperEvents {
                     ItemStack itemStack = packetSetSlot.func_149174_e();
                     Utils.debugLog("Slot 31: " + itemStack.getItem().getRegistryName());
                     if (itemStack.getItem() == Items.bed) {
-                        boolean threadStatus = spam.isAlive();
-                        spam.interrupt();
+                        boolean threadStatus = !spam.isAlive();
+                        if (spam.isAlive()) spam.interrupt();
                         if (!threadStatus) {
                             spam.start();
                         }
