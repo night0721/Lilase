@@ -18,6 +18,7 @@ import me.night0721.lilase.gui.GUIRenderer;
 import me.night0721.lilase.remotecontrol.RemoteControl;
 import me.night0721.lilase.utils.Clock;
 import me.night0721.lilase.utils.KeyBindingManager;
+import me.night0721.lilase.utils.ScoreboardUtils;
 import me.night0721.lilase.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
@@ -82,7 +83,7 @@ public class Lilase {
         tickAmount++;
         if (tickAmount % 20 == 0) Utils.checkFooter();
 //        if (pageFlipper != null) pageFlipper.switchStates();
-        if (tickAmount % (RELIST_CHECK_TIMEOUT * 72_000) == 0) {
+        if (tickAmount % (RELIST_CHECK_TIMEOUT * 72_000) == 0 && ScoreboardUtils.getSidebarLines().stream().map(ScoreboardUtils::cleanSB).anyMatch(s -> s.contains("SKYBLOCK")) && AUTO_RELIST) {
             relister.shouldBeRelisting = true;
             if (Flipper.state == FlipperState.NONE) relister.toggle();
         }
