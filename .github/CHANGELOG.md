@@ -71,3 +71,7 @@
     - Added auto relister which run every hour by default to relist expired items
     - Added detection for captcha and send webhook when captcha is detected
     - A discord bot to show the items it bought and sold and to start any modules
+- v3.0.1-beta
+    - Fixed some bugs
+    - Fixed jda issues 
+    - Sniper will now snipe even ah is full
