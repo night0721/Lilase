@@ -64,7 +64,7 @@
     - Added custom listing time, 1, 6, 12, 24, 48 hours
     - Adding mod id hider
     - Added image to minecraft mod list and oneconfig
-- v2.0.4
+- v3.0.0
     - Added toggle to enable custom scoreboard
     - Added toggle to use shorten number when listing
     - Relocated some events

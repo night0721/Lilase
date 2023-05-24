@@ -9,6 +9,8 @@ If you have any questions please join [Discord Server](https://night0721.me/disc
 For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 
 # Features:
+- Remote control with screenshot, showing stats, and more
+- Configurations for every module
 - Supports using and not using Cookie
 - Auto walk to the auction house
 - Webhook system to send you that an item has been bought, sold, flipped, or any error occured with many information
@@ -23,6 +25,7 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 - COFL macro
 - Auto sell to cofl macroauctionsto cofl macro
 - Auto claim auctions
+- Auto relist expired auctions
 - Custom listing time for auctions
 - GUI to tell you to update the mod
 - Relist delay so you look less suspicious
@@ -30,6 +33,7 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 - page flipper [WIP]
 - Mod ID hider
 - Short number to list auctions
+- Detection of captcha
 
 # How to use:
 1. Download the latest version of Lilase from [here](https://github.com/night0721/Lilase/releases)
