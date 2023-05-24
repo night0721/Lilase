@@ -3,6 +3,7 @@ package me.night0721.lilase.features.cofl;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.Getter;
+import lombok.Setter;
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.features.flipper.Flipper;
 import me.night0721.lilase.features.flipper.FlipperState;
@@ -11,6 +12,8 @@ import me.night0721.lilase.utils.UngrabUtils;
 import me.night0721.lilase.utils.Utils;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -18,20 +21,9 @@ import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 
 public class Cofl {
     public final Queue queue = new Queue();
-    private boolean open = false;
-    public @Getter int auctionsSniped = 0;
-    public @Getter int auctionsPosted = 0;
-    public @Getter int auctionsFlipped = 0;
-
-    public void incrementAuctionsSniped() {
-        this.auctionsSniped += 1;
-    }
-    public void incrementAuctionsPosted() {
-        this.auctionsPosted += 1;
-    }
-    public void incrementAuctionsFlipped() {
-        this.auctionsFlipped += 1;
-    }
+    private @Getter @Setter boolean open = false;
+    public ArrayList<HashMap<String, String>> sold_items = new ArrayList<>();
+    public ArrayList<HashMap<String, String>> bought_items = new ArrayList<>();
 
     public void onOpen() {
         System.setOut(new PrintStream(System.out) {
@@ -46,7 +38,7 @@ public class Cofl {
 
     public void handleMessage(String str) {
         try {
-            if (!getOpen() || !str.startsWith("Received:")) return;
+            if (!isOpen() || !str.startsWith("Received:")) return;
             if (pattern.matcher(str).find()) {
                 Random random = new Random();
                 Lilase.mc.thePlayer.inventory.currentItem = random.nextInt(9);
@@ -72,7 +64,7 @@ public class Cofl {
 
 
     public void toggleAuction() {
-        if (getOpen()) {
+        if (isOpen()) {
             Utils.sendMessage("Stopped COFL Sniper");
             Lilase.mc.thePlayer.closeScreen();
             queue.clear();
@@ -100,15 +92,6 @@ public class Cofl {
                 Utils.sendMessage("Detected not in hub, please go to hub to start");
             }
         }
-    }
-
-
-    public boolean getOpen() {
-        return open;
-    }
-
-    public void setOpen(boolean open) {
-        this.open = open;
     }
 
     public Queue getQueue() {

@@ -7,11 +7,8 @@ public abstract class Sniper {
     public final Clock cooldown = new Clock();
     public @Getter @Setter boolean open = false;
 
-    public void toggle() {
+    public abstract void toggle();
 
-    }
 
-    public void onTick() {
-
-    }
+    public abstract void onTick();
 }

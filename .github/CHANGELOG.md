@@ -64,3 +64,10 @@
     - Added custom listing time, 1, 6, 12, 24, 48 hours
     - Adding mod id hider
     - Added image to minecraft mod list and oneconfig
+- v2.0.4
+    - Added toggle to enable custom scoreboard
+    - Added toggle to use shorten number when listing
+    - Relocated some events
+    - Added auto relister which run every hour by default to relist expired items
+    - Added detection for captcha and send webhook when captcha is detected
+    - A discord bot to show the items it bought and sold and to start any modules

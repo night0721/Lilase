@@ -56,6 +56,7 @@ val shade: Configuration by configurations.creating {
 
 repositories {
     maven("https://repo.polyfrost.cc/releases")
+    mavenCentral()
 }
 
 dependencies {
@@ -65,6 +66,9 @@ dependencies {
         shade("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta+")
         compileOnly("org.projectlombok:lombok:1.18.26")
         annotationProcessor("org.projectlombok:lombok:1.18.26")
+        implementation("net.dv8tion:JDA:5.0.0-beta.9") {
+            exclude (module = "opus-java")
+        }
     }
 }
 

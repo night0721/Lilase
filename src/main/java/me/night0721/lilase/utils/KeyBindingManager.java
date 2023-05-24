@@ -8,12 +8,13 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 public class KeyBindingManager {
-    private final KeyBinding[] keyBindings = new KeyBinding[3];
+    private final KeyBinding[] keyBindings = new KeyBinding[4];
 
     public void registerKeyBindings() {
         keyBindings[0] = new KeyBinding("Sniper Toggle", Keyboard.KEY_M, Lilase.MOD_NAME);
         keyBindings[1] = new KeyBinding("Config", Keyboard.KEY_N, Lilase.MOD_NAME);
         keyBindings[2] = new KeyBinding("Auto Claimer", Keyboard.KEY_B, Lilase.MOD_NAME);
+        keyBindings[3] = new KeyBinding("Auto Relist", Keyboard.KEY_V, Lilase.MOD_NAME);
         for (KeyBinding keyBinding : keyBindings) ClientRegistry.registerKeyBinding(keyBinding);
     }
 
@@ -28,6 +29,9 @@ public class KeyBindingManager {
         }
         if (keyBindings[2].isPressed()) {
             Lilase.claimer.toggle();
+        }
+        if (keyBindings[3].isPressed()) {
+            Lilase.relister.toggle();
         }
     }
 

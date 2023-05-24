@@ -1,6 +1,7 @@
 package me.night0721.lilase.features.flipper;
 
 import me.night0721.lilase.Lilase;
+import me.night0721.lilase.features.relister.RelisterState;
 import me.night0721.lilase.player.EffectState;
 import me.night0721.lilase.player.Rotation;
 import me.night0721.lilase.utils.*;
@@ -16,6 +17,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import static me.night0721.lilase.config.AHConfig.*;
+import static me.night0721.lilase.events.SniperFlipperEvents.ah_full;
 import static me.night0721.lilase.events.SniperFlipperEvents.selling_queue;
 
 // TODO: Fix repeating code (I will do it soon)
@@ -44,9 +46,14 @@ public class Flipper {
 
     public void sellItem() {
         Utils.checkFooter();
-        Lilase.cofl.incrementAuctionsSniped();
+        if (Lilase.relister.state != RelisterState.NONE) {
+            Utils.debugLog("Relister is running, stopping, will resume when flipper is done");
+            Lilase.relister.toggle();
+        }
         Utils.sendMessage("Flipper is running, stopping, will resume when flipper is done");
-        if (Lilase.cofl.getOpen()) Lilase.cofl.toggleAuction();
+        if (Lilase.cofl.isOpen()) {
+            Lilase.cofl.toggleAuction();
+        }
         UngrabUtils.ungrabMouse();
         Utils.debugLog("Cookie: " + (Utils.cookie == EffectState.ON ? "ON" : "OFF"));
         System.out.println("Slot in inventory: " + InventoryUtils.getSlotForItemm(this.uuid));
@@ -149,6 +156,7 @@ public class Flipper {
                         buyWait.schedule(1000);
                     } else if (slot33 != null) {
                         if (slot33.getSubCompound("display", false).getString("Name").startsWith("§c")) {
+                            ah_full = true;
                             Utils.debugLog("Auction slots full, stopping sniper for a while");
                             selling_queue.remove(0);
                             if (SEND_MESSAGE) {
@@ -207,14 +215,27 @@ public class Flipper {
                     buyWait.schedule(1000);
                 } else if (InventoryUtils.inventoryNameContains("BIN Auction View") && buyWait.passed()) {
                     InventoryUtils.clickOpenContainerSlot(49);
-                    Lilase.cofl.incrementAuctionsPosted();
                     buyWait.schedule(500);
                     Lilase.mc.thePlayer.closeScreen();
                     buyWait.schedule(500);
-                    Utils.sendMessage("Posted item on Auction House, continue sniping now");
                     state = FlipperState.NONE;
-                    Lilase.cofl.toggleAuction();
-                    selling_queue.remove(0);
+                    if (ah_full) {
+                        Utils.sendMessage("Posted item on Auction House, claiming item now as slots aren't full anymore");
+                        if (!Lilase.claimer.isOpen()) Lilase.claimer.toggle();
+                    } else if (Lilase.relister.toRelist.size() > 1) {
+                        Utils.debugLog("Still have items to relist, continuing to relist");
+                        Lilase.relister.toggle();
+                    } else if (Lilase.relister.toRelist.size() == 1) {
+                        Utils.debugLog("Relisted all items, stopping relister and continuing to snipe");
+                        Lilase.relister.toggle();
+                        Lilase.cofl.toggleAuction();
+                    } else if (Lilase.relister.shouldBeRelisting) {
+                        Lilase.relister.toggle();
+                    } else {
+                        Utils.sendMessage("Posted item on Auction House, continue sniping now");
+                        Lilase.cofl.toggleAuction();
+                    }
+                    if (selling_queue.get(0) != null) selling_queue.remove(0);
                 }
             case NONE:
                 break;

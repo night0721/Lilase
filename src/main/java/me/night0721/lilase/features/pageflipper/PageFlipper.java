@@ -1,5 +1,7 @@
 package me.night0721.lilase.features.pageflipper;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.player.EffectState;
 import me.night0721.lilase.utils.*;
@@ -14,7 +16,7 @@ import static me.night0721.lilase.features.flipper.Flipper.*;
 public class PageFlipper {
     public PageFlipperState state = PageFlipperState.NONE;
     public final Clock cooldown = new Clock();
-    public boolean open = false;
+    public @Getter @Setter boolean open = false;
     private Thread loop;
 
     public void start() {
@@ -105,7 +107,7 @@ public class PageFlipper {
     }
 
     public void toggleAuction() {
-        if (getOpen()) {
+        if (isOpen()) {
             Utils.sendMessage("Stopped Page Flipper");
             Lilase.mc.thePlayer.closeScreen();
             state = PageFlipperState.NONE;
@@ -119,13 +121,5 @@ public class PageFlipper {
                 UngrabUtils.ungrabMouse();
             } else Utils.sendMessage("Detected not in hub, please go to hub to start");
         }
-    }
-
-    public Boolean getOpen() {
-        return open;
-    }
-
-    public void setOpen(Boolean open) {
-        this.open = open;
     }
 }

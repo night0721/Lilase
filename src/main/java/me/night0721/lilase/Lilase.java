@@ -5,12 +5,17 @@ import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
 import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.config.ConfigHandler;
+import me.night0721.lilase.events.ChatReceivedEvent;
 import me.night0721.lilase.events.SniperFlipperEvents;
 import me.night0721.lilase.features.claimer.Claimer;
 import me.night0721.lilase.features.cofl.Cofl;
 //import me.night0721.lilase.features.pageflipper.PageFlipper;
 import me.night0721.lilase.features.cofl.QueueItem;
-import me.night0721.lilase.gui.ImageRenderer;
+import me.night0721.lilase.features.flipper.Flipper;
+import me.night0721.lilase.features.flipper.FlipperState;
+import me.night0721.lilase.features.relister.Relister;
+import me.night0721.lilase.gui.GUIRenderer;
+import me.night0721.lilase.remotecontrol.RemoteControl;
 import me.night0721.lilase.utils.Clock;
 import me.night0721.lilase.utils.KeyBindingManager;
 import me.night0721.lilase.utils.Utils;
@@ -26,32 +31,40 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import static me.night0721.lilase.config.AHConfig.RECONNECT_DELAY;
+import static me.night0721.lilase.config.AHConfig.*;
+import static me.night0721.lilase.features.flipper.Flipper.icon;
+import static me.night0721.lilase.features.flipper.Flipper.webhook;
 
 @Mod(modid = Lilase.MODID, name = Lilase.MOD_NAME, version = Lilase.VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "2.0.4";
+    public static final String VERSION = "3.0.0";
     public static final Minecraft mc = Minecraft.getMinecraft();
     //    public static PageFlipper pageFlipper;
     public static Claimer claimer;
+    public static Relister relister;
     public static Cofl cofl;
     public static AHConfig config;
     public static ConfigHandler configHandler;
     private int tickAmount;
     private final Clock clock = new Clock();
+    public static RemoteControl remoteControl;
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         (configHandler = new ConfigHandler()).init();
         KeyBindingManager keyBindingManager = new KeyBindingManager();
-        addToEventBus(this, keyBindingManager, new SniperFlipperEvents(), new ImageRenderer());
+        addToEventBus(this, keyBindingManager, new SniperFlipperEvents(), new ChatReceivedEvent(), new GUIRenderer());
         EventManager.INSTANCE.register(this);
 //        pageFlipper = new PageFlipper();
         keyBindingManager.registerKeyBindings();
         (cofl = new Cofl()).onOpen();
         claimer = new Claimer();
+        relister = new Relister();
+        webhook.setUsername("Lilase");
+        webhook.setAvatarUrl(icon);
+        remoteControl = new RemoteControl();
     }
 
     private void addToEventBus(Object... objects) {
@@ -69,8 +82,13 @@ public class Lilase {
         tickAmount++;
         if (tickAmount % 20 == 0) Utils.checkFooter();
 //        if (pageFlipper != null) pageFlipper.switchStates();
+        if (tickAmount % (RELIST_CHECK_TIMEOUT * 72_000) == 0) {
+            relister.shouldBeRelisting = true;
+            if (Flipper.state == FlipperState.NONE) relister.toggle();
+        }
         if (claimer != null) claimer.onTick();
-        if (cofl.getOpen() && !cofl.queue.isEmpty() && !cofl.queue.isRunning()) {
+        if (relister != null) relister.onTick();
+        if (cofl.isOpen() && !cofl.queue.isEmpty() && !cofl.queue.isRunning()) {
             cofl.queue.setRunning(true);
             QueueItem item = cofl.queue.get();
             item.openAuction();

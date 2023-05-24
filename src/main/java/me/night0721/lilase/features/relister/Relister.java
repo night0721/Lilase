@@ -1,9 +1,9 @@
-package me.night0721.lilase.features.claimer;
+package me.night0721.lilase.features.relister;
 
 import me.night0721.lilase.Lilase;
+import me.night0721.lilase.features.claimer.ClaimerState;
 import me.night0721.lilase.features.flipper.Flipper;
 import me.night0721.lilase.features.flipper.FlipperState;
-import me.night0721.lilase.features.relister.RelisterState;
 import me.night0721.lilase.features.sniper.Sniper;
 import me.night0721.lilase.player.EffectState;
 import me.night0721.lilase.utils.*;
@@ -18,16 +18,20 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
-import static me.night0721.lilase.events.SniperFlipperEvents.ah_full;
-import static me.night0721.lilase.utils.InventoryUtils.clickWindow;
+import static me.night0721.lilase.events.SniperFlipperEvents.selling_queue;
 import static me.night0721.lilase.features.flipper.Flipper.*;
+import static me.night0721.lilase.utils.InventoryUtils.clickWindow;
 import static me.night0721.lilase.utils.KeyBindingManager.stopMovement;
 
-public class Claimer extends Sniper {
-    public ClaimerState state = ClaimerState.NONE;
-    public List<Integer> toClaim = new ArrayList<>();
+public class Relister extends Sniper {
+    public RelisterState state = RelisterState.NONE;
+    public boolean shouldBeRelisting = false;
+    public List<Integer> toRelist = new ArrayList<>();
+    private final Pattern BUYITNOW = Pattern.compile("Buy it now: (\\d+)");
 
     @Override
     public void onTick() {
@@ -38,7 +42,7 @@ public class Claimer extends Sniper {
                 } else if (distanceToFirstPoint() < 0.7f) {
                     System.out.println("Moving to auction house");
                     KeyBindingManager.updateKeys(false, false, false, false, false);
-                    state = ClaimerState.WALKING_INTO_AUCTION_HOUSE;
+                    state = RelisterState.WALKING_INTO_AUCTION_HOUSE;
                 } else if (distanceToFirstPoint() < 5f) {
                     System.out.println("Crouching to point 1");
                     KeyBindingManager.updateKeys(true, false, false, false, false, true, false);
@@ -55,7 +59,7 @@ public class Claimer extends Sniper {
                 } else if (distanceToAuctionMaster() < 0.7f) {
                     Utils.debugLog("At Auction Master, opening shop");
                     KeyBindingManager.updateKeys(false, false, false, false, false);
-                    state = ClaimerState.OPENING;
+                    state = RelisterState.OPENING;
                 } else if (distanceToAuctionMaster() < 5f) {
                     System.out.println("Crouching to Auction Master");
                     KeyBindingManager.updateKeys(true, false, false, false, false, true, false);
@@ -73,32 +77,31 @@ public class Claimer extends Sniper {
                         Lilase.mc.playerController.interactWithEntitySendPacket(Lilase.mc.thePlayer, auctionMaster);
                         cooldown.schedule(1500);
                     }
-                } else if (Utils.cookie == EffectState.ON) {
+                }
+                if (Utils.cookie == EffectState.ON) {
                     if (Lilase.mc.currentScreen != null) Lilase.mc.thePlayer.closeScreen();
                     else Utils.sendServerMessage("/ah");
-                } else if (InventoryUtils.inventoryNameContains("Auction House") && cooldown.passed()) {
-                        InventoryUtils.clickOpenContainerSlot(15);
-                        state = ClaimerState.START;
-                        cooldown.schedule(500);
+                }
+                if (InventoryUtils.inventoryNameContains("Auction House") && cooldown.passed()) {
+                    InventoryUtils.clickOpenContainerSlot(15);
+                    state = RelisterState.START;
+                    cooldown.schedule(500);
                 }
             case START:
                 if (InventoryUtils.inventoryNameContains("Manage Auctions") && cooldown.passed()) {
-                    long claiming = Lilase.mc.thePlayer.openContainer.inventorySlots
+                    long relisting = Lilase.mc.thePlayer.openContainer.inventorySlots
                             .stream()
                             .filter(slot -> slot.getStack() != null)
                             .filter(slot -> InventoryUtils.getLore(slot.getStack()) != null)
-                            .filter(slot -> ScoreboardUtils.cleanSB(Objects.requireNonNull(InventoryUtils.getLore(slot.getStack())).toString()).contains("Status: Sold")).count();
-                    System.out.println(claiming + " items to claim");
-                    if (claiming == 0) {
-                        Utils.debugLog("No items to claim");
-                        Utils.debugLog("Claimed all sold items");
-                        toClaim.clear();
+                            .filter(slot -> ScoreboardUtils.cleanSB(Objects.requireNonNull(InventoryUtils.getLore(slot.getStack())).toString()).contains("Status: Expired")).count();
+                    System.out.println(relisting + " items to relist");
+                    if (relisting == 0) {
+                        Utils.debugLog("No items to relist");
+                        Utils.debugLog("Relisted all expired items");
+                        toRelist.clear();
                         if (isOpen()) toggle();
-                        if (ah_full) {
-                            ah_full = false;
-                            Utils.debugLog("Continue sniping after claiming");
-                            Lilase.cofl.toggleAuction();
-                        }
+                        Utils.debugLog("Continue sniping after relisting");
+                        Lilase.cofl.toggleAuction();
                         return;
                     }
                     for (int i = 10; i <= 25; i++) {
@@ -110,20 +113,27 @@ public class Claimer extends Sniper {
                             continue;
                         NBTTagList list = InventoryUtils.getLore(is);
                         if (list != null) {
-                            System.out.println("Item NBT: " + ScoreboardUtils.cleanSB(list.toString()));
-                            if (ScoreboardUtils.cleanSB(list.toString()).contains("Status: Sold")) {
-                                toClaim.add(i);
-                                try {
-                                    Thread.sleep(300);
+                            toRelist.add(i);
+                            try {
+                                System.out.println("Item NBT: " + ScoreboardUtils.cleanSB(list.toString()));
+                                String nbtString = ScoreboardUtils.cleanSB(list.toString());
+                                Matcher matcher = BUYITNOW.matcher(nbtString);
+                                if (nbtString.contains("Status: Expired") && matcher.find()) {
+                                    String name = ScoreboardUtils.cleanSB(is.getDisplayName());
+                                    int price = (int) Long.parseLong(matcher.group(1).replace(",", ""));
+                                    int target = Math.round(price * 0.98f);
+                                    String uuid = is.getTagCompound().getCompoundTag("ExtraAttributes").getString("uuid");
                                     clickWindow(Lilase.mc.thePlayer.openContainer.windowId, i);
                                     Thread.sleep(300);
                                     clickWindow(Lilase.mc.thePlayer.openContainer.windowId + 1, 31);
+                                    Thread.sleep(300);
                                     if (SEND_MESSAGE) {
                                         try {
                                             webhook.addEmbed(new DiscordWebhook.EmbedObject()
-                                                    .setTitle("Just claimed an item!")
+                                                    .setTitle("Relisting an item!")
                                                     .setFooter("Purse: " + format.format(Utils.getPurse()), icon)
                                                     .addField("Item:", ScoreboardUtils.cleanSB(is.getDisplayName()), true)
+                                                    .addField("Target Price:", format.format(target), true)
                                                     .setColor(Color.decode("#003153"))
                                             );
                                             webhook.execute();
@@ -133,15 +143,19 @@ public class Claimer extends Sniper {
                                             Utils.debugLog("Failed to send webhook");
                                         }
                                     }
-                                    cooldown.schedule(500);
+                                    Flipper flipper = new Flipper(name, price, target, uuid);
+                                    System.out.println("Item Name: " + flipper.name);
+                                    System.out.println("Item Price: " + flipper.price);
+                                    System.out.println("Target Price: " + flipper.target);
+                                    selling_queue.add(flipper);
+                                    flipper.sellItem();
                                     break;
-                                } catch (InterruptedException ignore) {
                                 }
+                            } catch (InterruptedException ignored) {
                             }
                         }
                     }
-                    Utils.debugLog("Claimed " + toClaim.size() + " sold items");
-                    state = ClaimerState.OPENING;
+                    Utils.debugLog("Relisted " + toRelist.size() + " sold items");
                 } else if (InventoryUtils.inventoryNameContains("Create BIN Auction") && cooldown.passed()) {
                     Utils.debugLog("You don't have any items in the auction house, stopping");
                     toggle();
@@ -149,14 +163,15 @@ public class Claimer extends Sniper {
             case NONE:
                 break;
         }
+
     }
 
     @Override
     public void toggle() {
         if (isOpen()) {
-            Utils.sendMessage("Stopped Auto Claimer");
+            Utils.sendMessage("Stopped Auto Relister");
             Lilase.mc.thePlayer.closeScreen();
-            state = ClaimerState.NONE;
+            state = RelisterState.NONE;
             stopMovement();
             setOpen(false);
             UngrabUtils.regrabMouse();
@@ -171,20 +186,20 @@ public class Claimer extends Sniper {
                 setOpen(false);
                 return;
             }
-            if (Lilase.relister.state != RelisterState.NONE) {
-                Utils.sendMessage("Relister is running, stopping");
+            if (Lilase.claimer.state != ClaimerState.NONE) {
+                Utils.sendMessage("Claimer is running, stopping");
                 setOpen(false);
                 return;
             }
             if (Utils.cookie == EffectState.ON || Utils.checkInHub()) {
-                Utils.sendMessage("Started Auto Claimer");
+                Utils.sendMessage("Started Auto Relister");
                 setOpen(true);
                 if (Utils.cookie != EffectState.ON) {
                     Utils.sendServerMessage("/hub");
-                    state = ClaimerState.WALKING_TO_FIRST_POINT;
+                    state = RelisterState.WALKING_TO_FIRST_POINT;
                 } else {
                     Utils.sendServerMessage("/ah");
-                    state = ClaimerState.OPENING;
+                    state = RelisterState.OPENING;
                 }
                 UngrabUtils.ungrabMouse();
             } else {

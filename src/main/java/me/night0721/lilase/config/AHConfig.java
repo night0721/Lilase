@@ -10,21 +10,32 @@ import me.night0721.lilase.Lilase;
 
 public class AHConfig extends Config {
     public AHConfig() {
-        super(new Mod("Lilase", ModType.SKYBLOCK, "/assets/lilase.png", 100, 100), "lilase.json");
+        super(new Mod("Lilase", ModType.SKYBLOCK, "/assets/lilase.png", 84, 84), "lilase.json");
         initialize();
         addListener("SEND_MESSAGE", () -> Lilase.configHandler.setBoolean("SendMessageToWebhook", SEND_MESSAGE));
         addListener("WEBHOOK", () -> Lilase.configHandler.setString("Webhook", WEBHOOK));
-        addListener("RECONNECT_DELAY", () -> Lilase.configHandler.setInt("ReconnectDelay", Math.round(RECONNECT_DELAY)));
+        addListener("RECONNECT_DELAY", () -> Lilase.configHandler.setInt("ReconnectDelay", RECONNECT_DELAY));
         addListener("BED_SPAM", () -> Lilase.configHandler.setBoolean("BedSpam", BED_SPAM));
-        addListener("BED_SPAM_DELAY", () -> Lilase.configHandler.setInt("BedSpamDelay", Math.round(BED_SPAM_DELAY)));
+        addListener("BED_SPAM_DELAY", () -> Lilase.configHandler.setInt("BedSpamDelay", BED_SPAM_DELAY));
         addListener("ONLY_SNIPER", () -> Lilase.configHandler.setBoolean("OnlySniper", ONLY_SNIPER));
         addListener("GUI", () -> Lilase.configHandler.setBoolean("GUI", GUI));
         addListener("GUI_COLOR", () -> Lilase.configHandler.setInt("GUI_COLOR", GUI_COLOR.getRGB()));
-        addListener("RELIST_TIMEOUT", () -> Lilase.configHandler.setInt("RelistTimeout", Math.round(RELIST_TIMEOUT)));
+        addListener("RELIST_TIMEOUT", () -> Lilase.configHandler.setInt("RelistTimeout", RELIST_TIMEOUT));
         addListener("DEBUG", () -> Lilase.configHandler.setBoolean("Debug", DEBUG));
-        addListener("AUCTION_LENGTH", () -> Lilase.configHandler.setInt("AuctionLength", Math.round(AUCTION_LENGTH)));
+        addListener("AUCTION_LENGTH", () -> Lilase.configHandler.setInt("AuctionLength", AUCTION_LENGTH));
+        addListener("AUTO_RELIST", () -> Lilase.configHandler.setBoolean("AutoRelist", AUTO_RELIST));
+        addListener("AUTO_CLAIM", () -> Lilase.configHandler.setBoolean("AutoClaim", AUTO_CLAIM));
+        addListener("RELIST_CHECK_TIMEOUT", () -> Lilase.configHandler.setFloat("RelistCheckTimeout", RELIST_CHECK_TIMEOUT));
+        addListener("CUSTOM_SCOREBOARD", () -> Lilase.configHandler.setBoolean("CustomScoreboard", CUSTOM_SCOREBOARD));
+        addListener("SHORTEN_NUMBERS", () -> Lilase.configHandler.setBoolean("ShortenNumbers", SHORTEN_NUMBERS));
+        addListener("REMOTE_CONTROL", () -> Lilase.configHandler.setBoolean("RemoteControl", REMOTE_CONTROL));
+        addListener("BOT_TOKEN", () -> Lilase.configHandler.setString("BotToken", BOT_TOKEN));
+        addListener("LOG_CHANNEL", () -> Lilase.configHandler.setString("LogChannel", LOG_CHANNEL));
         addDependency("WEBHOOK", "SEND_MESSAGE");
         addDependency("GUI_COLOR", "GUI");
+        addDependency("RELIST_CHECK_TIMEOUT", "AUTO_RELIST");
+        addDependency("BOT_TOKEN", "REMOTE_CONTROL");
+        addDependency("LOG_CHANNEL", "REMOTE_CONTROL");
     }
 
     @Switch(name = "Bed Spam & Skip Confirm", category = "Auction House", subcategory = "Sniper", description = "Spam the bed to buy the item just after the grace period ends and skips the confirmation of buying the item")
@@ -35,8 +46,21 @@ public class AHConfig extends Config {
 
     @Number(name = "Relist timeout (ms)", min = 1500, max = 60000, step = 500, category = "Auction House", subcategory = "Flipper", description = "Delay between buying and relisting an item (milliseconds)")
     public static int RELIST_TIMEOUT = 1500;
+
+    @Number(name = "Relist check timeout (hours)", min = 0.5f, max = 2f, category = "Auction House", subcategory = "Flipper", description = "Delay between checking if an item is expired and relisting it (hours)")
+    public static float RELIST_CHECK_TIMEOUT = 1f;
+
     @Dropdown(name = "Auction Listing Length", options = {"1 Hour", "6 Hours", "12 Hours", "24 Hours", "2 Days"}, category = "Auction House", subcategory = "Flipper", description = "Length of the auction listing")
     public static int AUCTION_LENGTH = 2;
+
+    @Checkbox(name = "Shorten Numbers when listing", category = "Auction House", subcategory = "Flipper", description = "Shorten numbers when listing items")
+    public static boolean SHORTEN_NUMBERS = false;
+
+    @Checkbox(name = "Auto Relist", category = "Auction House", subcategory = "Flipper", description = "Automatically relist items after auctions are expired")
+    public static boolean AUTO_RELIST = true;
+
+    @Checkbox(name = "Auto Claim", category = "Auction House", subcategory = "Flipper", description = "Automatically claim items when it is bought")
+    public static boolean AUTO_CLAIM = true;
 
     @Switch(name = "Debug", category = "Auction House", subcategory = "Sniper", description = "Debug mode")
     public static boolean DEBUG = false;
@@ -64,4 +88,16 @@ public class AHConfig extends Config {
 
     @Color(name = "GUI Color", category = "GUI")
     public static OneColor GUI_COLOR = new OneColor(0, 49, 83);
+
+    @Switch(name = "Custom Scoreboard", category = "GUI", description = "Enable the custom scoreboard")
+    public static boolean CUSTOM_SCOREBOARD = true;
+
+    @Switch(name = "Remote Control", category = "Remote Control", description = "Enable remote control")
+    public static boolean REMOTE_CONTROL = false;
+
+    @Text(name = "Bot Token", placeholder = "Token", category = "Remote Control", description = "Discord bot token")
+    public static String BOT_TOKEN = "";
+
+    @Text(name = "Log Channel", placeholder = "Channel ID", category = "Remote Control", description = "Discord channel ID to log messages to")
+    public static String LOG_CHANNEL = "";
 }

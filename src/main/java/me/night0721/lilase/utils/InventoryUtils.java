@@ -79,6 +79,10 @@ public class InventoryUtils {
         clickOpenContainerSlot(slot, 0, 0);
     }
 
+    public static void clickWindow(int window, int slot) {
+        Lilase.mc.playerController.windowClick(window, slot, 0, 0, Lilase.mc.thePlayer);
+    }
+
     public static NBTTagList getLore(ItemStack item) {
         if (item == null) {
             throw new NullPointerException("The item cannot be null!");
