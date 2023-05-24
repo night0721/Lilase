@@ -39,7 +39,7 @@ import static me.night0721.lilase.features.flipper.Flipper.webhook;
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "3.0.0";
+    public static final String VERSION = "3.0.0-beta";
     public static final Minecraft mc = Minecraft.getMinecraft();
     //    public static PageFlipper pageFlipper;
     public static Claimer claimer;
