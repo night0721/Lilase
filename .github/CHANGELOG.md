@@ -75,3 +75,5 @@
     - Fixed some bugs
     - Fixed jda issues 
     - Sniper will now snipe even ah is full
+- v3.0.2
+    - Fixed bed spam
