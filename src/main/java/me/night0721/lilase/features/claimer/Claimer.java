@@ -28,7 +28,7 @@ import static me.night0721.lilase.utils.KeyBindingManager.stopMovement;
 
 public class Claimer extends Sniper {
     public ClaimerState state = ClaimerState.NONE;
-    public List<Integer> toClaim = new ArrayList<>();
+    public final List<Integer> toClaim = new ArrayList<>();
 
     @Override
     public void onTick() {

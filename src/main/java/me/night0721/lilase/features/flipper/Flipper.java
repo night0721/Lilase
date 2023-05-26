@@ -27,10 +27,10 @@ import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 
 // TODO: Fix repeating code (I will do it soon)
 public class Flipper {
-    public String name;
-    public int price;
-    public int target;
-    public String uuid;
+    public final String name;
+    public final int price;
+    public final int target;
+    public final String uuid;
     public static FlipperState state = FlipperState.NONE;
     public static final Rotation rotation = new Rotation();
     private final Clock buyWait = new Clock();

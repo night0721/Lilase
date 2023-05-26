@@ -30,7 +30,7 @@ import static me.night0721.lilase.utils.KeyBindingManager.stopMovement;
 public class Relister extends Sniper {
     public RelisterState state = RelisterState.NONE;
     public boolean shouldBeRelisting = false;
-    public List<Integer> toRelist = new ArrayList<>();
+    public final List<Integer> toRelist = new ArrayList<>();
     private final Pattern BUYITNOW = Pattern.compile("Buy it now: ([\\d,]+) coins");
 
     @Override
