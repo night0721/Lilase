@@ -20,6 +20,8 @@ import me.night0721.lilase.utils.Clock;
 import me.night0721.lilase.utils.KeyBindingManager;
 import me.night0721.lilase.utils.ScoreboardUtils;
 import me.night0721.lilase.utils.Utils;
+import me.night0721.lilase.utils.capes.CapeDatabase;
+import me.night0721.lilase.utils.capes.CapeManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -51,12 +53,13 @@ public class Lilase {
     private int tickAmount;
     private final Clock clock = new Clock();
     public static RemoteControl remoteControl;
+    public static CapeDatabase capeDatabase = new CapeDatabase();
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         (configHandler = new ConfigHandler()).init();
         KeyBindingManager keyBindingManager = new KeyBindingManager();
-        addToEventBus(this, keyBindingManager, new SniperFlipperEvents(), new ChatReceivedEvent(), new GUIRenderer());
+        addToEventBus(this, keyBindingManager, new SniperFlipperEvents(), new ChatReceivedEvent(), new GUIRenderer(), new CapeManager());
         EventManager.INSTANCE.register(this);
 //        pageFlipper = new PageFlipper();
         keyBindingManager.registerKeyBindings();
@@ -66,6 +69,7 @@ public class Lilase {
         webhook.setUsername("Lilase");
         webhook.setAvatarUrl(icon);
         remoteControl = new RemoteControl();
+        capeDatabase.init();
     }
 
     private void addToEventBus(Object... objects) {
