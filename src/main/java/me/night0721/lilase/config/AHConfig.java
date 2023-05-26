@@ -12,7 +12,8 @@ public class AHConfig extends Config {
     public AHConfig() {
         super(new Mod("Lilase", ModType.SKYBLOCK, "/assets/lilase.png", 84, 84), "lilase.json");
         initialize();
-        addListener("WEBHOOK", () -> Lilase.configHandler.setString("Webhook", WEBHOOK));addListener("REMOTE_CONTROL", () -> Lilase.configHandler.setBoolean("RemoteControl", REMOTE_CONTROL));
+        addListener("WEBHOOK", () -> Lilase.configHandler.setString("Webhook", WEBHOOK));
+        addListener("REMOTE_CONTROL", () -> Lilase.configHandler.setBoolean("RemoteControl", REMOTE_CONTROL));
         addListener("BOT_TOKEN", () -> Lilase.configHandler.setString("BotToken", BOT_TOKEN));
         addListener("LOG_CHANNEL", () -> Lilase.configHandler.setString("LogChannel", LOG_CHANNEL));
         addDependency("WEBHOOK", "SEND_MESSAGE");
