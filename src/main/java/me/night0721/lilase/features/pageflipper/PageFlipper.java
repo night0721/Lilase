@@ -3,20 +3,25 @@ package me.night0721.lilase.features.pageflipper;
 import lombok.Getter;
 import lombok.Setter;
 import me.night0721.lilase.Lilase;
+import me.night0721.lilase.features.sniper.Sniper;
 import me.night0721.lilase.player.EffectState;
 import me.night0721.lilase.utils.*;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.Objects;
 
 import static me.night0721.lilase.features.flipper.Flipper.*;
 
-public class PageFlipper {
+public class PageFlipper extends Sniper {
     public PageFlipperState state = PageFlipperState.NONE;
     public final Clock cooldown = new Clock();
-    public @Getter @Setter boolean open = false;
+    public @Getter
+    @Setter boolean open = false;
     private Thread loop;
 
     public void start() {
@@ -28,7 +33,7 @@ public class PageFlipper {
         }
     }
 
-    public void switchStates() {
+    public void onTick() {
         switch (state) {
             case WALKING_TO_FIRST_POINT:
                 if (Lilase.mc.currentScreen != null) {
@@ -81,11 +86,13 @@ public class PageFlipper {
                     if (is != null && is.getItem() == Items.arrow) {
                         if (loop == null) {
                             loop = new Thread(() -> {
-                                for (int i = 11; i <= 43; i++) {
-                                    if (!Objects.equals(Lilase.mc.thePlayer.openContainer.getSlot(i).getStack().getDisplayName(), " ")) {
-                                        byte[] b = Lilase.mc.thePlayer.openContainer.getSlot(i).getStack().getTagCompound().getCompoundTag("display").getByteArray("Lore");
-//                                        System.out.println(Arrays.toString(b).replaceAll("§[0-9a-z]", ""));
-                                    }
+                               long count = Lilase.mc.thePlayer.openContainer.inventorySlots.stream()
+                                        .map(Slot::getStack)
+                                        .filter(Objects::nonNull)
+                                        .filter(slot -> Item.getItemFromBlock(Blocks.stained_glass_pane) != slot.getItem())
+                                        .filter(slot -> ScoreboardUtils.cleanSB(Objects.requireNonNull(InventoryUtils.getLore(slot)).toString()).contains("Status: Sold")).count();
+                                for (int i = 0; i< count; i++ ) {
+                                    System.out.println(InventoryUtils.getLore(Lilase.mc.thePlayer.openContainer.inventorySlots.get(i).getStack()));
                                 }
                                 loop = null;
                             });
@@ -103,7 +110,7 @@ public class PageFlipper {
         }
     }
 
-    public void toggleAuction() {
+    public void toggle() {
         if (isOpen()) {
             Utils.sendMessage("Stopped Page Flipper");
             Lilase.mc.thePlayer.closeScreen();
