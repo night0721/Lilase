@@ -12,7 +12,8 @@ public class QueueItem {
     final int price;
     public @Getter
     final int target;
-    public @Getter String uid;
+    public @Getter
+    final String uid;
     public Flipper flipper;
 
     public QueueItem(String command, String name, int price, int target, String uid) {

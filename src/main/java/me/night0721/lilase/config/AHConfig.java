@@ -12,23 +12,7 @@ public class AHConfig extends Config {
     public AHConfig() {
         super(new Mod("Lilase", ModType.SKYBLOCK, "/assets/lilase.png", 84, 84), "lilase.json");
         initialize();
-        addListener("SEND_MESSAGE", () -> Lilase.configHandler.setBoolean("SendMessageToWebhook", SEND_MESSAGE));
-        addListener("WEBHOOK", () -> Lilase.configHandler.setString("Webhook", WEBHOOK));
-        addListener("RECONNECT_DELAY", () -> Lilase.configHandler.setInt("ReconnectDelay", RECONNECT_DELAY));
-        addListener("BED_SPAM", () -> Lilase.configHandler.setBoolean("BedSpam", BED_SPAM));
-        addListener("BED_SPAM_DELAY", () -> Lilase.configHandler.setInt("BedSpamDelay", BED_SPAM_DELAY));
-        addListener("ONLY_SNIPER", () -> Lilase.configHandler.setBoolean("OnlySniper", ONLY_SNIPER));
-        addListener("GUI", () -> Lilase.configHandler.setBoolean("GUI", GUI));
-        addListener("GUI_COLOR", () -> Lilase.configHandler.setInt("GUI_COLOR", GUI_COLOR.getRGB()));
-        addListener("RELIST_TIMEOUT", () -> Lilase.configHandler.setInt("RelistTimeout", RELIST_TIMEOUT));
-        addListener("DEBUG", () -> Lilase.configHandler.setBoolean("Debug", DEBUG));
-        addListener("AUCTION_LENGTH", () -> Lilase.configHandler.setInt("AuctionLength", AUCTION_LENGTH));
-        addListener("AUTO_RELIST", () -> Lilase.configHandler.setBoolean("AutoRelist", AUTO_RELIST));
-        addListener("AUTO_CLAIM", () -> Lilase.configHandler.setBoolean("AutoClaim", AUTO_CLAIM));
-        addListener("RELIST_CHECK_TIMEOUT", () -> Lilase.configHandler.setFloat("RelistCheckTimeout", RELIST_CHECK_TIMEOUT));
-        addListener("CUSTOM_SCOREBOARD", () -> Lilase.configHandler.setBoolean("CustomScoreboard", CUSTOM_SCOREBOARD));
-        addListener("SHORTEN_NUMBERS", () -> Lilase.configHandler.setBoolean("ShortenNumbers", SHORTEN_NUMBERS));
-        addListener("REMOTE_CONTROL", () -> Lilase.configHandler.setBoolean("RemoteControl", REMOTE_CONTROL));
+        addListener("WEBHOOK", () -> Lilase.configHandler.setString("Webhook", WEBHOOK));addListener("REMOTE_CONTROL", () -> Lilase.configHandler.setBoolean("RemoteControl", REMOTE_CONTROL));
         addListener("BOT_TOKEN", () -> Lilase.configHandler.setString("BotToken", BOT_TOKEN));
         addListener("LOG_CHANNEL", () -> Lilase.configHandler.setString("LogChannel", LOG_CHANNEL));
         addDependency("WEBHOOK", "SEND_MESSAGE");

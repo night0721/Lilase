@@ -60,7 +60,7 @@ public class InventoryUtils {
         return null;
     }
 
-    public static int getSlotForItemm(String id) {
+    public static int getSlotForItem(String id) {
         for (final Slot slot : Lilase.mc.thePlayer.inventoryContainer.inventorySlots) {
             if (slot.getHasStack()) {
                 final ItemStack is = slot.getStack();

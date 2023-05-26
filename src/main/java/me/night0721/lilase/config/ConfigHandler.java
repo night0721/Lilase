@@ -17,23 +17,7 @@ public class ConfigHandler {
     }
 
     public void reloadConfig() {
-        // TODO: Fix
-        if (hasNoKey("SendMessageToWebhook")) setBoolean("SendMessageToWebhook", true);
         if (hasNoKey("Webhook")) setString("Webhook", "");
-        if (hasNoKey("ReconnectDelay")) setInt("ReconnectDelay", 20);
-        if (hasNoKey("SniperMode")) setBoolean("SniperMode", true);
-        if (hasNoKey("BedSpam")) setBoolean("BedSpam", true);
-        if (hasNoKey("BedSpamDelay")) setInt("BedSpamDelay", 100);
-        if (hasNoKey("OnlySniper")) setBoolean("OnlySniper", false);
-        if (hasNoKey("GUI")) setBoolean("GUI", true);
-        if (hasNoKey("GUI_COLOR")) setInt("GUI_COLOR", 0x003153);
-        if (hasNoKey("Debug")) setBoolean("Debug", false);
-        if (hasNoKey("RelistTimeout")) setInt("RelistTimeout", 1500);
-        if (hasNoKey("AuctionLength")) setInt("AuctionLength", 2);
-        if (hasNoKey("AutoRelist")) setBoolean("AutoRelist", true);
-        if (hasNoKey("AutoClaim")) setBoolean("AutoClaim", true);
-        if (hasNoKey("CustomScoreboard")) setBoolean("CustomScoreboard", true);
-        if (hasNoKey("ShortenNumbers")) setBoolean("ShortenNumbers", true);
         if (hasNoKey("RemoteControl")) setBoolean("RemoteControl", false);
         if (hasNoKey("BotToken")) setString("BotToken", "");
         if (hasNoKey("LogChannel")) setString("LogChannel", "");

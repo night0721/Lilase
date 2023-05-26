@@ -55,26 +55,9 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 # Example Config:
 ```json
 {
-  "SendMessageToWebhook": true,
-  "ReconnectDelay": 20,
-  "BedSpamDelay": 100,
-  "OnlySniper": false,
-  "BedSpam": true,
-  "SniperMode": 2,
-  "GUI": true,
-  "Debug": true,
-  "RelistTimeout": 1500,
-  "AuctionLength": 2,
-  "AutoClaim": true,
-  "AutoRelist": true,
-  "RelistCheckTimeout": 1.0,
-  "Webhook": "https://discord.com/api/webhooks/21345234635679111/aufsdaiusdhfqwhtq798rgdfsgASD_GAdfguasfdigsdfgsdfgsdfg",
-  "CustomScoreboard": true,
-  "GUI_COLOR": -16764590,
-  "AuctionHouseDelay": 8,
   "RemoteControl": true,
-  "BotToken": "faserfqwuerfiaozdcgjnfh0243819qtewasdulkq43twsfdg",
-  "ShortenNumbers": true,
-  "LogChannel": ""
+  "BotToken": "OTE1NDk3NDQ1OTMwODY2MjA=.QREQw3.ASDU238qw9adsfdWEfsgsdfg",
+  "LogChannel": "91549744593086620",
+  "Webhook": "https://discord.com/api/webhooks/81963527359311890/MIIDBjCCAe4CCQDqzJZzANBgkqhkiG9w0BAQsFADBFMQswCQYDVQQGEwJjbjELMAkGA1"
 }
 ```
