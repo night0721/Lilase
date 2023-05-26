@@ -77,3 +77,13 @@
     - Sniper will now snipe even ah is full
 - v3.0.2
     - Fixed bed spam
+- v3.0.3
+    - Fixed auto relister pricing and auto claimer crashing issue
+    - Fixed pricing issue for the tenth time
+    - Remove pricing from event
+    - Fix symbols appear in embed
+    - failsafes when not enough coins
+    - Fixed custom scoreboard toggle not working
+    - Added capes (love you gaba)
+    - Fixed anti afk
+    - remove useless code, config that isn't need to be stored in lilase.json (again)
