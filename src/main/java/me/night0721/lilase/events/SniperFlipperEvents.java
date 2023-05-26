@@ -5,32 +5,24 @@ import me.night0721.lilase.config.AHConfig;
 import me.night0721.lilase.features.cofl.QueueItem;
 import me.night0721.lilase.features.flipper.Flipper;
 import me.night0721.lilase.features.flipper.FlipperState;
-import me.night0721.lilase.player.EffectState;
 import me.night0721.lilase.utils.*;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.client.C12PacketUpdateSign;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraft.network.play.server.S2FPacketSetSlot;
-import net.minecraft.network.play.server.S33PacketUpdateSign;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.network.play.server.*;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
 import java.util.*;
 
 import static me.night0721.lilase.config.AHConfig.*;
 import static me.night0721.lilase.features.flipper.Flipper.*;
-import static me.night0721.lilase.features.flipper.FlipperState.TIME;
 import static me.night0721.lilase.utils.InventoryUtils.clickWindow;
-import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 
 public class SniperFlipperEvents {
     public static final ArrayList<Flipper> selling_queue = new ArrayList<>();
@@ -149,7 +141,7 @@ public class SniperFlipperEvents {
                             Lilase.cofl.bought_items.add(map);
                             new Thread(() -> {
                                 if (!ONLY_SNIPER) {
-                                    item.flipper = new Flipper(item.name, item.price, item.target, uuid);
+                                    item.flipper = new Flipper(unFormattedName, item.price, item.target, uuid);
                                     item.flipper.sendBought();
                                     Utils.debugLog("Bought an item, starting to sell");
                                     System.out.println("Item Name: " + item.flipper.name);
@@ -162,45 +154,6 @@ public class SniperFlipperEvents {
                         }
                     } catch (Exception ignored) {
                     }
-                }
-            }
-        }
-        if (event.packet instanceof S33PacketUpdateSign && (Flipper.state == TIME || Lilase.cofl.getQueue().isRunning())) {
-            if (Utils.cookie == EffectState.ON || (Utils.cookie == EffectState.OFF && Utils.checkInHub())) {
-                try {
-                    if (selling_queue.size() == 0) {
-                        Utils.debugLog("Selling queue is empty, can't updating sign");
-                        selling_queue.remove(0);
-                        if (SEND_MESSAGE) {
-                            try {
-                                webhook.addEmbed(
-                                        new DiscordWebhook.EmbedObject()
-                                                .setTitle("Unknown Error occured, cannot find flipper")
-                                                .setFooter("Purse: " + format.format(Utils.getPurse()), icon)
-                                                .setDescription("Cannot set list price for item, please contact the developer")
-                                                .setColor(Color.decode("#ff0000")));
-                                webhook.execute();
-                                Utils.debugLog("Notified Webhook");
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Utils.debugLog("Failed to send webhook");
-                            }
-                        }
-                        Lilase.mc.thePlayer.closeScreen();
-                        state = FlipperState.NONE;
-                        Lilase.cofl.toggleAuction();
-                        return;
-                    }
-                    S33PacketUpdateSign packetUpdateSign = (S33PacketUpdateSign) event.packet;
-                    System.out.println("Block Pos: " + packetUpdateSign.getPos());
-                    IChatComponent[] lines = packetUpdateSign.getLines();
-                    Utils.debugLog("Target Price: " + selling_queue.get(0).target, "Shortened Target Price: " + Utils.convertToShort(selling_queue.get(0).target));
-                    Thread.sleep(300);
-                    String price = SHORTEN_NUMBERS ? Utils.convertToShort(selling_queue.get(0).target) : String.valueOf(selling_queue.get(0).target);
-                    lines[0] = IChatComponent.Serializer.jsonToComponent("{\"text\":\"" + price + "\"}");
-                    sendPacketWithoutEvent(new C12PacketUpdateSign(packetUpdateSign.getPos(), lines));
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         }

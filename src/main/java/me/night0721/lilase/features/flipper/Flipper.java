@@ -5,10 +5,14 @@ import me.night0721.lilase.features.relister.RelisterState;
 import me.night0721.lilase.player.EffectState;
 import me.night0721.lilase.player.Rotation;
 import me.night0721.lilase.utils.*;
+import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C12PacketUpdateSign;
+import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StringUtils;
 
 import java.awt.*;
@@ -19,6 +23,7 @@ import java.util.Locale;
 import static me.night0721.lilase.config.AHConfig.*;
 import static me.night0721.lilase.events.SniperFlipperEvents.ah_full;
 import static me.night0721.lilase.events.SniperFlipperEvents.selling_queue;
+import static me.night0721.lilase.utils.PlayerUtils.sendPacketWithoutEvent;
 
 // TODO: Fix repeating code (I will do it soon)
 public class Flipper {
@@ -56,7 +61,7 @@ public class Flipper {
         }
         UngrabUtils.ungrabMouse();
         Utils.debugLog("Cookie: " + (Utils.cookie == EffectState.ON ? "ON" : "OFF"));
-        System.out.println("Slot in inventory: " + InventoryUtils.getSlotForItemm(this.uuid));
+        System.out.println("Slot in inventory: " + InventoryUtils.getSlotForItem(this.uuid));
         try {
             Thread.sleep(RELIST_TIMEOUT);
         } catch (InterruptedException ignored) {
@@ -118,7 +123,7 @@ public class Flipper {
                     buyWait.schedule(1500);
                 } else if (InventoryUtils.inventoryNameContains("Create BIN Auction")) {
                     if (InventoryUtils.isStoneButton() && buyWait.passed()) {
-                        if (InventoryUtils.getSlotForItemm(this.uuid) == -1) {
+                        if (InventoryUtils.getSlotForItem(this.uuid) == -1) {
                             Utils.debugLog("Cannot find item in inventory, stopping flipper");
                             selling_queue.remove(0);
                             if (SEND_MESSAGE) {
@@ -136,12 +141,12 @@ public class Flipper {
                             Lilase.cofl.toggleAuction();
                             return;
                         }
-                        InventoryUtils.clickOpenContainerSlot(InventoryUtils.getSlotForItemm(this.uuid) + 81);
+                        InventoryUtils.clickOpenContainerSlot(InventoryUtils.getSlotForItem(this.uuid) + 81);
                         buyWait.schedule(1000);
                     } else if (!InventoryUtils.isStoneButton() && InventoryUtils.isToAuctionItem(this.uuid) && buyWait.passed()) {
                         InventoryUtils.clickOpenContainerSlot(31);
-                        state = FlipperState.TIME;
-                        buyWait.schedule(3000);
+                        state = FlipperState.PRICE;
+                        buyWait.schedule(1500);
                     } else if (!InventoryUtils.isStoneButton() && !InventoryUtils.isToAuctionItem(this.uuid) && buyWait.passed()) {
                         InventoryUtils.clickOpenContainerSlot(13);
                         buyWait.schedule(1000);
@@ -196,6 +201,39 @@ public class Flipper {
                         return;
                     }
                 }
+            case PRICE:
+                if (Lilase.mc.currentScreen instanceof GuiEditSign && buyWait.passed()) {
+                    GuiEditSign guiEditSign = (GuiEditSign) Lilase.mc.currentScreen;
+                    TileEntitySign tileSign;
+                    try {
+                        tileSign = (TileEntitySign) ReflectionUtils.field(guiEditSign, "tileSign");
+                    } catch (Exception e) {
+                        tileSign = (TileEntitySign) ReflectionUtils.field(guiEditSign, "field_146848_f");
+                    }
+                    if (tileSign == null) {
+                        Utils.debugLog("TileEntitySign is null, stopping flipper");
+                        selling_queue.remove(0);
+                        if (SEND_MESSAGE) {
+                            try {
+                                webhook.addEmbed(embed("Failed to post an item!", "Could not find TileEntitySign, sending so you can post it manually", "#ff0000"));
+                                webhook.execute();
+                                Utils.debugLog("Notified Webhook");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Utils.debugLog("Failed to send webhook");
+                            }
+                        }
+                        Lilase.mc.thePlayer.closeScreen();
+                        state = FlipperState.NONE;
+                        Lilase.cofl.toggleAuction();
+                        return;
+                    }
+                    String price = SHORTEN_NUMBERS ? Utils.convertToShort(this.target) : String.valueOf(this.target);
+                    tileSign.signText[0] = new ChatComponentText(price);
+                    sendPacketWithoutEvent(new C12PacketUpdateSign(tileSign.getPos(), tileSign.signText));
+                    state = FlipperState.TIME;
+                    buyWait.schedule(1000);
+                }
             case TIME:
                 if (!InventoryUtils.isStoneButton() && InventoryUtils.isToAuctionItem(this.uuid) && InventoryUtils.inventoryNameStartsWith("Create BIN Auction") && buyWait.passed()) {
                     InventoryUtils.clickOpenContainerSlot(33);
@@ -245,7 +283,20 @@ public class Flipper {
     public void sendInterrupt() {
         if (SEND_MESSAGE) {
             try {
-                webhook.addEmbed(embed("Could not find create as interruption", "Could not find create as interruption, sending so you can post it manually", "#ff0000"));
+                webhook.addEmbed(embed("Could not create as interruption", "Could not create as interruption, sending so you can post it manually", "#ff0000"));
+                webhook.execute();
+                Utils.debugLog("Notified Webhook");
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utils.debugLog("Failed to send webhook");
+            }
+        }
+    }
+
+    public void sendNotEnoughCoins() {
+        if (SEND_MESSAGE) {
+            try {
+                webhook.addEmbed(embed("Could not create as not enough money", "Could not find create as your purse don't have enough money, sending so you can post it manually", "#ff0000"));
                 webhook.execute();
                 Utils.debugLog("Notified Webhook");
             } catch (Exception e) {
