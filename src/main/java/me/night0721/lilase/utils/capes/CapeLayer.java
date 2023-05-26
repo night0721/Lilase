@@ -2,7 +2,6 @@ package me.night0721.lilase.utils.capes;
 
 import lombok.AllArgsConstructor;
 import me.night0721.lilase.Lilase;
-import me.night0721.lilase.utils.HWIDUtils;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;

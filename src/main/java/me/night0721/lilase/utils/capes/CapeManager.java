@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class CapeManager {
     @SubscribeEvent
     public void onJoin(EntityJoinWorldEvent event) {
-        if (event.entity instanceof EntityPlayer) {
+        if (event.entity instanceof EntityPlayer && Lilase.capeDatabase.userHasCape(event.entity.getName())) {
             Lilase.mc.gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
             Lilase.mc.getRenderManager().getSkinMap().values().forEach(p -> p.addLayer(new CapeLayer(p)));
         }
