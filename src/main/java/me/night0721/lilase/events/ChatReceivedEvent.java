@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static me.night0721.lilase.config.AHConfig.*;
+import static me.night0721.lilase.events.SniperFlipperEvents.selling_queue;
 import static me.night0721.lilase.features.flipper.Flipper.*;
 
 public class ChatReceivedEvent {
@@ -65,20 +66,35 @@ public class ChatReceivedEvent {
                     }
                 }
             }
-            if (message.equals("You didn't participate in this auction!")) {
+            if (message.contains("You didn't participate in this auction!")) {
                 Utils.debugLog("Failed to buy item, not fast enough. Closing the menu");
                 InventoryUtils.clickOpenContainerSlot(49);
             }
-            if (message.equals("You don't have enough coins to afford this bid!")) {
+            if (message.contains("You don't have enough coins to afford this bid!")) {
                 Utils.debugLog("Failed to buy item, not enough money. Closing the menu");
                 InventoryUtils.clickOpenContainerSlot(49);
             }
-            if (message.equals("Your starting bid must be at least 10 coins!") || message.contains("Can't create a BIN auction for this item for a PRICE this LOW!")) {
+            if (message.contains("You don't have enough coins to afford this!")) {
+                Utils.debugLog("Failed to sell item, not enough money. Closing the menu");
+                new Thread(() -> {
+                    try {
+                        selling_queue.get(0).sendNotEnoughCoins();
+                        selling_queue.remove(0);
+                        Lilase.mc.thePlayer.closeScreen();
+                        Flipper.state = FlipperState.NONE;
+                        Lilase.cofl.toggleAuction();
+                    } catch (Exception ignored) {
+                    }
+                }).start();
+            }
+            if (message.contains("Your starting bid must be at least 10 coins!") || message.contains("Can't create a BIN auction for this item for a PRICE this LOW!")) {
                 InventoryUtils.clickOpenContainerSlot(13);
                 Lilase.mc.thePlayer.closeScreen();
-                Utils.debugLog("Cannot post item as the cost is too low, stopping fliiper and starting sniper");
-                Lilase.cofl.toggleAuction();
+                selling_queue.get(0).sendNotEnoughCoins();
+                selling_queue.remove(0);
+                Utils.debugLog("Cannot post item as the cost is too low, stopping fliper and starting sniper");
                 Flipper.state = FlipperState.NONE;
+                Lilase.cofl.toggleAuction();
             }
             if (message.contains("You were spawned in Limbo")) {
                 try {
