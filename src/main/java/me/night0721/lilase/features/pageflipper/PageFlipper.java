@@ -71,9 +71,6 @@ public class PageFlipper {
                         Lilase.mc.playerController.interactWithEntitySendPacket(Lilase.mc.thePlayer, auctionMaster);
                         cooldown.schedule(1500);
                     }
-                } else if (Utils.cookie == EffectState.ON) {
-                    if (Lilase.mc.currentScreen != null) Lilase.mc.thePlayer.closeScreen();
-                    else Utils.sendServerMessage("/ah");
                 } else if (InventoryUtils.inventoryNameContains("Auction House") && cooldown.passed()) {
                     InventoryUtils.clickOpenContainerSlot(11);
                     state = PageFlipperState.START;

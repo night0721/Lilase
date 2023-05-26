@@ -31,7 +31,7 @@ public class Relister extends Sniper {
     public RelisterState state = RelisterState.NONE;
     public boolean shouldBeRelisting = false;
     public List<Integer> toRelist = new ArrayList<>();
-    private final Pattern BUYITNOW = Pattern.compile("Buy it now: (\\d+)");
+    private final Pattern BUYITNOW = Pattern.compile("Buy it now: ([\\d,]+) coins");
 
     @Override
     public void onTick() {
@@ -78,10 +78,6 @@ public class Relister extends Sniper {
                         cooldown.schedule(1500);
                     }
                 }
-                if (Utils.cookie == EffectState.ON) {
-                    if (Lilase.mc.currentScreen != null) Lilase.mc.thePlayer.closeScreen();
-                    else Utils.sendServerMessage("/ah");
-                }
                 if (InventoryUtils.inventoryNameContains("Auction House") && cooldown.passed()) {
                     InventoryUtils.clickOpenContainerSlot(15);
                     state = RelisterState.START;
@@ -115,8 +111,8 @@ public class Relister extends Sniper {
                         if (list != null) {
                             toRelist.add(i);
                             try {
-                                System.out.println("Item NBT: " + ScoreboardUtils.cleanSB(list.toString()));
                                 String nbtString = ScoreboardUtils.cleanSB(list.toString());
+                                System.out.println("Item NBT: " + nbtString);
                                 Matcher matcher = BUYITNOW.matcher(nbtString);
                                 if (nbtString.contains("Status: Expired") && matcher.find()) {
                                     String name = ScoreboardUtils.cleanSB(is.getDisplayName());
@@ -148,6 +144,7 @@ public class Relister extends Sniper {
                                     System.out.println("Item Price: " + flipper.price);
                                     System.out.println("Target Price: " + flipper.target);
                                     selling_queue.add(flipper);
+                                    this.toggle();
                                     flipper.sellItem();
                                     break;
                                 }

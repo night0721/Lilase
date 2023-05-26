@@ -74,13 +74,10 @@ public class Claimer extends Sniper {
                         Lilase.mc.playerController.interactWithEntitySendPacket(Lilase.mc.thePlayer, auctionMaster);
                         cooldown.schedule(1500);
                     }
-                } else if (Utils.cookie == EffectState.ON) {
-                    if (Lilase.mc.currentScreen != null) Lilase.mc.thePlayer.closeScreen();
-                    else Utils.sendServerMessage("/ah");
                 } else if (InventoryUtils.inventoryNameContains("Auction House") && cooldown.passed()) {
-                        InventoryUtils.clickOpenContainerSlot(15);
-                        state = ClaimerState.START;
-                        cooldown.schedule(500);
+                    InventoryUtils.clickOpenContainerSlot(15);
+                    state = ClaimerState.START;
+                    cooldown.schedule(500);
                 }
             case START:
                 if (InventoryUtils.inventoryNameContains("Manage Auctions") && cooldown.passed()) {
@@ -146,6 +143,7 @@ public class Claimer extends Sniper {
                             }
                         }
                     }
+                    if (Utils.cookie == EffectState.ON) Utils.sendServerMessage("/ah");
                     Utils.debugLog("Claimed " + toClaim.size() + " sold items");
                     state = ClaimerState.OPENING;
                 } else if (InventoryUtils.inventoryNameContains("Create BIN Auction") && cooldown.passed()) {
