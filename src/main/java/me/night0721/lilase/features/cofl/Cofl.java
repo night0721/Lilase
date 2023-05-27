@@ -43,8 +43,6 @@ public class Cofl {
         try {
             if (!isOpen() || !str.startsWith("Received:")) return;
             if (pattern.matcher(str).find()) {
-//                Random random = new Random();
-//                Lilase.mc.thePlayer.inventory.currentItem = random.nextInt(9);
                 String[] split = str.split("Received: ");
                 JsonObject received = new JsonParser().parse(split[1]).getAsJsonObject();
                 if (!received.get("type").getAsString().equals("flip")) return;

@@ -42,7 +42,7 @@ import static me.night0721.lilase.features.flipper.Flipper.webhook;
 public class Lilase {
     public static final String MOD_NAME = "Lilase";
     public static final String MODID = "Lilase";
-    public static final String VERSION = "3.0.2";
+    public static final String VERSION = "3.0.3";
     public static final Minecraft mc = Minecraft.getMinecraft();
     //    public static PageFlipper pageFlipper;
     public static Claimer claimer;
@@ -53,7 +53,7 @@ public class Lilase {
     private int tickAmount;
     private final Clock clock = new Clock();
     public static RemoteControl remoteControl;
-    public static CapeDatabase capeDatabase = new CapeDatabase();
+    public static final CapeDatabase capeDatabase = new CapeDatabase();
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {

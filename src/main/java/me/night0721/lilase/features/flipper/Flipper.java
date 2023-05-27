@@ -229,6 +229,8 @@ public class Flipper {
                         return;
                     }
                     String price = SHORTEN_NUMBERS ? Utils.convertToShort(this.target) : String.valueOf(this.target);
+                    Utils.debugLog("Long Price: " + this.target);
+                    Utils.debugLog("Shorten Price: " + Utils.convertToShort(this.target));
                     tileSign.signText[0] = new ChatComponentText(price);
                     sendPacketWithoutEvent(new C12PacketUpdateSign(tileSign.getPos(), tileSign.signText));
                     state = FlipperState.TIME;

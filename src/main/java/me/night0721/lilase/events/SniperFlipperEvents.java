@@ -71,20 +71,7 @@ public class SniperFlipperEvents {
     }
 
     private int latestWindowId = -1;
-    private final Thread spam = new Thread(() -> {
-        int tries = 0;
-        try {
-            while (tries < 50) {
-                if (InventoryUtils.inventoryNameStartsWith("BIN Auction View")) {
-                    clickWindow(latestWindowId, 31);
-                    clickWindow(latestWindowId + 1, 11);
-                    tries++;
-                    Thread.sleep(BED_SPAM_DELAY);
-                }
-            }
-        } catch (Exception ignored) {
-        }
-    });
+    private Thread spam;
 
     @SubscribeEvent
     public void onPacketReceive(PacketReceivedEvent event) {
@@ -102,11 +89,21 @@ public class SniperFlipperEvents {
                     ItemStack itemStack = packetSetSlot.func_149174_e();
                     Utils.debugLog("Slot 31: " + itemStack.getItem().getRegistryName());
                     if (itemStack.getItem() == Items.bed) {
-                        boolean threadStatus = !spam.isAlive();
-                        if (spam.isAlive()) spam.interrupt();
-                        if (!threadStatus) {
-                            spam.start();
-                        }
+                        spam = new Thread(() -> {
+                            int tries = 0;
+                            try {
+                                while (tries < 50) {
+                                    if (InventoryUtils.inventoryNameStartsWith("BIN Auction View")) {
+                                        clickWindow(latestWindowId, 31);
+                                        clickWindow(latestWindowId + 1, 11);
+                                        tries++;
+                                        Thread.sleep(BED_SPAM_DELAY);
+                                    }
+                                }
+                            } catch (Exception ignored) {
+                            }
+                        });
+                        spam.start();
                         new Thread(() -> {
                             try {
                                 Thread.sleep(4000);
