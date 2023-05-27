@@ -4,8 +4,7 @@
 </div>
 
 # Introduction:
-A simple Forge mod runs on 1.8.9, automatiaclly buy item according to flips in COFL, and send you a webhook when it has been bought. With the support of remote control allows you to control the mod through Discord.
-
+A simple QOL Forge mod runs on 1.8.9, automatiaclly buy item and sell items according to flips in COFL for profit, and send you a webhook when it has been bought. With the support of remote control allows you to control the mod through Discord.
 If you have any questions please join [Discord Server](https://night0721.me/discord) for support
 For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 
