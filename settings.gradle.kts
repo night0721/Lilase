@@ -4,6 +4,8 @@ pluginManagement {
         mavenCentral()
         maven("https://repo.polyfrost.cc/releases")
         maven("https://maven.architectury.dev/")
+        maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
+
     }
     plugins {
         val egtVersion = "0.1.18"

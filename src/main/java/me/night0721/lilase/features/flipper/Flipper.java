@@ -75,7 +75,7 @@ public class Flipper {
         }
     }
 
-    public void switchStates() {
+    public void onTick() {
         switch (state) {
             case WALKING_TO_FIRST_POINT:
                 if (Lilase.mc.currentScreen != null) {
@@ -155,30 +155,25 @@ public class Flipper {
                 if (InventoryUtils.inventoryNameContains("Manage Auctions") && buyWait.passed()) {
                     ItemStack slot24 = InventoryUtils.getStackInOpenContainerSlot(24);
                     ItemStack slot33 = InventoryUtils.getStackInOpenContainerSlot(33);
-
+                    ItemStack slot42 = InventoryUtils.getStackInOpenContainerSlot(42);
                     if (slot24 != null && slot24.getItem() == Items.golden_horse_armor) {
                         InventoryUtils.clickOpenContainerSlot(24);
                         buyWait.schedule(1000);
                     } else if (slot33 != null) {
                         if (slot33.getSubCompound("display", false).getString("Name").startsWith("§c")) {
-                            ah_full = true;
-                            Utils.debugLog("Auction slots full, stopping sniper for a while");
-                            selling_queue.remove(0);
-                            if (SEND_MESSAGE) {
-                                try {
-                                    webhook.addEmbed(embed("Auction slots are full!", "Could not create more auctions as slots are full already, sending you here so you could create it manually", "#ff0000"));
-                                    webhook.execute();
-                                    Utils.debugLog("Notified Webhook");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Utils.debugLog("Failed to send webhook");
-                                }
-                            }
-                            Lilase.mc.thePlayer.closeScreen();
-                            state = FlipperState.NONE;
+                            sendSlotsFull();
 //                            Lilase.cofl.toggleAuction();
                             return;
                         } else if (slot33.getItem() == Items.golden_horse_armor) {
+                            InventoryUtils.clickOpenContainerSlot(33);
+                            buyWait.schedule(1000);
+                        }
+                    } else if (slot42 != null) {
+                        if (slot42.getSubCompound("display", false).getString("Name").startsWith("§c")) {
+                            sendSlotsFull();
+//                            Lilase.cofl.toggleAuction();
+                            return;
+                        } else if (slot42.getItem() == Items.golden_horse_armor) {
                             InventoryUtils.clickOpenContainerSlot(33);
                             buyWait.schedule(1000);
                         }
@@ -203,16 +198,14 @@ public class Flipper {
                 }
             case PRICE:
                 if (Lilase.mc.currentScreen instanceof GuiEditSign && buyWait.passed()) {
-                    GuiEditSign guiEditSign = (GuiEditSign) Lilase.mc.currentScreen;
                     TileEntitySign tileSign;
                     try {
-                        tileSign = (TileEntitySign) ReflectionUtils.field(guiEditSign, "tileSign");
+                        tileSign = (TileEntitySign) ReflectionUtils.field(Lilase.mc.currentScreen, "tileSign");
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        tileSign = (TileEntitySign) ReflectionUtils.field(guiEditSign, "field_146848_f");
+                        tileSign = (TileEntitySign) ReflectionUtils.field(Lilase.mc.currentScreen, "field_146848_f");
                     }
-                    Utils.debugLog("Sign(normal): " + ReflectionUtils.field(guiEditSign, "tileSign"));
-                    Utils.debugLog("Sign(obfuscated): " + ReflectionUtils.field(guiEditSign, "field_146848_f"));
+                    Utils.debugLog("Sign(normal): " + ReflectionUtils.field(Lilase.mc.currentScreen, "tileSign"));
+                    Utils.debugLog("Sign(obfuscated): " + ReflectionUtils.field(Lilase.mc.currentScreen, "field_146848_f"));
                     if (tileSign == null) {
                         Utils.debugLog("TileEntitySign is null, stopping flipper");
                         selling_queue.remove(0);
@@ -322,6 +315,24 @@ public class Flipper {
                 Utils.debugLog("Failed to send webhook");
             }
         }
+    }
+
+    public void sendSlotsFull() {
+        ah_full = true;
+        Utils.debugLog("Auction slots full, stopping sniper for a while");
+        selling_queue.remove(0);
+        if (SEND_MESSAGE) {
+            try {
+                webhook.addEmbed(embed("Auction slots are full!", "Could not create more auctions as slots are full already, sending you here so you could create it manually", "#ff0000"));
+                webhook.execute();
+                Utils.debugLog("Notified Webhook");
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utils.debugLog("Failed to send webhook");
+            }
+        }
+        Lilase.mc.thePlayer.closeScreen();
+        state = FlipperState.NONE;
     }
 
     public static float distanceToFirstPoint() {

@@ -32,7 +32,7 @@ public class SniperFlipperEvents {
     public void onTick(TickEvent.ClientTickEvent event) {
         if (Lilase.mc.thePlayer == null || event.phase != TickEvent.Phase.START) return;
         try {
-            if (selling_queue.get(0) != null) selling_queue.forEach(Flipper::switchStates);
+            if (selling_queue.get(0) != null) selling_queue.forEach(Flipper::onTick);
         } catch (Exception ignored) {
         }
     }

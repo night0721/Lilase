@@ -67,8 +67,9 @@ dependencies {
         compileOnly("org.projectlombok:lombok:1.18.26")
         annotationProcessor("org.projectlombok:lombok:1.18.26")
         shade("net.dv8tion:JDA:5.0.0-beta.9") {
-            exclude (module = "opus-java")
+            exclude(module = "opus-java")
         }
+        implementation("me.djtheredstoner:DevAuth-forge-legacy:1.1.0")
     }
 }
 
