@@ -208,8 +208,11 @@ public class Flipper {
                     try {
                         tileSign = (TileEntitySign) ReflectionUtils.field(guiEditSign, "tileSign");
                     } catch (Exception e) {
+                        e.printStackTrace();
                         tileSign = (TileEntitySign) ReflectionUtils.field(guiEditSign, "field_146848_f");
                     }
+                    Utils.debugLog("Sign(normal): " + ReflectionUtils.field(guiEditSign, "tileSign"));
+                    Utils.debugLog("Sign(obfuscated): " + ReflectionUtils.field(guiEditSign, "field_146848_f"));
                     if (tileSign == null) {
                         Utils.debugLog("TileEntitySign is null, stopping flipper");
                         selling_queue.remove(0);

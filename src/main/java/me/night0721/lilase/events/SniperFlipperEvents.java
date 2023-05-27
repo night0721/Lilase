@@ -112,7 +112,7 @@ public class SniperFlipperEvents {
                             }
                         }).start();
                     } else if (itemStack.getItem() == Items.gold_nugget || Item.getItemFromBlock(Blocks.gold_block) == itemStack.getItem()) {
-                        if (spam.isAlive()) {
+                        if (spam != null && spam.isAlive()) {
                             spam.interrupt();
                         }
                         clickWindow(latestWindowId, 31);
