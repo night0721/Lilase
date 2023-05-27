@@ -21,9 +21,10 @@ import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 
 public class Cofl {
     public final Queue queue = new Queue();
-    private @Getter @Setter boolean open = false;
-    public ArrayList<HashMap<String, String>> sold_items = new ArrayList<>();
-    public ArrayList<HashMap<String, String>> bought_items = new ArrayList<>();
+    private @Getter
+    @Setter boolean open = false;
+    public final ArrayList<HashMap<String, String>> sold_items = new ArrayList<>();
+    public final ArrayList<HashMap<String, String>> bought_items = new ArrayList<>();
 
     public void onOpen() {
         System.setOut(new PrintStream(System.out) {
@@ -34,14 +35,16 @@ public class Cofl {
         });
     }
 
+    private Thread antiafk;
+
     private final Pattern pattern = Pattern.compile("type[\":]*flip");
 
     public void handleMessage(String str) {
         try {
             if (!isOpen() || !str.startsWith("Received:")) return;
             if (pattern.matcher(str).find()) {
-                Random random = new Random();
-                Lilase.mc.thePlayer.inventory.currentItem = random.nextInt(9);
+//                Random random = new Random();
+//                Lilase.mc.thePlayer.inventory.currentItem = random.nextInt(9);
                 String[] split = str.split("Received: ");
                 JsonObject received = new JsonParser().parse(split[1]).getAsJsonObject();
                 if (!received.get("type").getAsString().equals("flip")) return;
@@ -71,6 +74,7 @@ public class Cofl {
             queue.setRunning(false);
             setOpen(false);
             UngrabUtils.regrabMouse();
+            if (antiafk.isAlive()) antiafk.interrupt();
         } else {
             if (SEND_MESSAGE && Lilase.configHandler.getString("Webhook").equals("")) {
                 Utils.sendMessage("Sending message to Webhook is on but Webhook is missing, stopping");
@@ -88,6 +92,17 @@ public class Cofl {
                 queue.clear();
                 queue.setRunning(false);
                 UngrabUtils.ungrabMouse();
+                antiafk = new Thread(() -> {
+                    while (isOpen() && Lilase.mc.thePlayer != null) {
+                        try {
+                            Thread.sleep(30 * 1000);
+                            Random random = new Random();
+                            Lilase.mc.thePlayer.inventory.currentItem = random.nextInt(9);
+                        } catch (Exception ignored) {
+                        }
+                    }
+                });
+                antiafk.start();
             } else {
                 Utils.sendMessage("Detected not in hub, please go to hub to start");
             }
