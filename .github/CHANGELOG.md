@@ -87,3 +87,6 @@
     - Added capes (love you gaba)
     - Fixed anti afk
     - remove useless code, config that isn't need to be stored in lilase.json (again)
+- v3.0.4-beta
+    - Added debugs
+    - Emergency bug fixes
