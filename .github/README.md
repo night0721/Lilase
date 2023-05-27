@@ -1,56 +1,71 @@
-<h1> Auction House Flipper - Lilase</h1>
-<div style="text-align: center;">
-<img style="text-align:center;" src="https://cdn.discordapp.com/attachments/842014909264953354/1082373275038003210/lilase.png" width="300" alt="icon"/>
+<h1 style="text-align:center;"> Auction House Flipper - Lilase</h1>
+<div style="display:flex;align-items: center;justify-content: center;">
+<img src="https://cdn.discordapp.com/attachments/842014909264953354/1082373275038003210/lilase.png" width="300" alt="icon"/>
 </div>
 
 # Introduction:
-A simple Forge mod will automatiaclly buy item according to your configuration, and send you a webhook when it has been bought.
+A simple Forge mod runs on 1.8.9, automatiaclly buy item according to flips in COFL, and send you a webhook when it has been bought. With the support of remote control allows you to control the mod through Discord.
+
 If you have any questions please join [Discord Server](https://night0721.me/discord) for support
 For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 
 # Features:
-- Remote control with screenshot, showing stats, and more
-- Configurations for every module
-- Supports using and not using Cookie
-- Auto walk to the auction house
-- Webhook system to send you that an item has been bought, sold, flipped, or any error occured with many information
-- Failsafe in Limbo
-- Auto reconnect to server when disconnected
-- Auto skip confirmation screen
-- GUI showing coordinates, fps and clock and stats like auctions bought, sniped, flipped
-- Auto ungrab mouse when sniping/flipping
-- Auto movement during sniping so hypixel won't send to afk
-- Configurable bed spam delay
-- Modules toggleable in game
 - COFL macro
-- Auto sell to cofl macroauctionsto cofl macro
+- Full skip confirmation screen
+- Auto sell with COFL recommended pricing
 - Auto claim auctions
 - Auto relist expired auctions
+- Remote control with screenshot, showing stats, and more
+- Mod ID hider
+- Supports both cookie or non cookie users
+- Webhook system to send you that an item has been bought, sold, flipped, or any error occured with many information
+- Configurations for every module with every modules toggleable
+- Supports using and not using Cookie
+- Auto walk to the auction house
+- Failsafe in Limbo
+- Auto reconnect to server when disconnected
+- GUI showing coordinates, fps and clock and stats like auctions bought, sniped, flipped
+- Auto ungrab mouse when sniping/flipping
+- Anti-AFK movement during sniping
+- Configurable bed spam delay
 - Custom listing time for auctions
 - GUI to tell you to update the mod
 - Relist delay so you look less suspicious
-- Server ID on scoreboard hider
+- Scoreboard hider to hide server ID
 - page flipper [WIP]
 - Mod ID hider
 - Short number to list auctions
 - Detection of captcha
 
-# How to use:
-1. Download the latest version of Lilase from [here](https://github.com/night0721/Lilase/releases)
-2. Download the latest version of COFL from [here]([https://github.com/night0721/Lilase/releases](https://github.com/Coflnet/SkyblockMod/releases/latest))
+# Download:
+1. Download the latest version of Lilase from [here](https://github.com/night0721/Lilase/releases/latest)
+2. Download the latest version of COFL from [here](https://github.com/Coflnet/SkyblockMod/releases/latest)
 3. Put them into %APPDATA%/.minecraft/mods
 4. Start forge 1.8.9
-5. Press * key to change any config you want including webhooks
-6. Press END key to start cofl macro(or change it in control settings)
-10. For example configuration, see [here](https://github.com/night0721/Lilase#example-config)
+5. Press N key to change any config you want including webhooks
+6. Press M key to start cofl macro(or change it in control settings)
+7. For example configuration, see [here](https://github.com/night0721/Lilase#example-config)
+
+# Remote Control:
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications) and create a new application
+2. Go to Bot tab and create a new bot
+3. Copy the token and paste it into the config where it says "BotToken"
+4. Go to OAuth2 tab and select bot and administrator, then copy the link and paste it into your browser
+5. Select the server you want to add the bot to and click authorize
+6. Copy the channel ID and paste it into the config where it says "LogChannel"
+7. Restart the mod
+8. Now you can use the remote control commands by typing `/`
+9. For example, `/stats` will show you current session statistics
+
+# How to get logs:
+1. First go to the game folder, %APPDATA%/Roaming/.minecraft (default) or depends on whatever client you using
+[![ExampleDir](https://cdn.discordapp.com/attachments/1085273638476992662/1109582318236078290/image.png)](https://cdn.discordapp.com/attachments/1085273638476992662/1109582318236078290/image.png)
+2. Go to logs folder
+3. Select latest.log and send it to Discord for developer to help you
 
 # Changelog:
 [ChangeLog](https://github.com/night0721/Lilase/blob/master/.github/CHANGELOG.md)
-     
-# To Do Features:
-- Console client??
-- Page flipper for specific items(query)
-- pre api?
+
 
 # Example Config:
 ```json
