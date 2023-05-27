@@ -2,6 +2,7 @@ package me.night0721.lilase.remotecontrol.events;
 
 import me.night0721.lilase.Lilase;
 import me.night0721.lilase.remotecontrol.BotUtils;
+import me.night0721.lilase.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -87,6 +88,15 @@ public class CommandListener extends ListenerAdapter {
                     event.reply("Claimer is currently running, please stop it first").queue();
                 }
             }
+        }
+        if (event.getName().equals("command")) {
+            String command = Objects.requireNonNull(event.getOption("command")).getAsString();
+            Utils.sendServerMessage("/" + command);
+            event.reply("Command sent").queue();
+        }
+        if (event.getName().equals("disconnect")) {
+            Lilase.mc.theWorld.sendQuittingDisconnectingPacket();
+            event.reply("Disconnected").queue();
         }
     }
 }

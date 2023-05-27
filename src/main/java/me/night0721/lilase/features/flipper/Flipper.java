@@ -198,10 +198,8 @@ public class Flipper {
                 }
             case PRICE:
                 if (Lilase.mc.currentScreen instanceof GuiEditSign && buyWait.passed()) {
-                    TileEntitySign tileSign;
-                    try {
-                        tileSign = (TileEntitySign) ReflectionUtils.field(Lilase.mc.currentScreen, "tileSign");
-                    } catch (Exception e) {
+                    TileEntitySign tileSign = (TileEntitySign) ReflectionUtils.field(Lilase.mc.currentScreen, "tileSign");
+                    if (tileSign == null) {
                         tileSign = (TileEntitySign) ReflectionUtils.field(Lilase.mc.currentScreen, "field_146848_f");
                     }
                     Utils.debugLog("Sign(normal): " + ReflectionUtils.field(Lilase.mc.currentScreen, "tileSign"));

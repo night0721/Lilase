@@ -38,13 +38,11 @@ public class RemoteControl {
 
         bot.updateCommands().addCommands(
                 Commands.slash("statistics", "Statistics of current session").setGuildOnly(true),
-                Commands.slash("screenshot", "Take a screenshot of the client"),
-                Commands.slash("enable", "Enable a feature of the mod")
-                        .setGuildOnly(true)
-                        .addOptions(new OptionData(OptionType.STRING, "type", "The type of feature to turn on")
-                                .addChoice("Auto Claimer", "claimer")
-                                .addChoice("COFL Macro", "macro")
-                                .addChoice("Auto Relister", "relister"))
-        ).queue();
+                Commands.slash("screenshot", "Take a screenshot of the client").setGuildOnly(true),
+                Commands.slash("enable", "Enable a feature of the mod").setGuildOnly(true)
+                        .addOptions(new OptionData(OptionType.STRING, "type", "The type of feature to turn on").addChoice("Auto Claimer", "claimer").addChoice("COFL Macro", "macro").addChoice("Auto Relister", "relister")),
+                Commands.slash("command", "Runs a command on client side").setGuildOnly(true).addOptions(new OptionData(OptionType.STRING, "command", "The command to run", true)),
+                Commands.slash("disconnect", "Disconnect from server").setGuildOnly(true)
+                ).queue();
     }
 }

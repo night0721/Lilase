@@ -90,3 +90,6 @@
 - v3.0.4-beta
     - Added debugs
     - Emergency bug fixes
+- v3.0.5
+    - Fixed flipper cannot find TileEntitySign
+    - Added disconnect and command commands to remote control
