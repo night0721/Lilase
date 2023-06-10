@@ -93,3 +93,5 @@
 - v3.0.5
     - Fixed flipper cannot find TileEntitySign
     - Added disconnect and command commands to remote control
+- v3.0.6
+    - Remove unecessary code
