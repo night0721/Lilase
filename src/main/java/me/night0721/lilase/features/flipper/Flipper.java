@@ -174,7 +174,7 @@ public class Flipper {
 //                            Lilase.cofl.toggleAuction();
                             return;
                         } else if (slot42.getItem() == Items.golden_horse_armor) {
-                            InventoryUtils.clickOpenContainerSlot(33);
+                            InventoryUtils.clickOpenContainerSlot(42);
                             buyWait.schedule(1000);
                         }
                     } else {
