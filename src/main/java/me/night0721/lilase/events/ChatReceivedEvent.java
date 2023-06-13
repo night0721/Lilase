@@ -97,7 +97,7 @@ public class ChatReceivedEvent {
                 Flipper.state = FlipperState.NONE;
                 Lilase.cofl.toggleAuction();
             }
-            if (message.contains("You were spawned in Limbo") || message.contains("joined the lobby!")) {
+            if (Lilase.cofl.isOpen() && (message.contains("You were spawned in Limbo") || message.contains("joined the lobby!"))) {
                 try {
                     if (this.lockForJoiningSkyblock.isLocked) return;
                     this.lockForJoiningSkyblock.lock();
