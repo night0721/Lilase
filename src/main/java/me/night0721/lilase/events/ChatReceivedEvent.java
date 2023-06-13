@@ -96,18 +96,21 @@ public class ChatReceivedEvent {
                 Flipper.state = FlipperState.NONE;
                 Lilase.cofl.toggleAuction();
             }
-            if (message.contains("You were spawned in Limbo")) {
+            if (message.contains("You were spawned in Limbo") || message.contains("return from AFK")) {
                 try {
-                    Utils.debugLog("Detected in Limbo, stopping everything for 5 minutes");
-                    Utils.addTitle("You got sent to Limbo!");
+                    Utils.debugLog("Detected in Limbo or Lobby, sending you back to skyblock");
+                    Utils.addTitle("You got sent to Limbo or Lobby!");
                     Flipper.state = FlipperState.NONE;
                     if (Lilase.cofl.isOpen()) Lilase.cofl.toggleAuction();
-                    Thread.sleep(5000);
+                    Thread.sleep(5000 + new Random().nextInt(500));
                     Utils.sendServerMessage("/lobby");
-                    Thread.sleep(5000);
+                    Thread.sleep(5000 + new Random().nextInt(500));
                     Utils.sendServerMessage("/skyblock");
-                    Thread bzchillingthread = new Thread(bazaarChilling);
-                    bzchillingthread.start();
+                    Thread.sleep(5000 + new Random().nextInt(500));
+                    Utils.sendServerMessage("/hub");
+                    if (!Lilase.cofl.isOpen()) Lilase.cofl.toggleAuction();
+//                     Thread bzchillingthread = new Thread(bazaarChilling);
+//                     bzchillingthread.start();
                 } catch (Exception ignored) {
                 }
             }
