@@ -26,7 +26,6 @@ import static me.night0721.lilase.features.flipper.Flipper.*;
 
 public class ChatReceivedEvent {
     private final Pattern AUCTION_SOLD_PATTERN = Pattern.compile("^(.*?) bought (.*?) for ([\\d,]+) coins CLICK$");
-    private final LockWithTimeReset lockForJoiningSkyblock = new LockWithTimeReset();
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) {
@@ -97,7 +96,7 @@ public class ChatReceivedEvent {
                 Flipper.state = FlipperState.NONE;
                 Lilase.cofl.toggleAuction();
             }
-            if (Lilase.cofl.isOpen() && (message.contains("You were spawned in Limbo") || message.contains("joined the lobby!"))) {
+            if (message.contains("You were spawned in Limbo") || message.contains("return from AFK")) {
                 try {
                     if (this.lockForJoiningSkyblock.isLocked) return;
                     this.lockForJoiningSkyblock.lock();
@@ -105,11 +104,11 @@ public class ChatReceivedEvent {
                     Utils.addTitle("You got sent to Limbo or Lobby!");
                     Flipper.state = FlipperState.NONE;
                     if (Lilase.cofl.isOpen()) Lilase.cofl.toggleAuction();
-                    Thread.sleep(5000);
+                    Thread.sleep(5000 + new Random().nextInt(500));
                     Utils.sendServerMessage("/lobby");
-                    Thread.sleep(5000);
+                    Thread.sleep(5000 + new Random().nextInt(500));
                     Utils.sendServerMessage("/skyblock");
-                    Thread.sleep(5000);
+                    Thread.sleep(5000 + new Random().nextInt(500));
                     Utils.sendServerMessage("/hub");
                     if (!Lilase.cofl.isOpen()) Lilase.cofl.toggleAuction();
 //                     Thread bzchillingthread = new Thread(bazaarChilling);
