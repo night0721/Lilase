@@ -4,7 +4,7 @@ package me.night0721.lilase.utils;
 public class LockWithTimeReset {
     public boolean isLocked = false;
 
-    public static void lock() {
+    public void lock() {
         this.isLocked = true;
         new Thread(() -> {
             try {
