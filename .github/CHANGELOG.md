@@ -95,3 +95,5 @@
     - Added disconnect and command commands to remote control
 - v3.0.6
     - Remove unecessary code
+- v3.0.7
+    - anti afk
