@@ -101,7 +101,7 @@ public class ChatReceivedEvent {
                 try {
                     if (this.lockForJoiningSkyblock.isLocked) return
                     this.lockForJoiningSkyblock.lock()
-                    Utils.debugLog("Detected in Limbo or Lobby, stopping everything for 5 minutes");
+                    Utils.debugLog("Detected in Limbo or Lobby, sending you back to skyblock");
                     Utils.addTitle("You got sent to Limbo or Lobby!");
                     Flipper.state = FlipperState.NONE;
                     if (Lilase.cofl.isOpen()) Lilase.cofl.toggleAuction();
@@ -109,8 +109,11 @@ public class ChatReceivedEvent {
                     Utils.sendServerMessage("/lobby");
                     Thread.sleep(5000);
                     Utils.sendServerMessage("/skyblock");
-                    Thread bzchillingthread = new Thread(bazaarChilling);
-                    bzchillingthread.start();
+                    Thread.sleep(5000);
+                    Utils.sendServerMessage("/hub");
+                    if (!Lilase.cofl.isOpen()) Lilase.cofl.toggleAuction();
+//                     Thread bzchillingthread = new Thread(bazaarChilling);
+//                     bzchillingthread.start();
                 } catch (Exception ignored) {
                 }
             }
