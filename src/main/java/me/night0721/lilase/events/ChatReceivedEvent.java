@@ -99,8 +99,8 @@ public class ChatReceivedEvent {
             }
             if (message.contains("You were spawned in Limbo") || message.contains("joined the lobby!")) {
                 try {
-                    if (this.lockForJoiningSkyblock.isLocked) return
-                    this.lockForJoiningSkyblock.lock()
+                    if (this.lockForJoiningSkyblock.isLocked) return;
+                    this.lockForJoiningSkyblock.lock();
                     Utils.debugLog("Detected in Limbo or Lobby, sending you back to skyblock");
                     Utils.addTitle("You got sent to Limbo or Lobby!");
                     Flipper.state = FlipperState.NONE;
