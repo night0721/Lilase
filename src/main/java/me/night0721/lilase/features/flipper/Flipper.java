@@ -353,6 +353,7 @@ public class Flipper {
                 .addField("Item:", name, true)
                 .addField("Price:", format.format(price), true)
                 .addField("Target Price:", format.format(target), true)
+                .addField("Profit:", df.format(target - price), true)
                 .addField("Profit Percentage:", df.format((double) (target - price) / price * 100f) + "%", true)
                 .setColor(Color.decode(color));
     }
