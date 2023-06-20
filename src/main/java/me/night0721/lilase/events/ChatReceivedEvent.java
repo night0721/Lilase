@@ -102,11 +102,11 @@ public class ChatReceivedEvent {
                     Utils.addTitle("You got sent to Limbo or Lobby!");
                     Flipper.state = FlipperState.NONE;
                     if (Lilase.cofl.isOpen()) Lilase.cofl.toggleAuction();
-                    Thread.sleep(5000 + new Random().nextInt(500));
+                    Thread.sleep(30000 + new Random().nextInt(5000));
                     Utils.sendServerMessage("/lobby");
-                    Thread.sleep(5000 + new Random().nextInt(500));
+                    Thread.sleep(30000 + new Random().nextInt(5000));
                     Utils.sendServerMessage("/skyblock");
-                    Thread.sleep(5000 + new Random().nextInt(500));
+                    Thread.sleep(30000 + new Random().nextInt(5000));
                     Utils.sendServerMessage("/hub");
                     if (!Lilase.cofl.isOpen()) Lilase.cofl.toggleAuction();
 //                     Thread bzchillingthread = new Thread(bazaarChilling);
