@@ -123,6 +123,8 @@ public class Relister extends Sniper {
                                     Thread.sleep(300);
                                     clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 31);
                                     Thread.sleep(300);
+                                    clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 11);
+                                    Thread.sleep(300);
                                     if (SEND_MESSAGE) {
                                         try {
                                             webhook.addEmbed(new DiscordWebhook.EmbedObject()
