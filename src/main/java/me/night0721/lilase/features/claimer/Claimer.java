@@ -120,7 +120,7 @@ public class Claimer extends Sniper {
                                     Thread.sleep(300);
                                     clickWindow(Lilase.mc.thePlayer.openContainer.windowId, i);
                                     Thread.sleep(300);
-                                    clickWindow(Lilase.mc.thePlayer.openContainer.windowId + 1, 31);
+                                    clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 31);
                                     if (SEND_MESSAGE) {
                                         try {
                                             webhook.addEmbed(new DiscordWebhook.EmbedObject()
