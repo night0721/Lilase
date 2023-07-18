@@ -121,7 +121,7 @@ public class Relister extends Sniper {
                                     String uuid = is.getTagCompound().getCompoundTag("ExtraAttributes").getString("uuid");
                                     clickWindow(Lilase.mc.thePlayer.openContainer.windowId, i);
                                     Thread.sleep(300);
-                                    clickWindow(Lilase.mc.thePlayer.openContainer.windowId + 1, 31);
+                                    clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 31);
                                     Thread.sleep(300);
                                     if (SEND_MESSAGE) {
                                         try {
