@@ -119,7 +119,7 @@ public class Claimer extends Sniper {
                                 try {
                                     Thread.sleep(300);
                                     clickWindow(Lilase.mc.thePlayer.openContainer.windowId, i);
-                                    Thread.sleep(300);
+                                    Thread.sleep(500);
                                     clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 31);
                                     if (SEND_MESSAGE) {
                                         try {
