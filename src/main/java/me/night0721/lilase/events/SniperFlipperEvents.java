@@ -119,7 +119,7 @@ public class SniperFlipperEvents {
                         try {
                             clickWindow(latestWindowId, 31);
                             Thread.sleep(300 + new Random().nextInt(100));
-                            clickWindow(latestWindowId, 11);
+                            clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 11);
                         } catch (Exception ignored) {
 
                         }
