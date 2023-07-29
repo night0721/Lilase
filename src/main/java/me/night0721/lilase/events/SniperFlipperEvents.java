@@ -94,8 +94,9 @@ public class SniperFlipperEvents {
                             try {
                                 while (tries < 50) {
                                     if (InventoryUtils.inventoryNameStartsWith("BIN Auction View")) {
-                                        clickWindow(latestWindowId, 31);
-                                        clickWindow(latestWindowId + 1, 11);
+                                        clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 31);
+                                        Thread.sleep(300);
+                                        clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 11);
                                         tries++;
                                         Thread.sleep(BED_SPAM_DELAY);
                                     }
