@@ -76,12 +76,6 @@ public class SniperFlipperEvents {
     @SubscribeEvent
     public void onPacketReceive(PacketReceivedEvent event) {
         if (AHConfig.BED_SPAM && Lilase.cofl.isOpen()) {
-//        if (AHConfig.BED_SPAM && (Lilase.pageFlipper.isOpen() || Lilase.cofl.isOpen())) {
-            if (event.packet instanceof S2DPacketOpenWindow && ((S2DPacketOpenWindow) event.packet).getGuiId().equals("minecraft:chest")) {
-                S2DPacketOpenWindow packetOpenWindow = (S2DPacketOpenWindow) event.packet;
-                if (packetOpenWindow.getWindowTitle().getUnformattedText().equals("BIN Auction View"))
-                    latestWindowId = packetOpenWindow.getWindowId();
-            }
             if (event.packet instanceof S2FPacketSetSlot) {
                 S2FPacketSetSlot packetSetSlot = (S2FPacketSetSlot) event.packet;
                 ItemStack stack = packetSetSlot.func_149174_e();
