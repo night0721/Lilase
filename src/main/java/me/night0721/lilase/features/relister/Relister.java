@@ -18,6 +18,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -120,9 +121,10 @@ public class Relister extends Sniper {
                                     int target = Math.round(price * 0.98f);
                                     String uuid = is.getTagCompound().getCompoundTag("ExtraAttributes").getString("uuid");
                                     clickWindow(Lilase.mc.thePlayer.openContainer.windowId, i);
-                                    Thread.sleep(300);
-                                    clickWindow(Lilase.mc.thePlayer.openContainer.windowId + 1, 31);
-                                    Thread.sleep(300);
+                                    Thread.sleep(300 + new Random().nextInt(100));
+                                    clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 31);
+                                    Thread.sleep(300 + new Random().nextInt(100));
+
                                     if (SEND_MESSAGE) {
                                         try {
                                             webhook.addEmbed(new DiscordWebhook.EmbedObject()

@@ -18,6 +18,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import static me.night0721.lilase.config.AHConfig.SEND_MESSAGE;
 import static me.night0721.lilase.events.SniperFlipperEvents.ah_full;
@@ -117,10 +118,10 @@ public class Claimer extends Sniper {
                             if (ScoreboardUtils.cleanSB(list.toString()).contains("Status: Sold")) {
                                 toClaim.add(i);
                                 try {
-                                    Thread.sleep(300);
+                                    Thread.sleep(400 + new Random().nextInt(100));
                                     clickWindow(Lilase.mc.thePlayer.openContainer.windowId, i);
-                                    Thread.sleep(300);
-                                    clickWindow(Lilase.mc.thePlayer.openContainer.windowId + 1, 31);
+                                    Thread.sleep(500 + new Random().nextInt(100));
+                                    clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 31);
                                     if (SEND_MESSAGE) {
                                         try {
                                             webhook.addEmbed(new DiscordWebhook.EmbedObject()

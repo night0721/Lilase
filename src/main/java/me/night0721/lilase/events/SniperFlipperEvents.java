@@ -95,7 +95,8 @@ public class SniperFlipperEvents {
                                 while (tries < 50) {
                                     if (InventoryUtils.inventoryNameStartsWith("BIN Auction View")) {
                                         clickWindow(latestWindowId, 31);
-                                        clickWindow(latestWindowId + 1, 11);
+                                        Thread.sleep(300 + new Random().nextInt(100));
+                                        clickWindow(latestWindowId, 11);
                                         tries++;
                                         Thread.sleep(BED_SPAM_DELAY);
                                     }
@@ -115,8 +116,13 @@ public class SniperFlipperEvents {
                         if (spam != null && spam.isAlive()) {
                             spam.interrupt();
                         }
-                        clickWindow(latestWindowId, 31);
-                        clickWindow(latestWindowId + 1, 11);
+                        try {
+                            clickWindow(latestWindowId, 31);
+                            Thread.sleep(300 + new Random().nextInt(100));
+                            clickWindow(latestWindowId, 11);
+                        } catch (Exception ignored) {
+
+                        }
                     } else {
                         Utils.debugLog("Auction was bought by someone else, closing window");
                         Lilase.mc.thePlayer.closeScreen();
