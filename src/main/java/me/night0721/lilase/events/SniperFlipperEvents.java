@@ -85,7 +85,7 @@ public class SniperFlipperEvents {
             if (event.packet instanceof S2FPacketSetSlot) {
                 S2FPacketSetSlot packetSetSlot = (S2FPacketSetSlot) event.packet;
                 ItemStack stack = packetSetSlot.func_149174_e();
-                if (packetSetSlot.func_149173_d() == 31 && stack != null && packetSetSlot.func_149175_c() == latestWindowId) {
+                if (packetSetSlot.func_149173_d() == 31 && stack != null) {
                     ItemStack itemStack = packetSetSlot.func_149174_e();
                     Utils.debugLog("Slot 31: " + itemStack.getItem().getRegistryName());
                     if (itemStack.getItem() == Items.bed) {
