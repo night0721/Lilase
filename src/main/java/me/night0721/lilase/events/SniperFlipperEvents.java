@@ -96,7 +96,7 @@ public class SniperFlipperEvents {
                                     if (InventoryUtils.inventoryNameStartsWith("BIN Auction View")) {
                                         clickWindow(latestWindowId, 31);
                                         Thread.sleep(300 + new Random().nextInt(100));
-                                        clickWindow(latestWindowId, 11);
+                                        clickWindow(latestWindowId + 1, 11);
                                         tries++;
                                         Thread.sleep(BED_SPAM_DELAY);
                                     }
@@ -119,7 +119,7 @@ public class SniperFlipperEvents {
                         try {
                             clickWindow(latestWindowId, 31);
                             Thread.sleep(300 + new Random().nextInt(100));
-                            clickWindow(Lilase.mc.thePlayer.openContainer.windowId, 11);
+                            clickWindow(latestWindowId + 1, 11);
                         } catch (Exception ignored) {
 
                         }
