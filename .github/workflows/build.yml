@@ -22,11 +22,7 @@ jobs:
             ${{ runner.os }}-gradle-
       - name: Build
         run: chmod +x gradlew && ./gradlew build --stacktrace --info
-      - name: List working directory contents
-        run: ls -R
-      - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: build-artifacts
           path: versions/1.8.9-forge/build/libs/Lilase.jar
-#          ./gradlew setupDecompWorkspace
