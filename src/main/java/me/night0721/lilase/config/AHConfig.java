@@ -10,7 +10,7 @@ import me.night0721.lilase.Lilase;
 
 public class AHConfig extends Config {
     public AHConfig() {
-        super(new Mod("Lilase", ModType.SKYBLOCK, "/assets/lilase.png", 84, 84), "lilase.json");
+        super(new Mod("Lilase", ModType.SKYBLOCK, "/assets/lilase.jpg", 84, 84), "lilase.json");
         initialize();
         addListener("WEBHOOK", () -> Lilase.configHandler.setString("Webhook", WEBHOOK));
         addListener("REMOTE_CONTROL", () -> Lilase.configHandler.setBoolean("RemoteControl", REMOTE_CONTROL));

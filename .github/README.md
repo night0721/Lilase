@@ -1,6 +1,6 @@
 <h1 style="text-align:center;"> Auction House Flipper - Lilase</h1>
 <div style="display:flex;align-items: center;justify-content: center;">
-<img src="https://cdn.discordapp.com/attachments/842014909264953354/1082373275038003210/lilase.png" width="300" alt="icon"/>
+<img src="https://raw.githubusercontent.com/night0721/Lilase/master/src/main/resources/assets/lilase.jpg" width="300" alt="icon"/>
 </div>
 
 # Introduction:
