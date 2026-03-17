@@ -1,14 +1,10 @@
-<h1 style="text-align:center;"> Auction House Flipper - Lilase</h1>
-<div style="display:flex;align-items: center;justify-content: center;">
-<img src="https://raw.githubusercontent.com/night0721/Lilase/master/src/main/resources/assets/lilase.jpg" width="300" alt="icon"/>
-</div>
+# Lilase
+Auction House Flipper mod runs on 1.8.9 Forge, automatiaclly buy item and sell items according to flips in COFL for profit, and send you a webhook when it has been bought. With the support of remote control allows you to control the mod through Discord.
 
-# Introduction:
-A simple QOL Forge mod runs on 1.8.9, automatiaclly buy item and sell items according to flips in COFL for profit, and send you a webhook when it has been bought. With the support of remote control allows you to control the mod through Discord.
-If you have any questions please join [Discord Server](https://night0721.me/discord) for support
+If you have any questions please join [Discord Server](https://discord.gg/SbQHChmGcp) for support
 For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 
-# Features:
+# Features
 - COFL macro
 - Full skip confirmation screen
 - Auto sell with COFL recommended pricing
@@ -36,7 +32,8 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 - Short number to list auctions
 - Detection of captcha
 
-# Download:
+# Usage
+## Download
 1. Download the latest version of Lilase from [here](https://github.com/night0721/Lilase/releases/latest)
 2. Download the latest version of COFL from [here](https://github.com/Coflnet/SkyblockMod/releases/latest)
 3. Put them into %APPDATA%/.minecraft/mods
@@ -45,7 +42,7 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 6. Press M key to start cofl macro(or change it in control settings)
 7. For example configuration, see [here](https://github.com/night0721/Lilase#example-config)
 
-# Remote Control:
+## Remote Control
 1. Go to [Discord Developer Portal](https://discord.com/developers/applications) and create a new application
 2. Go to Bot tab and create a new bot
 3. Copy the token and paste it into the config where it says "BotToken"
@@ -56,22 +53,27 @@ For how to use, see **[here](https://github.com/night0721/lilase#how-to-use)**
 8. Now you can use the remote control commands by typing `/`
 9. For example, `/stats` will show you current session statistics
 
-# How to get logs:
+## How to get logs
 1. First go to the game folder, %APPDATA%/Roaming/.minecraft (default) or depends on whatever client you using
 [![ExampleDir](https://cdn.discordapp.com/attachments/1085273638476992662/1109582318236078290/image.png)](https://cdn.discordapp.com/attachments/1085273638476992662/1109582318236078290/image.png)
 2. Go to logs folder
 3. Select latest.log and send it to Discord for developer to help you
 
-# Changelog:
-[ChangeLog](https://github.com/night0721/Lilase/blob/master/.github/CHANGELOG.md)
-
-
-# Example Config:
+## Example Config
 ```json
 {
-  "RemoteControl": true,
-  "BotToken": "OTE1NDk3NDQ1OTMwODY2MjA=.QREQw3.ASDU238qw9adsfdWEfsgsdfg",
-  "LogChannel": "91549744593086620",
-  "Webhook": "https://discord.com/api/webhooks/81963527359311890/MIIDBjCCAe4CCQDqzJZzANBgkqhkiG9w0BAQsFADBFMQswCQYDVQQGEwJjbjELMAkGA1"
+    "RemoteControl": true,
+    "BotToken": "OTE1NDk3NDQ1OTMwODY2MjA=.QREQw3.ASDU238qw9adsfdWEfsgsdfg",
+    "LogChannel": "91549744593086620",
+    "Webhook": "https://discord.com/api/webhooks/81963527359311890/MIIDBjCCAe4CCQDqzJZzANBgkqhkiG9w0BAQsFADBFMQswCQYDVQQGEwJjbjELMAkGA1"
 }
 ```
+
+# Changelog
+[ChangeLog](https://github.com/night0721/Lilase/blob/master/.github/CHANGELOG.md)
+
+# Contributions
+Contributions are welcomed, feel free to open a pull request.
+
+# License
+This project is licensed under the GNU Public License v3.0. See [LICENSE](https://github.com/night0721/Lilase/blob/master/LICENSE) for more information.
